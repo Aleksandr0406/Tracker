@@ -9,9 +9,9 @@ import Foundation
 import UIKit
 
 struct Tracker {
-    private let id: String
-    private let name: String
-    private let color: UIColor
-    private let emoji: UIImage
-    private let shedule: Date
+    let id: String
+    let name: String
+    let color: UIColor
+    let emoji: String
+    let shedule: [String]
 }
