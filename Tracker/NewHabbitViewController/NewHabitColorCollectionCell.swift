@@ -8,7 +8,9 @@
 import Foundation
 import UIKit
 
-final class NewHabitColorCollectionViewCell: UICollectionViewCell {
+final class NewHabitColorCollectionCell: UICollectionViewCell {
+    static let cellIdentifier = "ColorCell"
+    
     let titleLabel: UILabel = UILabel()
     
     override init(frame: CGRect) {

@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 final class NewTrackerViewController: UIViewController {
-    var clousure: (((String, String) -> ()))!
+    var clousure: (((String, String, [String]) -> ()))!
     
     private let addNewTrackerButton: UIButton = UIButton()
     private let addNewNotRegularTrackerButton: UIButton = UIButton()
@@ -48,6 +48,11 @@ final class NewTrackerViewController: UIViewController {
         addNewTrackerButton.addTarget(self, action: #selector(didTapAddNewTrackerButton), for: .touchUpInside)
     }
     
+    @objc private func didTapAddNewTrackerButton() {
+        let sections = ["Категория", "Расписание"]
+        presentHabitOrNotRegularTracker(sections)
+    }
+    
     private func createAddNewNotRegularTrackerButton() {
         addNewNotRegularTrackerButton.layer.cornerRadius = 16
         addNewNotRegularTrackerButton.backgroundColor = .black
@@ -67,34 +72,18 @@ final class NewTrackerViewController: UIViewController {
         addNewNotRegularTrackerButton.addTarget(self, action: #selector(didTapAddNewNotRegularTrackerButton), for: .touchUpInside)
     }
     
-    @objc private func didTapAddNewTrackerButton() {
-        let viewcontroller = NewHabitViewController()
-        viewcontroller.clousure = { savedHabitName, savedCategoryName in
-            self.clousure(savedHabitName, savedCategoryName)
-            print("NewTrackerViewController", "Habit:", savedHabitName, ", ", "Category:", savedCategoryName)
-        }
-        viewcontroller.categoriesAndSchedule = ["Категория", "Расписание"]
-        let navigationViewController = UINavigationController(rootViewController: viewcontroller)
-        present(navigationViewController, animated: true)
-    }
-    
     @objc private func didTapAddNewNotRegularTrackerButton() {
-        let viewcontroller = NewHabitViewController()
-        viewcontroller.clousure = { savedHabitName, savedCategoryName in
-            self.clousure(savedHabitName, savedCategoryName)
-            print("NewTrackerViewController", "Habit:", savedHabitName, ", ", "Category:", savedCategoryName)
-        }
-        viewcontroller.categoriesAndSchedule = ["Категория"]
-        let navigationViewController = UINavigationController(rootViewController: viewcontroller)
-        present(navigationViewController, animated: true)
+        let sections = ["Категория"]
+        presentHabitOrNotRegularTracker(sections)
     }
     
-    private func presentHabitOrNotRegularTracker() {
+    private func presentHabitOrNotRegularTracker(_ sections: [String]) {
         let viewcontroller = NewHabitViewController()
-        viewcontroller.clousure = { savedHabitName, savedCategoryName in
-            self.clousure(savedHabitName, savedCategoryName)
+        viewcontroller.clousure = { savedHabitName, savedCategoryName, savedDays in
+            self.clousure(savedHabitName, savedCategoryName, savedDays)
             print("NewTrackerViewController", "Habit:", savedHabitName, ", ", "Category:", savedCategoryName)
         }
+        viewcontroller.categoriesAndSchedule = sections
         let navigationViewController = UINavigationController(rootViewController: viewcontroller)
         present(navigationViewController, animated: true)
     }

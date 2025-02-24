@@ -8,13 +8,33 @@
 import Foundation
 import UIKit
 
-final class TrackersCollectionViewCell: UICollectionViewCell {
+protocol TrackersCollectionCellDelegate: AnyObject {
+    func completeTracker(id: String, at indexPath: IndexPath)
+    func uncompleteTracker(id: String, at indexPath: IndexPath)
+}
+
+final class TrackersCollectionCell: UICollectionViewCell {
+    static let cellIdentifier = "Cell"
+    
+    weak var delegate: TrackersCollectionCellDelegate?
+    
     let habitCardColorLabel: UILabel = UILabel()
-    var emojiLabel: UILabel = UILabel()
-    var emojiImage: UIImageView = UIImageView()
-    var habitNameLabel: UILabel = UILabel()
-    var addDayButton: UIButton = UIButton()
+    let emojiLabel: UILabel = UILabel()
+    let emojiImage: UIImageView = UIImageView()
+    let habitNameLabel: UILabel = UILabel()
+    let addDayButton: UIButton = UIButton()
     let dayLabel: UILabel = UILabel()
+    
+    private var isCompletedToday: Bool = false
+    private var trackerId: String = ""
+    private var indexPath: IndexPath?
+    
+    private let doneImage = UIImage(named: "Check_Tracker")
+    private let plusImage: UIImage = {
+        let pointSize = UIImage.SymbolConfiguration(pointSize: 11)
+        let image = UIImage(systemName: "plus", withConfiguration: pointSize) ?? UIImage()
+        return image
+    }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -30,6 +50,29 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func configure(with tracker: Tracker, isCompletedToday: Bool, indexPath: IndexPath, completedDays: Int) {
+        //        self.trackerId = tracker.id
+        self.isCompletedToday = isCompletedToday
+        self.indexPath = indexPath
+        
+        emojiLabel.text = "❤️"
+        habitNameLabel.text = tracker.name
+        
+        let word = plusOneDay(completedDays)
+        dayLabel.text = word
+        
+        let backButtonColor = isCompletedToday ? UIColor(named: "33CF69_30%") : UIColor(named: "33CF69")
+        addDayButton.backgroundColor = backButtonColor
+        
+        let image = isCompletedToday ? doneImage : plusImage
+        addDayButton.setImage(image, for: .normal)
+    }
+    
+    private func plusOneDay(_ oneDay: Int) -> String {
+        var sumDay: Int = 0
+        sumDay = sumDay + oneDay
+        return "\(sumDay) день"
+    }
     
     private func createHabitCardColorLabel() {
         habitCardColorLabel.layer.backgroundColor = UIColor(named: "33CF69")?.cgColor
@@ -42,22 +85,6 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         habitCardColorLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
         habitCardColorLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
         habitCardColorLabel.heightAnchor.constraint(equalToConstant: 90).isActive = true
-    }
-    
-    private func createEmojiLabel() {
-        emojiLabel.layer.backgroundColor = UIColor(named: "EmojiBack")?.cgColor
-        emojiLabel.layer.cornerRadius = 68
-        emojiLabel.contentMode = .scaleAspectFit
-        emojiLabel.textAlignment = .center
-        
-        emojiLabel.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(emojiLabel)
-        
-        emojiLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12).isActive = true
-        emojiLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12).isActive = true
-        emojiLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -131).isActive = true
-        emojiLabel.heightAnchor.constraint(equalToConstant: 24).isActive = true
-        emojiLabel.widthAnchor.constraint(equalToConstant: 24).isActive = true
     }
     
     private func createEmojiImage() {
@@ -83,7 +110,7 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         
         habitNameLabel.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(habitNameLabel)
-
+        
         habitNameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 44).isActive = true
         habitNameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12).isActive = true
         habitNameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12).isActive = true
@@ -91,11 +118,10 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
     }
     
     private func createAddDayButton() {
-        addDayButton.backgroundColor = UIColor(named: "33CF69")
+        addDayButton.tintColor = .white
         addDayButton.layer.cornerRadius = 17
-
-        addDayButton.setTitle("+", for: .normal)
-        addDayButton.setTitleColor(.white, for: .normal)
+        
+        addDayButton.setImage(plusImage, for: .normal)
         
         addDayButton.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(addDayButton)
@@ -109,7 +135,15 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         addDayButton.addTarget(self, action: #selector(didTapAddDayButton), for: .touchUpInside)
     }
     
-    @objc private func didTapAddDayButton() {}
+    @objc private func didTapAddDayButton() {
+        guard let indexPath = indexPath else { return }
+        
+        if isCompletedToday {
+            delegate?.uncompleteTracker(id: trackerId, at: indexPath)
+        } else {
+            delegate?.completeTracker(id: trackerId, at: indexPath)
+        }
+    }
     
     private func createDayLabel() {
         dayLabel.adjustsFontSizeToFitWidth = true
@@ -120,11 +154,13 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         
         dayLabel.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(dayLabel)
-
+        
         dayLabel.topAnchor.constraint(equalTo: habitCardColorLabel.bottomAnchor, constant: 16).isActive = true
         dayLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12).isActive = true
         dayLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -24).isActive = true
         dayLabel.heightAnchor.constraint(equalToConstant: 18).isActive = true
     }
 }
+
+
 

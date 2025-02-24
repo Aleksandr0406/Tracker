@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 final class NewScheduleTableViewCell: UITableViewCell {
-//    static let reuseIdentifier = "NewHabitCell"
+    static let cellIdentifier = "Cell"
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)

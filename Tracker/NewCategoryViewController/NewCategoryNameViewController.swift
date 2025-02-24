@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-final class NewCategoryNameViewController: UIViewController {
+final class NewCategoryNameViewController: UIViewController, UITextFieldDelegate {
     var clousure: ((String) -> ())!
     
     private var doneButton: UIButton = UIButton()
@@ -77,10 +77,8 @@ final class NewCategoryNameViewController: UIViewController {
     @objc private func didTapDoneButton() {
         guard let nameCategory = titleCategoryTextField.text else { return }
         clousure(nameCategory)
-
+        
         dismiss(animated: true)
         return
     }
 }
-
-extension NewCategoryNameViewController: UITextFieldDelegate {}

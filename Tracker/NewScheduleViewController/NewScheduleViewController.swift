@@ -11,9 +11,6 @@ import UIKit
 final class NewScheduleViewController: UIViewController {
     var clousure: (([String]) -> ())!
     
-    private var index: IndexPath?
-//    private var savedDays: [String] = []
-    
     private let days: [String] =
     [
         "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"
@@ -22,7 +19,12 @@ final class NewScheduleViewController: UIViewController {
     private var savedDaysNames: [String] = []
     
     private var doneButton: UIButton = UIButton()
-    private var scheduleTableView: UITableView = UITableView()
+    
+    private var scheduleTableView: UITableView = {
+        let tableView = UITableView()
+        tableView.register(NewScheduleTableViewCell.self, forCellReuseIdentifier: NewScheduleTableViewCell.cellIdentifier)
+        return tableView
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -75,8 +77,6 @@ final class NewScheduleViewController: UIViewController {
         
         scheduleTableView.dataSource = self
         scheduleTableView.delegate = self
-        
-        scheduleTableView.register(NewScheduleTableViewCell.self, forCellReuseIdentifier: "NewScheduleCell")
     }
 }
 
@@ -90,13 +90,11 @@ extension NewScheduleViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: UITableViewCell
         
-        if let newSheduleCell = tableView.dequeueReusableCell(withIdentifier: "NewScheduleCell", for: indexPath) as? NewScheduleTableViewCell {
+        if let newSheduleCell = tableView.dequeueReusableCell(withIdentifier: NewScheduleTableViewCell.cellIdentifier, for: indexPath) as? NewScheduleTableViewCell {
             cell = newSheduleCell
         } else {
-            cell = UITableViewCell(style: .default, reuseIdentifier: "NewScheduleCell")
+            cell = UITableViewCell(style: .default, reuseIdentifier: NewScheduleTableViewCell.cellIdentifier)
         }
-        
-        index = indexPath
         
         let switchView = UISwitch()
         switchView.onTintColor = .blue
@@ -115,13 +113,9 @@ extension NewScheduleViewController: UITableViewDataSource {
     
     @objc private func didTapSwitch(programmeToggle: UISwitch) {
         if programmeToggle.isOn {
-            print(programmeToggle.isOn)
             savedDaysNames.append(days[programmeToggle.tag])
-            print(savedDaysNames)
         } else {
-            print(programmeToggle.isOn)
             savedDaysNames.removeAll(where: {$0 == days[programmeToggle.tag]})
-            print(savedDaysNames)
         }
     }
     

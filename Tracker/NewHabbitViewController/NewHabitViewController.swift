@@ -9,14 +9,16 @@ import Foundation
 import UIKit
 
 final class NewHabitViewController: UIViewController {
-    var clousure: ((String, String) -> ())!
+    var clousure: ((String, String, [String]) -> ())!
+    var categoriesAndSchedule: [String] = []
     
     private let numberOfSections = 2
-    var categoriesAndSchedule: [String] = []
+    
     private let emojies =
     [
         "🙂", "😻", "🌺", "🐶", "❤️", "😱", "😊", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝", "😪"
     ]
+    
     private let colors =
     [
         UIColor(named: "FD4C49")
@@ -39,16 +41,22 @@ final class NewHabitViewController: UIViewController {
     
     private var warningLabel: UILabel = UILabel()
     private var titleHabitTextField: UITextField = UITextField()
-    private var categoryAndScheduleTable: UITableView = UITableView()
-    private var collection: UICollectionView = {
-        let collection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-        collection.register(NewHabitEmojiCollectionViewCell.self, forCellWithReuseIdentifier: "cell")
-        collection.register(NewHabitColorCollectionViewCell.self, forCellWithReuseIdentifier: "colorCell")
-        collection.register(NewHabitCollectionSupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
-        return collection
-    }()
     private var cancelButton: UIButton = UIButton()
     private var addHabbitButton: UIButton = UIButton()
+    
+    private var categoryAndScheduleTable: UITableView = {
+        let tableView = UITableView()
+        tableView.register(NewHabitTableViewCell.self, forCellReuseIdentifier: NewHabitTableViewCell.cellIdentifier)
+        return tableView
+    }()
+    
+    private var collection: UICollectionView = {
+        let collection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        collection.register(NewHabitEmojiCollectionCell.self, forCellWithReuseIdentifier: NewHabitEmojiCollectionCell.cellIdentifier)
+        collection.register(NewHabitColorCollectionCell.self, forCellWithReuseIdentifier: NewHabitColorCollectionCell.cellIdentifier)
+        collection.register(NewHabitCollectionSupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: NewHabitCollectionSupplementaryView.headerIdentifier)
+        return collection
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,45 +69,6 @@ final class NewHabitViewController: UIViewController {
         createCancelButton()
         createAddHabbitButton()
         createCollection()
-    }
-    
-    private func addSubtitleToCategory(_ subtitleNameCategory: String) {
-        guard let cell = categoryAndScheduleTable.cellForRow(at: IndexPath(row: 0, section: 0)) else { return }
-        cell.detailTextLabel?.text = subtitleNameCategory
-        cell.detailTextLabel?.textColor = UIColor(named: "Add_Button")
-        cell.detailTextLabel?.font = .systemFont(ofSize: 17)
-    }
-    
-    private func addSubtitleToSchedule(_ subtitleNameSchedule: [String]) {
-        guard let cell = categoryAndScheduleTable.cellForRow(at: IndexPath(row: 1, section: 0)) else { return }
-        
-        let savedDays = setShortNamesToDaysOfWeek(subtitleNameSchedule)
-        cell.detailTextLabel?.text = savedDays
-        cell.detailTextLabel?.textColor = UIColor(named: "Add_Button")
-        cell.detailTextLabel?.font = .systemFont(ofSize: 17)
-    }
-    
-    private func setShortNamesToDaysOfWeek(_ savedLongNamesOfWeek: [String]) -> String {
-        var savedDays = ""
-        var day = ""
-        var shortNameDay = ""
-        
-        for dayNumber in 0..<savedLongNamesOfWeek.count {
-            if savedLongNamesOfWeek.count == numbersDaysInWeek {
-                savedDays = "Каждый день"
-            } else {
-                if dayNumber == savedLongNamesOfWeek.count - 1{
-                    day = savedLongNamesOfWeek[dayNumber]
-                    shortNameDay = shortNamesDaysOfWeek[day]!
-                    savedDays += shortNameDay
-                } else {
-                    day = savedLongNamesOfWeek[dayNumber]
-                    shortNameDay = shortNamesDaysOfWeek[day]!
-                    savedDays += shortNameDay + ", "
-                }
-            }
-        }
-        return savedDays
     }
     
     private func setBarItem() {
@@ -178,21 +147,6 @@ final class NewHabitViewController: UIViewController {
         
         categoryAndScheduleTable.dataSource = self
         categoryAndScheduleTable.delegate = self
-        
-        categoryAndScheduleTable.register(NewHabitTableViewCell.self, forCellReuseIdentifier: "NewHabitCell")
-    }
-    
-    private func createCollection() {
-        collection.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(collection)
-        
-        collection.topAnchor.constraint(equalTo: categoryAndScheduleTable.bottomAnchor, constant: 32).isActive = true
-        collection.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0).isActive = true
-        collection.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0).isActive = true
-        collection.bottomAnchor.constraint(equalTo: cancelButton.topAnchor, constant: -24).isActive = true
-        
-        collection.dataSource = self
-        collection.delegate = self
     }
     
     private func createCancelButton() {
@@ -243,8 +197,60 @@ final class NewHabitViewController: UIViewController {
             let habitName = titleHabitTextField.text,
             let categoryName = categoryAndScheduleTable.cellForRow(at: IndexPath(row: 0, section: 0))?.detailTextLabel?.text
         else { return }
-        clousure(habitName, categoryName)
+        clousure(habitName, categoryName, savedDays)
         UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
+    }
+    
+    private func createCollection() {
+        collection.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(collection)
+        
+        collection.topAnchor.constraint(equalTo: categoryAndScheduleTable.bottomAnchor, constant: 32).isActive = true
+        collection.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0).isActive = true
+        collection.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0).isActive = true
+        collection.bottomAnchor.constraint(equalTo: cancelButton.topAnchor, constant: -24).isActive = true
+        
+        collection.dataSource = self
+        collection.delegate = self
+    }
+    
+    private func addSubtitleToCategory(_ subtitleNameCategory: String) {
+        guard let cell = categoryAndScheduleTable.cellForRow(at: IndexPath(row: 0, section: 0)) else { return }
+        cell.detailTextLabel?.text = subtitleNameCategory
+        cell.detailTextLabel?.textColor = UIColor(named: "Add_Button")
+        cell.detailTextLabel?.font = .systemFont(ofSize: 17)
+    }
+    
+    private func addSubtitleToSchedule(_ subtitleNameSchedule: [String]) {
+        guard let cell = categoryAndScheduleTable.cellForRow(at: IndexPath(row: 1, section: 0)) else { return }
+        
+        let savedShortNameDays = setShortNamesToDaysOfWeek(subtitleNameSchedule)
+        cell.detailTextLabel?.text = savedShortNameDays
+        cell.detailTextLabel?.textColor = UIColor(named: "Add_Button")
+        cell.detailTextLabel?.font = .systemFont(ofSize: 17)
+    }
+    
+    private func setShortNamesToDaysOfWeek(_ savedLongNamesOfWeek: [String]) -> String {
+        var savedDaysNames = ""
+        var day = ""
+        var shortNameDay = ""
+        
+        for dayNumber in 0..<savedLongNamesOfWeek.count {
+            if savedLongNamesOfWeek.count == numbersDaysInWeek {
+                savedDaysNames = "Каждый день"
+            } else {
+                if dayNumber == savedLongNamesOfWeek.count - 1{
+                    day = savedLongNamesOfWeek[dayNumber]
+                    shortNameDay = shortNamesDaysOfWeek[day]!
+                    savedDaysNames += shortNameDay
+                } else {
+                    day = savedLongNamesOfWeek[dayNumber]
+                    shortNameDay = shortNamesDaysOfWeek[day]!
+                    savedDaysNames += shortNameDay + ", "
+                }
+            }
+        }
+        return savedDaysNames
     }
     
     private func checkAllFields() {
@@ -329,14 +335,14 @@ extension NewHabitViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         if indexPath.section == 0 {
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? NewHabitEmojiCollectionViewCell else {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NewHabitEmojiCollectionCell.cellIdentifier, for: indexPath) as? NewHabitEmojiCollectionCell else {
                 return UICollectionViewCell()
             }
             cell.titleLabel.text = emojies[indexPath.row]
             return cell
             
         } else {
-            guard let colorCell = collectionView.dequeueReusableCell(withReuseIdentifier: "colorCell", for: indexPath) as? NewHabitColorCollectionViewCell else {
+            guard let colorCell = collectionView.dequeueReusableCell(withReuseIdentifier: NewHabitColorCollectionCell.cellIdentifier, for: indexPath) as? NewHabitColorCollectionCell else {
                 return UICollectionViewCell()
             }
             
@@ -350,7 +356,7 @@ extension NewHabitViewController: UICollectionViewDataSource {
         var id: String
         switch kind {
         case UICollectionView.elementKindSectionHeader:
-            id = "header"
+            id = NewHabitCollectionSupplementaryView.headerIdentifier
         case UICollectionView.elementKindSectionFooter:
             id = "footer"
         default:
@@ -382,6 +388,7 @@ extension NewHabitViewController: UITableViewDelegate {
                 self.addSubtitleToSchedule(days)
                 self.categoryAndScheduleTable.reloadData()
                 self.checkAllFields()
+                self.savedDays = days
             }
             let navigationViewController = UINavigationController(rootViewController: viewcontroller)
             present(navigationViewController, animated: true)
@@ -398,10 +405,10 @@ extension NewHabitViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) ->  UITableViewCell {
         let cell: UITableViewCell
         
-        if let newHabitCell = tableView.dequeueReusableCell(withIdentifier: "NewHabitCell", for: indexPath) as? NewHabitTableViewCell {
+        if let newHabitCell = tableView.dequeueReusableCell(withIdentifier: NewHabitTableViewCell.cellIdentifier, for: indexPath) as? NewHabitTableViewCell {
             cell = newHabitCell
         } else {
-            cell = UITableViewCell(style: .default, reuseIdentifier: "NewHabitCell")
+            cell = UITableViewCell(style: .default, reuseIdentifier: NewHabitTableViewCell.cellIdentifier)
         }
         
         cell.backgroundColor = UIColor(named: "E6E8EB")

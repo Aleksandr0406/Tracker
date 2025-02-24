@@ -13,6 +13,7 @@ final class NewCategoryViewController: UIViewController {
     
     private var index: Int = 0
     private var names: [String] = []
+    
     private var categoriesTable: UITableView = UITableView()
     private var backgroundImage: UIImageView = UIImageView()
     private var backgroundTextLabel: UILabel = UILabel()
@@ -38,11 +39,6 @@ final class NewCategoryViewController: UIViewController {
         backgroundTextLabel.isHidden = true
         categoriesTable.isHidden = false
         categoriesTable.isScrollEnabled = false
-    }
-    
-    @objc func updateCategories() {
-        hidePlaceholder()
-        categoriesTable.reloadData()
     }
     
     private func createCategoriesTable() {
@@ -131,7 +127,7 @@ extension NewCategoryViewController: UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell(style: .default, reuseIdentifier: "NewCategory")
+        let cell = UITableViewCell()
         
         if indexPath.row == index {
             cell.backgroundColor = UIColor(named: "E6E8EB")

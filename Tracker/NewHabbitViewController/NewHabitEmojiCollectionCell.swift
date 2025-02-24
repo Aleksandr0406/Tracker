@@ -8,7 +8,9 @@
 import Foundation
 import UIKit
 
-final class NewHabitEmojiCollectionViewCell: UICollectionViewCell {
+final class NewHabitEmojiCollectionCell: UICollectionViewCell {
+    static let cellIdentifier = "EmojiCell"
+    
     let titleLabel: UILabel = UILabel()
     
     override init(frame: CGRect) {
