@@ -5,11 +5,10 @@
 //  Created by 1111 on 15.02.2025.
 //
 
-import Foundation
 import UIKit
 
 final class NewCategoryViewController: UIViewController {
-    var clousure: ((String) -> ())!
+    var onAddCategoryButtonTapped: ((String) -> ())?
     
     private var index: Int = 0
     private var names: [String] = []
@@ -111,7 +110,7 @@ final class NewCategoryViewController: UIViewController {
     
     @objc private func didTapAddCategoryButton() {
         let viewcontroller = NewCategoryNameViewController()
-        viewcontroller.clousure = { nameCategory in
+        viewcontroller.onDoneButtonTapped = { nameCategory in
             self.names.append(nameCategory)
             self.hidePlaceholder()
             self.categoriesTable.reloadData()
@@ -123,7 +122,7 @@ final class NewCategoryViewController: UIViewController {
 
 extension NewCategoryViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return names.count
+        names.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -142,15 +141,16 @@ extension NewCategoryViewController: UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 75
+        75
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.cellForRow(at: IndexPath(row: index, section: 0))?.accessoryType = .none
         tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
         index = indexPath.row
-        guard let subtitleNameCategory = tableView.cellForRow(at: indexPath)?.textLabel?.text else { return }
-        clousure(subtitleNameCategory)
+        guard let subtitleNameCategory = tableView.cellForRow(at: indexPath)?.textLabel?.text,
+              let onAddCategoryButtonTapped = onAddCategoryButtonTapped else { return }
+        onAddCategoryButtonTapped(subtitleNameCategory)
         
         dismiss(animated: true)
     }

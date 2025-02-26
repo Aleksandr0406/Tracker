@@ -5,16 +5,17 @@
 //  Created by 1111 on 11.02.2025.
 //
 
-import Foundation
 import UIKit
 
 final class NewHabitViewController: UIViewController {
-    var clousure: ((String, String, [String]) -> ())!
+    var onAddHabitButtonTapped: ((String, String, [String]) -> ())?
     var categoriesAndSchedule: [String] = []
     
+    private let emojiIndexSection = 0
     private let numberOfSections = 2
+    private let enableNumberOfTypingLettersInTextField = 38
     
-    private let emojies =
+    private let emojis =
     [
         "🙂", "😻", "🌺", "🐶", "❤️", "😱", "😊", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝", "😪"
     ]
@@ -42,7 +43,7 @@ final class NewHabitViewController: UIViewController {
     private var warningLabel: UILabel = UILabel()
     private var titleHabitTextField: UITextField = UITextField()
     private var cancelButton: UIButton = UIButton()
-    private var addHabbitButton: UIButton = UIButton()
+    private var addHabitButton: UIButton = UIButton()
     
     private var categoryAndScheduleTable: UITableView = {
         let tableView = UITableView()
@@ -67,7 +68,7 @@ final class NewHabitViewController: UIViewController {
         createWarningLabel()
         createCategoryAndScheduleTable()
         createCancelButton()
-        createAddHabbitButton()
+        createAddHabitButton()
         createCollection()
     }
     
@@ -102,13 +103,9 @@ final class NewHabitViewController: UIViewController {
     @objc private func didEditNameHabitTextField() {
         checkAllFields()
         
-        guard let numbersOfLetters = titleHabitTextField.text?.count else { return }
+        guard let numbersOfTypingLetters = titleHabitTextField.text?.count else { return }
         
-        if numbersOfLetters == 38 {
-            warningLabel.isHidden = false
-        } else {
-            warningLabel.isHidden = true
-        }
+        warningLabel.isHidden = !(numbersOfTypingLetters == enableNumberOfTypingLettersInTextField)
     }
     
     private func createWarningLabel() {
@@ -135,15 +132,12 @@ final class NewHabitViewController: UIViewController {
         categoryAndScheduleTable.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(categoryAndScheduleTable)
         
-        categoryAndScheduleTable.topAnchor.constraint(equalTo: titleHabitTextField.bottomAnchor, constant: 24).isActive = true
+        categoryAndScheduleTable.topAnchor.constraint(equalTo: titleHabitTextField.bottomAnchor, constant: 62).isActive = true
         categoryAndScheduleTable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
         categoryAndScheduleTable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16).isActive = true
         
-        if categoriesAndSchedule.count > 1 {
-            categoryAndScheduleTable.heightAnchor.constraint(equalToConstant: 150).isActive = true
-        } else {
-            categoryAndScheduleTable.heightAnchor.constraint(equalToConstant: 75).isActive = true
-        }
+        let padding: CGFloat = categoriesAndSchedule.count > 1 ? 150 : 75
+        categoryAndScheduleTable.heightAnchor.constraint(equalToConstant: padding).isActive = true
         
         categoryAndScheduleTable.dataSource = self
         categoryAndScheduleTable.delegate = self
@@ -172,32 +166,33 @@ final class NewHabitViewController: UIViewController {
         UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
     }
     
-    private func createAddHabbitButton() {
-        addHabbitButton.backgroundColor = UIColor(named: "Add_Button")
-        addHabbitButton.layer.borderColor = UIColor(named: "Add_Button")?.cgColor
-        addHabbitButton.layer.borderWidth = 1
-        addHabbitButton.setTitle("Создать", for: .normal)
-        addHabbitButton.setTitleColor(UIColor.white, for: .normal)
-        addHabbitButton.layer.cornerRadius = 16
+    private func createAddHabitButton() {
+        addHabitButton.backgroundColor = UIColor(named: "Add_Button")
+        addHabitButton.layer.borderColor = UIColor(named: "Add_Button")?.cgColor
+        addHabitButton.layer.borderWidth = 1
+        addHabitButton.setTitle("Создать", for: .normal)
+        addHabitButton.setTitleColor(UIColor.white, for: .normal)
+        addHabitButton.layer.cornerRadius = 16
         
-        addHabbitButton.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(addHabbitButton)
+        addHabitButton.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(addHabitButton)
         
-        addHabbitButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
-        addHabbitButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16).isActive = true
-        addHabbitButton.leadingAnchor.constraint(equalTo: cancelButton.trailingAnchor, constant: 8).isActive = true
-        addHabbitButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        addHabitButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
+        addHabitButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16).isActive = true
+        addHabitButton.leadingAnchor.constraint(equalTo: cancelButton.trailingAnchor, constant: 8).isActive = true
+        addHabitButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
         
-        addHabbitButton.isEnabled = false
-        addHabbitButton.addTarget(self, action: #selector(didTapAddHabbitButton), for: .touchUpInside)
+        addHabitButton.isEnabled = false
+        addHabitButton.addTarget(self, action: #selector(didTapAddHabitButton), for: .touchUpInside)
     }
     
-    @objc private func didTapAddHabbitButton() {
+    @objc private func didTapAddHabitButton() {
         guard
             let habitName = titleHabitTextField.text,
-            let categoryName = categoryAndScheduleTable.cellForRow(at: IndexPath(row: 0, section: 0))?.detailTextLabel?.text
+            let categoryName = categoryAndScheduleTable.cellForRow(at: IndexPath(row: 0, section: 0))?.detailTextLabel?.text,
+            let onAddHabitButtonTapped = onAddHabitButtonTapped
         else { return }
-        clousure(habitName, categoryName, savedDays)
+        onAddHabitButtonTapped(habitName, categoryName, savedDays)
         UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
     }
     
@@ -260,26 +255,26 @@ final class NewHabitViewController: UIViewController {
                   let checkScheduleSubtitle = categoryAndScheduleTable.cellForRow(at: IndexPath(row: 1, section: 0))?.detailTextLabel?.text?.isEmpty else { return }
             
             if checkTextField && !checkCategorySubtitle && !checkScheduleSubtitle {
-                addHabbitButton.backgroundColor = .black
-                addHabbitButton.isEnabled = true
+                addHabitButton.backgroundColor = .black
+                addHabitButton.isEnabled = true
             } else {
-                addHabbitButton.backgroundColor = UIColor(named: "Add_Button")
-                addHabbitButton.layer.borderColor = UIColor(named: "Add_Button")?.cgColor
-                addHabbitButton.layer.borderWidth = 1
-                addHabbitButton.isEnabled = false
+                addHabitButton.backgroundColor = UIColor(named: "Add_Button")
+                addHabitButton.layer.borderColor = UIColor(named: "Add_Button")?.cgColor
+                addHabitButton.layer.borderWidth = 1
+                addHabitButton.isEnabled = false
             }
         } else {
             let checkTextField = titleHabitTextField.hasText
             guard let checkCategorySubtitle = categoryAndScheduleTable.cellForRow(at: IndexPath(row: 0, section: 0))?.detailTextLabel?.text?.isEmpty else { return }
             
             if checkTextField && !checkCategorySubtitle {
-                addHabbitButton.backgroundColor = .black
-                addHabbitButton.isEnabled = true
+                addHabitButton.backgroundColor = .black
+                addHabitButton.isEnabled = true
             } else {
-                addHabbitButton.backgroundColor = UIColor(named: "Add_Button")
-                addHabbitButton.layer.borderColor = UIColor(named: "Add_Button")?.cgColor
-                addHabbitButton.layer.borderWidth = 1
-                addHabbitButton.isEnabled = false
+                addHabitButton.backgroundColor = UIColor(named: "Add_Button")
+                addHabitButton.layer.borderColor = UIColor(named: "Add_Button")?.cgColor
+                addHabitButton.layer.borderWidth = 1
+                addHabitButton.isEnabled = false
             }
         }
     }
@@ -300,19 +295,19 @@ extension NewHabitViewController: UITextFieldDelegate {
 //MARK: CollectionView Protocols
 extension NewHabitViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 52, height: 52)
+        CGSize(width: 52, height: 52)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 5
+        5
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
+        0
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 24, left: 18, bottom: 24, right: 19)
+        UIEdgeInsets(top: 24, left: 18, bottom: 24, right: 19)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
@@ -326,20 +321,21 @@ extension NewHabitViewController: UICollectionViewDelegateFlowLayout {
 
 extension NewHabitViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return numberOfSections
+        numberOfSections
     }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return (section == 0) ? emojies.count : colors.count
+        section == emojiIndexSection ? emojis.count : colors.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        if indexPath.section == 0 {
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NewHabitEmojiCollectionCell.cellIdentifier, for: indexPath) as? NewHabitEmojiCollectionCell else {
+        if indexPath.section == emojiIndexSection {
+            guard let emojiCell = collectionView.dequeueReusableCell(withReuseIdentifier: NewHabitEmojiCollectionCell.cellIdentifier, for: indexPath) as? NewHabitEmojiCollectionCell else {
                 return UICollectionViewCell()
             }
-            cell.titleLabel.text = emojies[indexPath.row]
-            return cell
+            
+            emojiCell.titleLabel.text = emojis[indexPath.row]
+            return emojiCell
             
         } else {
             guard let colorCell = collectionView.dequeueReusableCell(withReuseIdentifier: NewHabitColorCollectionCell.cellIdentifier, for: indexPath) as? NewHabitColorCollectionCell else {
@@ -363,9 +359,9 @@ extension NewHabitViewController: UICollectionViewDataSource {
             id = ""
         }
         
-        let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as! NewHabitCollectionSupplementaryView
+        guard let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as? NewHabitCollectionSupplementaryView else { return UICollectionReusableView() }
         
-        (indexPath.section == 0) ? (headerView.titleLabel.text = "Emoji") : (headerView.titleLabel.text = "Цвет")
+        (indexPath.section == emojiIndexSection) ? (headerView.titleLabel.text = "Emoji") : (headerView.titleLabel.text = "Цвет")
         return headerView
     }
 }
@@ -375,7 +371,7 @@ extension NewHabitViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         if indexPath.row == 0 {
             let viewcontroller = NewCategoryViewController()
-            viewcontroller.clousure = { subtitleNameCategory in
+            viewcontroller.onAddCategoryButtonTapped = { subtitleNameCategory in
                 self.addSubtitleToCategory(subtitleNameCategory)
                 self.categoryAndScheduleTable.reloadData()
                 self.checkAllFields()
@@ -384,7 +380,7 @@ extension NewHabitViewController: UITableViewDelegate {
             present(navigationViewController, animated: true)
         } else {
             let viewcontroller = NewScheduleViewController()
-            viewcontroller.clousure = { days in
+            viewcontroller.onDoneButtonTapped = { days in
                 self.addSubtitleToSchedule(days)
                 self.categoryAndScheduleTable.reloadData()
                 self.checkAllFields()
@@ -419,7 +415,7 @@ extension NewHabitViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return tableView.bounds.height / CGFloat(categoriesAndSchedule.count)
+        tableView.bounds.height / CGFloat(categoriesAndSchedule.count)
     }
 }
 

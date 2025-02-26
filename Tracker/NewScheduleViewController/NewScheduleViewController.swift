@@ -5,11 +5,10 @@
 //  Created by 1111 on 15.02.2025.
 //
 
-import Foundation
 import UIKit
 
 final class NewScheduleViewController: UIViewController {
-    var clousure: (([String]) -> ())!
+    var onDoneButtonTapped: (([String]) -> ())?
     
     private let days: [String] =
     [
@@ -59,7 +58,8 @@ final class NewScheduleViewController: UIViewController {
     }
     
     @objc private func didTapDoneButton() {
-        clousure(savedDaysNames)
+        guard let onDoneButtonTapped = onDoneButtonTapped else { return }
+        onDoneButtonTapped(savedDaysNames)
         dismiss(animated: true)
     }
     
@@ -84,14 +84,14 @@ extension NewScheduleViewController: UITableViewDelegate {}
 
 extension NewScheduleViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return days.count
+        days.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: UITableViewCell
         
-        if let newSheduleCell = tableView.dequeueReusableCell(withIdentifier: NewScheduleTableViewCell.cellIdentifier, for: indexPath) as? NewScheduleTableViewCell {
-            cell = newSheduleCell
+        if let newSсheduleCell = tableView.dequeueReusableCell(withIdentifier: NewScheduleTableViewCell.cellIdentifier, for: indexPath) as? NewScheduleTableViewCell {
+            cell = newSсheduleCell
         } else {
             cell = UITableViewCell(style: .default, reuseIdentifier: NewScheduleTableViewCell.cellIdentifier)
         }
@@ -120,6 +120,6 @@ extension NewScheduleViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return tableView.bounds.height / 7
+        tableView.bounds.height / 7
     }
 }

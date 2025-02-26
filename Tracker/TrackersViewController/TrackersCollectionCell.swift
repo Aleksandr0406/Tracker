@@ -5,7 +5,6 @@
 //  Created by 1111 on 23.02.2025.
 //
 
-import Foundation
 import UIKit
 
 protocol TrackersCollectionCellDelegate: AnyObject {
@@ -51,6 +50,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
     }
     
     func configure(with tracker: Tracker, isCompletedToday: Bool, indexPath: IndexPath, completedDays: Int) {
+        //MARK: To do saving id later
         //        self.trackerId = tracker.id
         self.isCompletedToday = isCompletedToday
         self.indexPath = indexPath
@@ -69,9 +69,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
     }
     
     private func plusOneDay(_ oneDay: Int) -> String {
-        var sumDay: Int = 0
-        sumDay = sumDay + oneDay
-        return "\(sumDay) день"
+        "\(oneDay) день"
     }
     
     private func createHabitCardColorLabel() {

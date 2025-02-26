@@ -5,11 +5,10 @@
 //  Created by 1111 on 15.02.2025.
 //
 
-import Foundation
 import UIKit
 
 final class NewCategoryNameViewController: UIViewController, UITextFieldDelegate {
-    var clousure: ((String) -> ())!
+    var onDoneButtonTapped: ((String) -> ())?
     
     private var doneButton: UIButton = UIButton()
     private var titleCategoryTextField: UITextField = UITextField()
@@ -75,10 +74,11 @@ final class NewCategoryNameViewController: UIViewController, UITextFieldDelegate
     }
     
     @objc private func didTapDoneButton() {
-        guard let nameCategory = titleCategoryTextField.text else { return }
-        clousure(nameCategory)
+        guard let nameCategory = titleCategoryTextField.text,
+              let onDoneButtonTapped = onDoneButtonTapped else { return }
+        
+        onDoneButtonTapped(nameCategory)
         
         dismiss(animated: true)
-        return
     }
 }

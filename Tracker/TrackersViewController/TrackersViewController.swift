@@ -7,7 +7,6 @@
 
 import UIKit
 
-
 final class TrackersViewController: UIViewController {
     private var currentDate: Date = Date()
     private var categories: [TrackerCategory] = []
@@ -81,24 +80,17 @@ final class TrackersViewController: UIViewController {
             return TrackerCategory(name: category.name, trackers: trackers)
         }
         
-        for category in visibleCategories {
-            if category.trackers.isEmpty {
-                trackersCollectionView.isHidden = true
-                backgroundImage.isHidden = false
-                backgroundTextLabel.isHidden = false
-            } else {
-                trackersCollectionView.isHidden = false
-                backgroundImage.isHidden = true
-                backgroundTextLabel.isHidden = true
-            }
-        }
+        let isEmpty = visibleCategories.allSatisfy { $0.trackers.isEmpty }
+        trackersCollectionView.isHidden = isEmpty
+        backgroundImage.isHidden = !isEmpty
+        backgroundTextLabel.isHidden = !isEmpty
         
         trackersCollectionView.reloadData()
     }
     
     @objc private func didTapAddButton() {
         let viewcontroller = NewTrackerViewController()
-        viewcontroller.clousure = { savedHabitName, savedCategoryName, savedDays in
+        viewcontroller.onAddHabitButtonTapped = { savedHabitName, savedCategoryName, savedDays in
             print("TrackerViewController", "Habit:", savedHabitName, ", ", "Category:", savedCategoryName, "Schedule:", savedDays)
             self.updateTrackers(savedHabitName, savedCategoryName, savedDays)
         }
@@ -175,35 +167,12 @@ final class TrackersViewController: UIViewController {
     
     //MARK: Helpers
     private func convertSavedDaysToNumbersOfWeekend(_ savedDays: [String]) {
-        for day in savedDays {
-            if day == "Понедельник" {
-                savedDayNumberOfWeekend.append(2)
-            }
-            
-            if day == "Вторник" {
-                savedDayNumberOfWeekend.append(3)
-            }
-            
-            if day == "Среда" {
-                savedDayNumberOfWeekend.append(4)
-            }
-            
-            if day == "Четверг" {
-                savedDayNumberOfWeekend.append(5)
-            }
-            
-            if day == "Пятница" {
-                savedDayNumberOfWeekend.append(6)
-            }
-            
-            if day == "Суббота" {
-                savedDayNumberOfWeekend.append(7)
-            }
-            
-            if day == "Воскресенье" {
-                savedDayNumberOfWeekend.append(1)
-            }
-        }
+        let dayNumbers: [String: Int] = [
+            "Понедельник": 2, "Вторник": 3, "Среда": 4,
+            "Четверг": 5, "Пятница": 6, "Суббота": 7, "Воскресенье": 1
+        ]
+        
+        savedDayNumberOfWeekend = savedDays.compactMap { dayNumbers[$0] }
     }
     
     private func updateTrackers(_ savedHabitName: String, _ savedCategoryName: String, _ savedDays: [String]) {
@@ -215,6 +184,8 @@ final class TrackersViewController: UIViewController {
         
         if !categories.isEmpty {
             for categoryIndex in 0..<categories.count {
+                var trackers: [Tracker] = categories[categoryIndex].trackers
+
                 if savedCategoryName == categories[categoryIndex].name {
                     let newTrackerExistCategory = Tracker(
                         id: "",
@@ -223,7 +194,8 @@ final class TrackersViewController: UIViewController {
                         emoji: "🙂",
                         schedule: savedDayNumberOfWeekend)
                     
-                    categories[categoryIndex].trackers.append(newTrackerExistCategory)
+                    trackers.append(newTrackerExistCategory)
+                    categories[categoryIndex] = TrackerCategory(name: categories[categoryIndex].name, trackers: trackers)
                     break
                 }
                 
@@ -271,11 +243,11 @@ extension TrackersViewController: UICollectionViewDelegate {}
 
 extension TrackersViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return visibleCategories.count
+        visibleCategories.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return visibleCategories[section].trackers.count
+        visibleCategories[section].trackers.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -324,15 +296,15 @@ extension TrackersViewController: UICollectionViewDataSource {
 
 extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 167, height: 148)
+        CGSize(width: 167, height: 148)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 9
+        9
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
+        0
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {

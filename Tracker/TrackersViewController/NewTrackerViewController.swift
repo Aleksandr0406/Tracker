@@ -5,11 +5,10 @@
 //  Created by 1111 on 11.02.2025.
 //
 
-import Foundation
 import UIKit
 
 final class NewTrackerViewController: UIViewController {
-    var clousure: (((String, String, [String]) -> ()))!
+    var onAddHabitButtonTapped: (((String, String, [String]) -> ()))?
     
     private let addNewTrackerButton: UIButton = UIButton()
     private let addNewNotRegularTrackerButton: UIButton = UIButton()
@@ -79,8 +78,9 @@ final class NewTrackerViewController: UIViewController {
     
     private func presentHabitOrNotRegularTracker(_ sections: [String]) {
         let viewcontroller = NewHabitViewController()
-        viewcontroller.clousure = { savedHabitName, savedCategoryName, savedDays in
-            self.clousure(savedHabitName, savedCategoryName, savedDays)
+        viewcontroller.onAddHabitButtonTapped = { savedHabitName, savedCategoryName, savedDays in
+            guard let onAddHabitButtonTapped = self.onAddHabitButtonTapped else { return }
+            onAddHabitButtonTapped(savedHabitName, savedCategoryName, savedDays)
             print("NewTrackerViewController", "Habit:", savedHabitName, ", ", "Category:", savedCategoryName)
         }
         viewcontroller.categoriesAndSchedule = sections

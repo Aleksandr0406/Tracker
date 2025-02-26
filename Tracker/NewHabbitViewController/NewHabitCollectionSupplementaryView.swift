@@ -5,7 +5,6 @@
 //  Created by 1111 on 13.02.2025.
 //
 
-import Foundation
 import UIKit
 
 final class NewHabitCollectionSupplementaryView: UICollectionReusableView {
