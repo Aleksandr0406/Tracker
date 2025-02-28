@@ -32,6 +32,7 @@ final class NewScheduleViewController: UIViewController {
         setBarItem()
         createDoneButton()
         createScheduleTableView()
+        setConstraints()
     }
     
     private func setBarItem() {
@@ -48,12 +49,7 @@ final class NewScheduleViewController: UIViewController {
         
         doneButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(doneButton)
-        
-        doneButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
-        doneButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
-        doneButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16).isActive = true
-        doneButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
-        
+    
         doneButton.addTarget(self, action: #selector(didTapDoneButton), for: .touchUpInside)
     }
     
@@ -70,13 +66,22 @@ final class NewScheduleViewController: UIViewController {
         scheduleTableView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(scheduleTableView)
         
-        scheduleTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16).isActive = true
-        scheduleTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
-        scheduleTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16).isActive = true
-        scheduleTableView.bottomAnchor.constraint(equalTo: doneButton.topAnchor, constant: -47).isActive = true
-        
         scheduleTableView.dataSource = self
         scheduleTableView.delegate = self
+    }
+    
+    private func setConstraints() {
+        NSLayoutConstraint.activate([
+            doneButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            doneButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            doneButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            doneButton.heightAnchor.constraint(equalToConstant: 60),
+            
+            scheduleTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
+            scheduleTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            scheduleTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            scheduleTableView.bottomAnchor.constraint(equalTo: doneButton.topAnchor, constant: -47)
+        ])
     }
 }
 

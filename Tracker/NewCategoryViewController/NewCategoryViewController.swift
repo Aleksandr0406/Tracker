@@ -27,6 +27,7 @@ final class NewCategoryViewController: UIViewController {
         createBackgroundTextLabel()
         createAddCategoryButton()
         createCategoriesTable()
+        setConstraints()
         
         if !names.isEmpty {
             hidePlaceholder()
@@ -48,11 +49,6 @@ final class NewCategoryViewController: UIViewController {
         categoriesTable.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(categoriesTable)
         
-        categoriesTable.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24).isActive = true
-        categoriesTable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
-        categoriesTable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16).isActive = true
-        categoriesTable.bottomAnchor.constraint(equalTo: addCategoryButton.topAnchor).isActive = true
-        
         categoriesTable.isHidden = true
         
         categoriesTable.dataSource = self
@@ -71,11 +67,6 @@ final class NewCategoryViewController: UIViewController {
         
         self.backgroundImage.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(self.backgroundImage)
-        
-        self.backgroundImage.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 232).isActive = true
-        self.backgroundImage.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 147).isActive = true
-        self.backgroundImage.widthAnchor.constraint(equalToConstant: 80).isActive = true
-        self.backgroundImage.heightAnchor.constraint(equalToConstant: 80).isActive = true
     }
     
     private func createBackgroundTextLabel() {
@@ -87,8 +78,6 @@ final class NewCategoryViewController: UIViewController {
         
         backgroundTextLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(backgroundTextLabel)
-        backgroundTextLabel.topAnchor.constraint(equalTo: backgroundImage.bottomAnchor, constant: 8).isActive = true
-        backgroundTextLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
     }
     
     private func createAddCategoryButton() {
@@ -99,11 +88,6 @@ final class NewCategoryViewController: UIViewController {
         
         addCategoryButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(addCategoryButton)
-        
-        addCategoryButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
-        addCategoryButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
-        addCategoryButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16).isActive = true
-        addCategoryButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
         
         addCategoryButton.addTarget(self, action: #selector(didTapAddCategoryButton), for: .touchUpInside)
     }
@@ -117,6 +101,28 @@ final class NewCategoryViewController: UIViewController {
         }
         let navigationViewController = UINavigationController(rootViewController: viewcontroller)
         present(navigationViewController, animated: true)
+    }
+    
+    private func setConstraints() {
+        NSLayoutConstraint.activate([
+            categoriesTable.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
+            categoriesTable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            categoriesTable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            categoriesTable.bottomAnchor.constraint(equalTo: addCategoryButton.topAnchor),
+          
+            backgroundImage.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 232),
+            backgroundImage.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 147),
+            backgroundImage.widthAnchor.constraint(equalToConstant: 80),
+            backgroundImage.heightAnchor.constraint(equalToConstant: 80),
+            
+            backgroundTextLabel.topAnchor.constraint(equalTo: backgroundImage.bottomAnchor, constant: 8),
+            backgroundTextLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            
+            addCategoryButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            addCategoryButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            addCategoryButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            addCategoryButton.heightAnchor.constraint(equalToConstant: 60)
+        ])
     }
 }
 

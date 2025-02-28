@@ -20,6 +20,7 @@ final class NewCategoryNameViewController: UIViewController, UITextFieldDelegate
         setBarItem()
         createTitleCategoryTextField()
         createDoneButton()
+        setConstraints()
     }
     
     private func setBarItem() {
@@ -35,11 +36,6 @@ final class NewCategoryNameViewController: UIViewController, UITextFieldDelegate
         
         titleCategoryTextField.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(titleCategoryTextField)
-        
-        titleCategoryTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24).isActive = true
-        titleCategoryTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
-        titleCategoryTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16).isActive = true
-        titleCategoryTextField.heightAnchor.constraint(equalToConstant: 75).isActive = true
         
         titleCategoryTextField.delegate = self
         titleCategoryTextField.addTarget(self, action: #selector(didEditCategoryTextField), for: .editingChanged)
@@ -64,11 +60,6 @@ final class NewCategoryNameViewController: UIViewController, UITextFieldDelegate
         doneButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(doneButton)
         
-        doneButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
-        doneButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
-        doneButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16).isActive = true
-        doneButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
-        
         doneButton.addTarget(self, action: #selector(didTapDoneButton), for: .touchUpInside)
         doneButton.isEnabled = false
     }
@@ -80,5 +71,19 @@ final class NewCategoryNameViewController: UIViewController, UITextFieldDelegate
         onDoneButtonTapped(nameCategory)
         
         dismiss(animated: true)
+    }
+    
+    private func setConstraints() {
+        NSLayoutConstraint.activate([
+            titleCategoryTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
+            titleCategoryTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            titleCategoryTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            titleCategoryTextField.heightAnchor.constraint(equalToConstant: 75),
+            
+            doneButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            doneButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            doneButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            doneButton.heightAnchor.constraint(equalToConstant: 60)
+        ])
     }
 }

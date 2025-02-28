@@ -51,6 +51,7 @@ final class TrackersViewController: UIViewController {
         createBackgroundImage()
         createBackgroundTextLabel()
         createTrackersCollectionView()
+        setConstraints()
     }
     
     private func setNaviBar() {
@@ -106,9 +107,6 @@ final class TrackersViewController: UIViewController {
         
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(titleLabel)
-        
-        titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
-        titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 1).isActive = true
     }
     
     private func createBackgroundImage() {
@@ -116,9 +114,6 @@ final class TrackersViewController: UIViewController {
         
         backgroundImage.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(backgroundImage)
-        
-        backgroundImage.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        backgroundImage.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
     }
     
     private func createBackgroundTextLabel() {
@@ -128,9 +123,6 @@ final class TrackersViewController: UIViewController {
         
         backgroundTextLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(backgroundTextLabel)
-        
-        backgroundTextLabel.topAnchor.constraint(equalTo: backgroundImage.bottomAnchor, constant: 8).isActive = true
-        backgroundTextLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
     }
     
     private func createSearchTextField() {
@@ -141,11 +133,6 @@ final class TrackersViewController: UIViewController {
         
         searchTextField.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(searchTextField)
-        
-        searchTextField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 7).isActive = true
-        searchTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
-        searchTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16).isActive = true
-        searchTextField.heightAnchor.constraint(equalToConstant: 36).isActive = true
     }
     
     private func createTrackersCollectionView() {
@@ -154,15 +141,33 @@ final class TrackersViewController: UIViewController {
         trackersCollectionView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(trackersCollectionView)
         
-        trackersCollectionView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: 24).isActive = true
-        trackersCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
-        trackersCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16).isActive = true
-        trackersCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0).isActive = true
-        
         trackersCollectionView.dataSource = self
         trackersCollectionView.delegate = self
         
         trackersCollectionView.isHidden = true
+    }
+    
+    private func setConstraints() {
+        NSLayoutConstraint.activate([
+            titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 1),
+            
+            backgroundImage.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            backgroundImage.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            
+            backgroundTextLabel.topAnchor.constraint(equalTo: backgroundImage.bottomAnchor, constant: 8),
+            backgroundTextLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            
+            searchTextField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 7),
+            searchTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            searchTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            searchTextField.heightAnchor.constraint(equalToConstant: 36),
+            
+            trackersCollectionView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: 24),
+            trackersCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            trackersCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            trackersCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0)
+        ])
     }
     
     //MARK: Helpers

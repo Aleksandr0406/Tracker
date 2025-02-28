@@ -21,10 +21,12 @@ final class NewHabitEmojiCollectionCell: UICollectionViewCell {
         titleLabel.textAlignment = .center
         titleLabel.font = .systemFont(ofSize: 32)
         
-        titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 7).isActive = true
-        titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10).isActive = true
-        titleLabel.widthAnchor.constraint(equalToConstant: 32).isActive = true
-        titleLabel.heightAnchor.constraint(equalToConstant: 38).isActive = true
+        NSLayoutConstraint.activate([
+            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 7),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            titleLabel.widthAnchor.constraint(equalToConstant: 32),
+            titleLabel.heightAnchor.constraint(equalToConstant: 38)
+        ])
     }
     
     required init?(coder: NSCoder) {

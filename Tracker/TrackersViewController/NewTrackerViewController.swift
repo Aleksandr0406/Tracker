@@ -20,6 +20,7 @@ final class NewTrackerViewController: UIViewController {
         setBarItem()
         createAddNewTrackerButton()
         createAddNewNotRegularTrackerButton()
+        setConstraints()
     }
     
     private func setBarItem() {
@@ -38,11 +39,6 @@ final class NewTrackerViewController: UIViewController {
         
         addNewTrackerButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(addNewTrackerButton)
-        
-        addNewTrackerButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -357).isActive = true
-        addNewTrackerButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
-        addNewTrackerButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
-        addNewTrackerButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
         
         addNewTrackerButton.addTarget(self, action: #selector(didTapAddNewTrackerButton), for: .touchUpInside)
     }
@@ -63,17 +59,26 @@ final class NewTrackerViewController: UIViewController {
         addNewNotRegularTrackerButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(addNewNotRegularTrackerButton)
         
-        addNewNotRegularTrackerButton.topAnchor.constraint(equalTo: addNewTrackerButton.bottomAnchor, constant: 16).isActive = true
-        addNewNotRegularTrackerButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
-        addNewNotRegularTrackerButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
-        addNewNotRegularTrackerButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
-        
         addNewNotRegularTrackerButton.addTarget(self, action: #selector(didTapAddNewNotRegularTrackerButton), for: .touchUpInside)
     }
     
     @objc private func didTapAddNewNotRegularTrackerButton() {
         let sections = ["Категория"]
         presentHabitOrNotRegularTracker(sections)
+    }
+    
+    private func setConstraints() {
+        NSLayoutConstraint.activate([
+            addNewTrackerButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -357),
+            addNewTrackerButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            addNewTrackerButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            addNewTrackerButton.heightAnchor.constraint(equalToConstant: 60),
+            
+            addNewNotRegularTrackerButton.topAnchor.constraint(equalTo: addNewTrackerButton.bottomAnchor, constant: 16),
+            addNewNotRegularTrackerButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            addNewNotRegularTrackerButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            addNewNotRegularTrackerButton.heightAnchor.constraint(equalToConstant: 60)
+        ])
     }
     
     private func presentHabitOrNotRegularTracker(_ sections: [String]) {

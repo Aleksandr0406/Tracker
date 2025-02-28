@@ -20,9 +20,11 @@ final class TrackersCollectionSupplementaryView: UICollectionReusableView {
         titleLabel.textAlignment = .left
         titleLabel.font = .boldSystemFont(ofSize: 19)
         
-        titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12).isActive = true
-        titleLabel.topAnchor.constraint(equalTo: topAnchor).isActive = true
-        titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12).isActive = true
+        NSLayoutConstraint.activate([
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
+            titleLabel.topAnchor.constraint(equalTo: topAnchor),
+            titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12)
+        ])
     }
     
     required init?(coder: NSCoder) {

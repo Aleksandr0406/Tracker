@@ -70,6 +70,7 @@ final class NewHabitViewController: UIViewController {
         createCancelButton()
         createAddHabitButton()
         createCollection()
+        setConstraints()
     }
     
     private func setBarItem() {
@@ -91,20 +92,13 @@ final class NewHabitViewController: UIViewController {
         titleHabitTextField.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(titleHabitTextField)
         
-        titleHabitTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24).isActive = true
-        titleHabitTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
-        titleHabitTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16).isActive = true
-        titleHabitTextField.heightAnchor.constraint(equalToConstant: 75).isActive = true
-        
         titleHabitTextField.delegate = self
         titleHabitTextField.addTarget(self, action: #selector(didEditNameHabitTextField), for: .allEditingEvents)
     }
     
     @objc private func didEditNameHabitTextField() {
         checkAllFields()
-        
         guard let numbersOfTypingLetters = titleHabitTextField.text?.count else { return }
-        
         warningLabel.isHidden = !(numbersOfTypingLetters == enableNumberOfTypingLettersInTextField)
     }
     
@@ -117,11 +111,6 @@ final class NewHabitViewController: UIViewController {
         
         warningLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(warningLabel)
-        
-        warningLabel.topAnchor.constraint(equalTo: titleHabitTextField.bottomAnchor, constant: 8).isActive = true
-        warningLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 28).isActive = true
-        warningLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -29).isActive = true
-        warningLabel.heightAnchor.constraint(equalToConstant: 22).isActive = true
     }
     
     private func createCategoryAndScheduleTable() {
@@ -131,13 +120,6 @@ final class NewHabitViewController: UIViewController {
         
         categoryAndScheduleTable.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(categoryAndScheduleTable)
-        
-        categoryAndScheduleTable.topAnchor.constraint(equalTo: titleHabitTextField.bottomAnchor, constant: 62).isActive = true
-        categoryAndScheduleTable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
-        categoryAndScheduleTable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16).isActive = true
-        
-        let padding: CGFloat = categoriesAndSchedule.count > 1 ? 150 : 75
-        categoryAndScheduleTable.heightAnchor.constraint(equalToConstant: padding).isActive = true
         
         categoryAndScheduleTable.dataSource = self
         categoryAndScheduleTable.delegate = self
@@ -153,11 +135,6 @@ final class NewHabitViewController: UIViewController {
         
         cancelButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(cancelButton)
-        
-        cancelButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
-        cancelButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16).isActive = true
-        cancelButton.widthAnchor.constraint(equalToConstant: 166).isActive = true
-        cancelButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
         
         cancelButton.addTarget(self, action: #selector(didTapCancelButton), for: .touchUpInside)
     }
@@ -177,11 +154,6 @@ final class NewHabitViewController: UIViewController {
         addHabitButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(addHabitButton)
         
-        addHabitButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
-        addHabitButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16).isActive = true
-        addHabitButton.leadingAnchor.constraint(equalTo: cancelButton.trailingAnchor, constant: 8).isActive = true
-        addHabitButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
-        
         addHabitButton.isEnabled = false
         addHabitButton.addTarget(self, action: #selector(didTapAddHabitButton), for: .touchUpInside)
     }
@@ -199,11 +171,6 @@ final class NewHabitViewController: UIViewController {
     private func createCollection() {
         collection.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(collection)
-        
-        collection.topAnchor.constraint(equalTo: categoryAndScheduleTable.bottomAnchor, constant: 32).isActive = true
-        collection.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0).isActive = true
-        collection.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0).isActive = true
-        collection.bottomAnchor.constraint(equalTo: cancelButton.topAnchor, constant: -24).isActive = true
         
         collection.dataSource = self
         collection.delegate = self
@@ -223,6 +190,43 @@ final class NewHabitViewController: UIViewController {
         cell.detailTextLabel?.text = savedShortNameDays
         cell.detailTextLabel?.textColor = UIColor(named: "Add_Button")
         cell.detailTextLabel?.font = .systemFont(ofSize: 17)
+    }
+    
+    private func setConstraints() {
+        let padding: CGFloat = categoriesAndSchedule.count > 1 ? 150 : 75
+        
+        NSLayoutConstraint.activate([
+            titleHabitTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
+            titleHabitTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            titleHabitTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            titleHabitTextField.heightAnchor.constraint(equalToConstant: 75),
+            
+            warningLabel.topAnchor.constraint(equalTo: titleHabitTextField.bottomAnchor, constant: 8),
+            warningLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 28),
+            warningLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -29),
+            warningLabel.heightAnchor.constraint(equalToConstant: 22),
+            
+            categoryAndScheduleTable.topAnchor.constraint(equalTo: titleHabitTextField.bottomAnchor, constant: 62),
+            categoryAndScheduleTable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            categoryAndScheduleTable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            
+            categoryAndScheduleTable.heightAnchor.constraint(equalToConstant: padding),
+            
+            cancelButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            cancelButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            cancelButton.widthAnchor.constraint(equalToConstant: 166),
+            cancelButton.heightAnchor.constraint(equalToConstant: 60),
+            
+            addHabitButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            addHabitButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            addHabitButton.leadingAnchor.constraint(equalTo: cancelButton.trailingAnchor, constant: 8),
+            addHabitButton.heightAnchor.constraint(equalToConstant: 60),
+            
+            collection.topAnchor.constraint(equalTo: categoryAndScheduleTable.bottomAnchor, constant: 32),
+            collection.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
+            collection.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
+            collection.bottomAnchor.constraint(equalTo: cancelButton.topAnchor, constant: -24)
+        ])
     }
     
     private func setShortNamesToDaysOfWeek(_ savedLongNamesOfWeek: [String]) -> String {
@@ -311,10 +315,11 @@ extension NewHabitViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        let indexPath = IndexPath(row: 0, section: section)
-        let headerView = self.collectionView(collection, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader, at: indexPath)
+        let headerView = NewHabitCollectionSupplementaryView()
         
-        return headerView.systemLayoutSizeFitting(CGSize(width: collection.frame.width,
+        section == emojiIndexSection ? (headerView.titleLabel.text = "Emoji") : (headerView.titleLabel.text = "Цвет")
+        
+        return headerView.systemLayoutSizeFitting(CGSize(width: collectionView.frame.width,
                                                          height: UIView.layoutFittingExpandedSize.height))
     }
 }

@@ -18,10 +18,12 @@ final class NewHabitColorCollectionCell: UICollectionViewCell {
         contentView.addSubview(titleLabel)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-        titleLabel.widthAnchor.constraint(equalToConstant: 40).isActive = true
-        titleLabel.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        NSLayoutConstraint.activate([        
+            titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+            titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
+            titleLabel.widthAnchor.constraint(equalToConstant: 40),
+            titleLabel.heightAnchor.constraint(equalToConstant: 40)
+        ])
     }
     
     required init?(coder: NSCoder) {

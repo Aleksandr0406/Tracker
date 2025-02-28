@@ -43,6 +43,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
         createHabitNameLabel()
         createAddDayButton()
         createDayLabel()
+        setConstraints()
     }
     
     required init?(coder: NSCoder) {
@@ -78,11 +79,6 @@ final class TrackersCollectionCell: UICollectionViewCell {
         
         habitCardColorLabel.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(habitCardColorLabel)
-        
-        habitCardColorLabel.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
-        habitCardColorLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
-        habitCardColorLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
-        habitCardColorLabel.heightAnchor.constraint(equalToConstant: 90).isActive = true
     }
     
     private func createEmojiImage() {
@@ -91,12 +87,6 @@ final class TrackersCollectionCell: UICollectionViewCell {
         
         emojiImage.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(emojiImage)
-        
-        emojiImage.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12).isActive = true
-        emojiImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12).isActive = true
-        emojiImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -131).isActive = true
-        emojiImage.heightAnchor.constraint(equalToConstant: 24).isActive = true
-        emojiImage.widthAnchor.constraint(equalToConstant: 24).isActive = true
     }
     
     private func createHabitNameLabel() {
@@ -108,11 +98,6 @@ final class TrackersCollectionCell: UICollectionViewCell {
         
         habitNameLabel.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(habitNameLabel)
-        
-        habitNameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 44).isActive = true
-        habitNameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12).isActive = true
-        habitNameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12).isActive = true
-        habitNameLabel.heightAnchor.constraint(equalToConstant: 34).isActive = true
     }
     
     private func createAddDayButton() {
@@ -123,12 +108,6 @@ final class TrackersCollectionCell: UICollectionViewCell {
         
         addDayButton.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(addDayButton)
-        
-        addDayButton.topAnchor.constraint(equalTo: habitCardColorLabel.bottomAnchor, constant: 8).isActive = true
-        addDayButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12).isActive = true
-        addDayButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16).isActive = true
-        addDayButton.heightAnchor.constraint(equalToConstant: 34).isActive = true
-        addDayButton.widthAnchor.constraint(equalToConstant: 34).isActive = true
         
         addDayButton.addTarget(self, action: #selector(didTapAddDayButton), for: .touchUpInside)
     }
@@ -152,11 +131,37 @@ final class TrackersCollectionCell: UICollectionViewCell {
         
         dayLabel.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(dayLabel)
-        
-        dayLabel.topAnchor.constraint(equalTo: habitCardColorLabel.bottomAnchor, constant: 16).isActive = true
-        dayLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12).isActive = true
-        dayLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -24).isActive = true
-        dayLabel.heightAnchor.constraint(equalToConstant: 18).isActive = true
+    }
+    
+    private func setConstraints() {
+        NSLayoutConstraint.activate([
+            habitCardColorLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
+            habitCardColorLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            habitCardColorLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            habitCardColorLabel.heightAnchor.constraint(equalToConstant: 90),
+            
+            emojiImage.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
+            emojiImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
+            emojiImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -131),
+            emojiImage.heightAnchor.constraint(equalToConstant: 24),
+            emojiImage.widthAnchor.constraint(equalToConstant: 24),
+            
+            habitNameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 44),
+            habitNameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
+            habitNameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
+            habitNameLabel.heightAnchor.constraint(equalToConstant: 34),
+            
+            addDayButton.topAnchor.constraint(equalTo: habitCardColorLabel.bottomAnchor, constant: 8),
+            addDayButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
+            addDayButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
+            addDayButton.heightAnchor.constraint(equalToConstant: 34),
+            addDayButton.widthAnchor.constraint(equalToConstant: 34),
+            
+            dayLabel.topAnchor.constraint(equalTo: habitCardColorLabel.bottomAnchor, constant: 16),
+            dayLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
+            dayLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -24),
+            dayLabel.heightAnchor.constraint(equalToConstant: 18)
+        ])
     }
 }
 

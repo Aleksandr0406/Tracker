@@ -20,9 +20,11 @@ final class NewHabitCollectionSupplementaryView: UICollectionReusableView {
         titleLabel.textAlignment = .left
         titleLabel.font = .boldSystemFont(ofSize: 19)
         
-        titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 28).isActive = true
-        titleLabel.topAnchor.constraint(equalTo: topAnchor).isActive = true
-        titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+        NSLayoutConstraint.activate([
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 28),
+            titleLabel.topAnchor.constraint(equalTo: topAnchor),
+            titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
     }
     
     required init?(coder: NSCoder) {
