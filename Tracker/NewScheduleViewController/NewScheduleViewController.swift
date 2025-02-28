@@ -49,7 +49,7 @@ final class NewScheduleViewController: UIViewController {
         
         doneButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(doneButton)
-    
+        
         doneButton.addTarget(self, action: #selector(didTapDoneButton), for: .touchUpInside)
     }
     

@@ -190,7 +190,7 @@ final class TrackersViewController: UIViewController {
         if !categories.isEmpty {
             for categoryIndex in 0..<categories.count {
                 var trackers: [Tracker] = categories[categoryIndex].trackers
-
+                
                 if savedCategoryName == categories[categoryIndex].name {
                     let newTrackerExistCategory = Tracker(
                         name: savedHabitName,

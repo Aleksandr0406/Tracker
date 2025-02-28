@@ -109,7 +109,7 @@ final class NewCategoryViewController: UIViewController {
             categoriesTable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             categoriesTable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             categoriesTable.bottomAnchor.constraint(equalTo: addCategoryButton.topAnchor),
-          
+            
             backgroundImage.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 232),
             backgroundImage.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 147),
             backgroundImage.widthAnchor.constraint(equalToConstant: 80),
