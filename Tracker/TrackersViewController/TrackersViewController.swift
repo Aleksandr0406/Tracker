@@ -193,7 +193,6 @@ final class TrackersViewController: UIViewController {
 
                 if savedCategoryName == categories[categoryIndex].name {
                     let newTrackerExistCategory = Tracker(
-                        id: "",
                         name: savedHabitName,
                         color: .green,
                         emoji: "🙂",
@@ -210,7 +209,6 @@ final class TrackersViewController: UIViewController {
                         trackers:
                             [
                                 Tracker(
-                                    id: "",
                                     name: savedHabitName,
                                     color: .green,
                                     emoji: "🙂",
@@ -227,7 +225,6 @@ final class TrackersViewController: UIViewController {
                 trackers:
                     [
                         Tracker(
-                            id: "",
                             name: savedHabitName,
                             color: .green,
                             emoji: "🙂",
@@ -264,9 +261,9 @@ extension TrackersViewController: UICollectionViewDataSource {
         
         cell.delegate = self
         
-        let isCompletedToday = isTrackerCompletedToday(id: "")
+        let isCompletedToday = isTrackerCompletedToday(id: UUID())
         let completedDays = completedTrackers.filter {
-            $0.id == tracker.id
+            $0.id == tracker.id.uuidString
         }.count
         
         cell.configure(with: tracker, isCompletedToday: isCompletedToday, indexPath: indexPath, completedDays: completedDays)
@@ -291,10 +288,10 @@ extension TrackersViewController: UICollectionViewDataSource {
         return headerView
     }
     
-    private func isTrackerCompletedToday(id: String) -> Bool {
+    private func isTrackerCompletedToday(id: UUID) -> Bool {
         completedTrackers.contains { trackerRecord in
             let sameDay = Calendar.current.isDate(trackerRecord.date, inSameDayAs: datePicker.date)
-            return trackerRecord.id == id && sameDay
+            return trackerRecord.id == id.uuidString && sameDay
         }
     }
 }

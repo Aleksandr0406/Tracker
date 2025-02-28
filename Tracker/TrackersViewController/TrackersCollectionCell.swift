@@ -59,18 +59,14 @@ final class TrackersCollectionCell: UICollectionViewCell {
         emojiLabel.text = "❤️"
         habitNameLabel.text = tracker.name
         
-        let word = plusOneDay(completedDays)
-        dayLabel.text = word
+        let completedDaysString = "\(completedDays) день"
+        dayLabel.text = completedDaysString
         
         let backButtonColor = isCompletedToday ? UIColor(named: "33CF69_30%") : UIColor(named: "33CF69")
         addDayButton.backgroundColor = backButtonColor
         
         let image = isCompletedToday ? doneImage : plusImage
         addDayButton.setImage(image, for: .normal)
-    }
-    
-    private func plusOneDay(_ oneDay: Int) -> String {
-        "\(oneDay) день"
     }
     
     private func createHabitCardColorLabel() {

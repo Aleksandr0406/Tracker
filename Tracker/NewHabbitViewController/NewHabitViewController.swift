@@ -193,7 +193,7 @@ final class NewHabitViewController: UIViewController {
     }
     
     private func setConstraints() {
-        let padding: CGFloat = categoriesAndSchedule.count > 1 ? 150 : 75
+        let constraintValue: CGFloat = categoriesAndSchedule.count > 1 ? 150 : 75
         
         NSLayoutConstraint.activate([
             titleHabitTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
@@ -210,7 +210,7 @@ final class NewHabitViewController: UIViewController {
             categoryAndScheduleTable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             categoryAndScheduleTable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             
-            categoryAndScheduleTable.heightAnchor.constraint(equalToConstant: padding),
+            categoryAndScheduleTable.heightAnchor.constraint(equalToConstant: constraintValue),
             
             cancelButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             cancelButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
