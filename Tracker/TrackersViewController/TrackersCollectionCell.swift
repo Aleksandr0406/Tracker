@@ -8,8 +8,8 @@
 import UIKit
 
 protocol TrackersCollectionCellDelegate: AnyObject {
-    func completeTracker(id: String, at indexPath: IndexPath)
-    func uncompleteTracker(id: String, at indexPath: IndexPath)
+    func completeTracker(id: UUID, at indexPath: IndexPath)
+    func uncompleteTracker(id: UUID, at indexPath: IndexPath)
 }
 
 final class TrackersCollectionCell: UICollectionViewCell {
@@ -25,7 +25,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
     let dayLabel: UILabel = UILabel()
     
     private var isCompletedToday: Bool = false
-    private var trackerId: String = ""
+    private var trackerId: UUID?
     private var indexPath: IndexPath?
     
     private let doneImage = UIImage(named: "Check_Tracker")
@@ -52,7 +52,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
     
     func configure(with tracker: Tracker, isCompletedToday: Bool, indexPath: IndexPath, completedDays: Int) {
         //MARK: To do saving id later
-        //        self.trackerId = tracker.id
+        self.trackerId = tracker.id
         self.isCompletedToday = isCompletedToday
         self.indexPath = indexPath
         
@@ -109,7 +109,8 @@ final class TrackersCollectionCell: UICollectionViewCell {
     }
     
     @objc private func didTapAddDayButton() {
-        guard let indexPath = indexPath else { return }
+        guard let indexPath = indexPath,
+              let trackerId = trackerId else { return }
         
         if isCompletedToday {
             delegate?.uncompleteTracker(id: trackerId, at: indexPath)

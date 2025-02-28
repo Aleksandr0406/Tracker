@@ -92,7 +92,6 @@ final class TrackersViewController: UIViewController {
     @objc private func didTapAddButton() {
         let viewcontroller = NewTrackerViewController()
         viewcontroller.onAddHabitButtonTapped = { savedHabitName, savedCategoryName, savedDays in
-            print("TrackerViewController", "Habit:", savedHabitName, ", ", "Category:", savedCategoryName, "Schedule:", savedDays)
             self.updateTrackers(savedHabitName, savedCategoryName, savedDays)
         }
         let navigationViewController = UINavigationController(rootViewController: viewcontroller)
@@ -261,9 +260,9 @@ extension TrackersViewController: UICollectionViewDataSource {
         
         cell.delegate = self
         
-        let isCompletedToday = isTrackerCompletedToday(id: UUID())
+        let isCompletedToday = isTrackerCompletedToday(id: tracker.id)
         let completedDays = completedTrackers.filter {
-            $0.id == tracker.id.uuidString
+            $0.id == tracker.id
         }.count
         
         cell.configure(with: tracker, isCompletedToday: isCompletedToday, indexPath: indexPath, completedDays: completedDays)
@@ -291,7 +290,7 @@ extension TrackersViewController: UICollectionViewDataSource {
     private func isTrackerCompletedToday(id: UUID) -> Bool {
         completedTrackers.contains { trackerRecord in
             let sameDay = Calendar.current.isDate(trackerRecord.date, inSameDayAs: datePicker.date)
-            return trackerRecord.id == id.uuidString && sameDay
+            return trackerRecord.id == id && sameDay
         }
     }
 }
@@ -320,14 +319,14 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
 
 //MARK: Delegate Protocol
 extension TrackersViewController: TrackersCollectionCellDelegate {
-    func completeTracker(id: String, at indexPath: IndexPath) {
+    func completeTracker(id: UUID, at indexPath: IndexPath) {
         let trackerRecord = TrackerRecord(id: id, date: datePicker.date)
         completedTrackers.append(trackerRecord)
         
         trackersCollectionView.reloadItems(at: [indexPath])
     }
     
-    func uncompleteTracker(id: String, at indexPath: IndexPath) {
+    func uncompleteTracker(id: UUID, at indexPath: IndexPath) {
         completedTrackers.removeAll { trackerRecord in
             let sameDay = Calendar.current.isDate(trackerRecord.date, inSameDayAs: datePicker.date)
             return trackerRecord.id == id && sameDay
