@@ -86,7 +86,7 @@ final class NewTrackerViewController: UIViewController {
         viewcontroller.onAddHabitButtonTapped = { savedHabitName, savedCategoryName, savedDays in
             guard let onAddHabitButtonTapped = self.onAddHabitButtonTapped else { return }
             onAddHabitButtonTapped(savedHabitName, savedCategoryName, savedDays)
-            print("NewTrackerViewController", "Habit:", savedHabitName, ", ", "Category:", savedCategoryName)
+            print("NewTrackerViewController", "Habit:", savedHabitName, ", ", "Category:", savedCategoryName, "Days: ", savedDays)
         }
         viewcontroller.categoriesAndSchedule = sections
         let navigationViewController = UINavigationController(rootViewController: viewcontroller)

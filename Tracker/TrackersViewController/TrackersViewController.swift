@@ -66,18 +66,24 @@ final class TrackersViewController: UIViewController {
     @objc private func didChangeDate() {
         let calendar = Calendar.current
         let filterWeekday = calendar.component(.weekday, from: datePicker.date)
-        print(filterWeekday)
         
         visibleCategories = categories.compactMap { category in
-            let trackers = category.trackers.filter { tracker in
+            let trackersWithSchedule = category.trackers.filter { tracker in
                 tracker.schedule.contains { weekDay in
                     weekDay == filterWeekday
                 }
             }
             
+            let trackersWithNoSchedule = category.trackers.filter { tracker in
+                tracker.schedule.isEmpty
+            }
+            
+            let trackers = trackersWithSchedule + trackersWithNoSchedule
+            
             if trackers.isEmpty {
                 return nil
             }
+            
             return TrackerCategory(name: category.name, trackers: trackers)
         }
         
@@ -118,7 +124,7 @@ final class TrackersViewController: UIViewController {
     private func createBackgroundTextLabel() {
         backgroundTextLabel.text = "Что будем отслеживать?"
         backgroundTextLabel.textColor = .black
-        backgroundTextLabel.font = .systemFont(ofSize: 12, weight: UIFont.Weight(rawValue: 510))
+        backgroundTextLabel.font = .systemFont(ofSize: 12)
         
         backgroundTextLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(backgroundTextLabel)
@@ -170,15 +176,6 @@ final class TrackersViewController: UIViewController {
     }
     
     //MARK: Helpers
-    private func convertSavedDaysToNumbersOfWeekend(_ savedDays: [String]) {
-        let dayNumbers: [String: Int] = [
-            "Понедельник": 2, "Вторник": 3, "Среда": 4,
-            "Четверг": 5, "Пятница": 6, "Суббота": 7, "Воскресенье": 1
-        ]
-        
-        savedDayNumberOfWeekend = savedDays.compactMap { dayNumbers[$0] }
-    }
-    
     private func updateTrackers(_ savedHabitName: String, _ savedCategoryName: String, _ savedDays: [String]) {
         backgroundImage.isHidden = true
         backgroundTextLabel.isHidden = true
@@ -233,9 +230,19 @@ final class TrackersViewController: UIViewController {
             
             categories.append(newTrackerNewCategory)
         }
-        trackersCollectionView.reloadData()
-        savedDayNumberOfWeekend = []
+        
+//        trackersCollectionView.reloadData()
         didChangeDate()
+    }
+    
+    private func convertSavedDaysToNumbersOfWeekend(_ savedDays: [String]) {
+        let dayNumbers: [String: Int] = [
+            "Понедельник": 2, "Вторник": 3, "Среда": 4,
+            "Четверг": 5, "Пятница": 6, "Суббота": 7, "Воскресенье": 1
+        ]
+        
+        savedDayNumberOfWeekend = savedDays.compactMap { dayNumbers[$0] }
+        print("savedDayNumberOfWeekend: ", savedDayNumberOfWeekend)
     }
 }
 
@@ -320,18 +327,28 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
 //MARK: Delegate Protocol
 extension TrackersViewController: TrackersCollectionCellDelegate {
     func completeTracker(id: UUID, at indexPath: IndexPath) {
-        let trackerRecord = TrackerRecord(id: id, date: datePicker.date)
-        completedTrackers.append(trackerRecord)
-        
-        trackersCollectionView.reloadItems(at: [indexPath])
+        let sameDay = Calendar.current.isDate(currentDate, inSameDayAs: datePicker.date)
+        if sameDay {
+            let trackerRecord = TrackerRecord(id: id, date: datePicker.date)
+            completedTrackers.append(trackerRecord)
+            
+            trackersCollectionView.reloadItems(at: [indexPath])
+        } else {
+            print("Cant add day")
+        }
     }
     
     func uncompleteTracker(id: UUID, at indexPath: IndexPath) {
-        completedTrackers.removeAll { trackerRecord in
-            let sameDay = Calendar.current.isDate(trackerRecord.date, inSameDayAs: datePicker.date)
-            return trackerRecord.id == id && sameDay
+        let sameDay = Calendar.current.isDate(currentDate, inSameDayAs: datePicker.date)
+        if sameDay {
+            completedTrackers.removeAll { trackerRecord in
+                let sameDay = Calendar.current.isDate(trackerRecord.date, inSameDayAs: datePicker.date)
+                return trackerRecord.id == id && sameDay
+            }
+            
+            trackersCollectionView.reloadItems(at: [indexPath])
+        } else {
+            print("Cant add day")
         }
-        
-        trackersCollectionView.reloadItems(at: [indexPath])
     }
 }

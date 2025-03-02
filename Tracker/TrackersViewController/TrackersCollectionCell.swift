@@ -51,7 +51,6 @@ final class TrackersCollectionCell: UICollectionViewCell {
     }
     
     func configure(with tracker: Tracker, isCompletedToday: Bool, indexPath: IndexPath, completedDays: Int) {
-        //MARK: To do saving id later
         self.trackerId = tracker.id
         self.isCompletedToday = isCompletedToday
         self.indexPath = indexPath
@@ -99,7 +98,6 @@ final class TrackersCollectionCell: UICollectionViewCell {
     private func createAddDayButton() {
         addDayButton.tintColor = .white
         addDayButton.layer.cornerRadius = 17
-        
         addDayButton.setImage(plusImage, for: .normal)
         
         addDayButton.translatesAutoresizingMaskIntoConstraints = false
