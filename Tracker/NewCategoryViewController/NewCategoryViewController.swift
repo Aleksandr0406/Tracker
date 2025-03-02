@@ -73,7 +73,7 @@ final class NewCategoryViewController: UIViewController {
         backgroundTextLabel.text = #"Привычки и события можно\#n объединить по смыслу"#
         backgroundTextLabel.numberOfLines = 2
         backgroundTextLabel.textColor = .black
-        backgroundTextLabel.font = .systemFont(ofSize: 12, weight: UIFont.Weight(rawValue: 510))
+        backgroundTextLabel.font = .systemFont(ofSize: 12)
         backgroundTextLabel.textAlignment = .center
         
         backgroundTextLabel.translatesAutoresizingMaskIntoConstraints = false
