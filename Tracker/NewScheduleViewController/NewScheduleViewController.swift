@@ -9,13 +9,12 @@ import UIKit
 
 final class NewScheduleViewController: UIViewController {
     var onDoneButtonTapped: (([String]) -> ())?
+    private var savedDaysNames: [String] = []
     
     private let days: [String] =
     [
         "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"
     ]
-    
-    private var savedDaysNames: [String] = []
     
     private var doneButton: UIButton = UIButton()
     
@@ -85,7 +84,11 @@ final class NewScheduleViewController: UIViewController {
     }
 }
 
-extension NewScheduleViewController: UITableViewDelegate {}
+extension NewScheduleViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        tableView.bounds.height / 7
+    }
+}
 
 extension NewScheduleViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -122,9 +125,5 @@ extension NewScheduleViewController: UITableViewDataSource {
         } else {
             savedDaysNames.removeAll(where: {$0 == days[programmeToggle.tag]})
         }
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        tableView.bounds.height / 7
     }
 }

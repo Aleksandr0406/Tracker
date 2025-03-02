@@ -9,7 +9,7 @@ import UIKit
 
 final class TrackersCollectionSupplementaryView: UICollectionReusableView {
     static let headerIdentifier = "Header"
-    
+
     let titleLabel: UILabel = UILabel()
     
     override init(frame: CGRect) {

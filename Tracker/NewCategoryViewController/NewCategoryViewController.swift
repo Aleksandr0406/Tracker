@@ -126,7 +126,24 @@ final class NewCategoryViewController: UIViewController {
     }
 }
 
-extension NewCategoryViewController: UITableViewDelegate, UITableViewDataSource {
+extension NewCategoryViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        75
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.cellForRow(at: IndexPath(row: index, section: 0))?.accessoryType = .none
+        tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
+        index = indexPath.row
+        guard let subtitleNameCategory = tableView.cellForRow(at: indexPath)?.textLabel?.text,
+              let onAddCategoryButtonTapped = onAddCategoryButtonTapped else { return }
+        onAddCategoryButtonTapped(subtitleNameCategory)
+        
+        dismiss(animated: true)
+    }
+}
+
+extension NewCategoryViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         names.count
     }
@@ -144,20 +161,5 @@ extension NewCategoryViewController: UITableViewDelegate, UITableViewDataSource 
             cell.accessoryType = .none
         }
         return cell
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        75
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.cellForRow(at: IndexPath(row: index, section: 0))?.accessoryType = .none
-        tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-        index = indexPath.row
-        guard let subtitleNameCategory = tableView.cellForRow(at: indexPath)?.textLabel?.text,
-              let onAddCategoryButtonTapped = onAddCategoryButtonTapped else { return }
-        onAddCategoryButtonTapped(subtitleNameCategory)
-        
-        dismiss(animated: true)
     }
 }

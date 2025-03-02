@@ -15,8 +15,6 @@ protocol TrackersCollectionCellDelegate: AnyObject {
 final class TrackersCollectionCell: UICollectionViewCell {
     static let cellIdentifier = "Cell"
     
-    weak var delegate: TrackersCollectionCellDelegate?
-    
     let habitCardColorLabel: UILabel = UILabel()
     let emojiLabel: UILabel = UILabel()
     let emojiImage: UIImageView = UIImageView()
@@ -24,10 +22,11 @@ final class TrackersCollectionCell: UICollectionViewCell {
     let addDayButton: UIButton = UIButton()
     let dayLabel: UILabel = UILabel()
     
+    weak var delegate: TrackersCollectionCellDelegate?
+    
     private var isCompletedToday: Bool = false
     private var trackerId: UUID?
     private var indexPath: IndexPath?
-    
     private let doneImage = UIImage(named: "Check_Tracker")
     private let plusImage: UIImage = {
         let pointSize = UIImage.SymbolConfiguration(pointSize: 11)

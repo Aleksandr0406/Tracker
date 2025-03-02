@@ -14,6 +14,8 @@ final class NewHabitViewController: UIViewController {
     private let emojiIndexSection = 0
     private let numberOfSections = 2
     private let enableNumberOfTypingLettersInTextField = 38
+    private let numbersDaysInWeek = 7
+    private var savedDays: [String] = []
     
     private let emojis =
     [
@@ -35,10 +37,6 @@ final class NewHabitViewController: UIViewController {
         "Суббота" : "Сб",
         "Воскресенье" : "Вс"
     ]
-    
-    private var savedDays: [String] = []
-    
-    private let numbersDaysInWeek = 7
     
     private var warningLabel: UILabel = UILabel()
     private var titleHabitTextField: UITextField = UITextField()
@@ -299,6 +297,7 @@ extension NewHabitViewController: UITextFieldDelegate {
 }
 
 //MARK: CollectionView Protocols
+
 extension NewHabitViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         CGSize(width: 52, height: 52)
@@ -374,6 +373,7 @@ extension NewHabitViewController: UICollectionViewDataSource {
 }
 
 //MARK: TableView Protocols
+
 extension NewHabitViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         if indexPath.row == 0 {
@@ -398,6 +398,10 @@ extension NewHabitViewController: UITableViewDelegate {
         }
         return indexPath
     }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        tableView.bounds.height / CGFloat(categoriesAndSchedule.count)
+    }
 }
 
 extension NewHabitViewController: UITableViewDataSource {
@@ -419,10 +423,6 @@ extension NewHabitViewController: UITableViewDataSource {
         cell.textLabel?.text = categoriesAndSchedule[indexPath.row]
         
         return cell
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        tableView.bounds.height / CGFloat(categoriesAndSchedule.count)
     }
 }
 

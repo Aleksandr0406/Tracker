@@ -105,6 +105,7 @@ final class TrackersViewController: UIViewController {
     }
     
     //MARK: Creating elements on screen
+    
     private func createTitleLabel() {
         titleLabel.text = "Трекеры"
         titleLabel.textColor = .black
@@ -176,6 +177,7 @@ final class TrackersViewController: UIViewController {
     }
     
     //MARK: Helpers
+    
     private func updateTrackers(_ savedHabitName: String, _ savedCategoryName: String, _ savedDays: [String]) {
         backgroundImage.isHidden = true
         backgroundTextLabel.isHidden = true
@@ -231,7 +233,7 @@ final class TrackersViewController: UIViewController {
             categories.append(newTrackerNewCategory)
         }
         
-//        trackersCollectionView.reloadData()
+        trackersCollectionView.reloadData()
         didChangeDate()
     }
     
@@ -247,7 +249,6 @@ final class TrackersViewController: UIViewController {
 }
 
 //MARK: CollectionView Protocols
-extension TrackersViewController: UICollectionViewDelegate {}
 
 extension TrackersViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -277,6 +278,13 @@ extension TrackersViewController: UICollectionViewDataSource {
         return cell
     }
     
+    private func isTrackerCompletedToday(id: UUID) -> Bool {
+        completedTrackers.contains { trackerRecord in
+            let sameDay = Calendar.current.isDate(trackerRecord.date, inSameDayAs: datePicker.date)
+            return trackerRecord.id == id && sameDay
+        }
+    }
+    
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         var id: String
         switch kind {
@@ -292,13 +300,6 @@ extension TrackersViewController: UICollectionViewDataSource {
         
         headerView.titleLabel.text = visibleCategories[indexPath.section].name
         return headerView
-    }
-    
-    private func isTrackerCompletedToday(id: UUID) -> Bool {
-        completedTrackers.contains { trackerRecord in
-            let sameDay = Calendar.current.isDate(trackerRecord.date, inSameDayAs: datePicker.date)
-            return trackerRecord.id == id && sameDay
-        }
     }
 }
 
@@ -325,6 +326,7 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
 }
 
 //MARK: Delegate Protocol
+
 extension TrackersViewController: TrackersCollectionCellDelegate {
     func completeTracker(id: UUID, at indexPath: IndexPath) {
         let sameDay = Calendar.current.isDate(currentDate, inSameDayAs: datePicker.date)
