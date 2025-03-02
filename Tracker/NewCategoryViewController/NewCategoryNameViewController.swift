@@ -33,6 +33,8 @@ final class NewCategoryNameViewController: UIViewController, UITextFieldDelegate
         titleCategoryTextField.placeholder = "Введите название категории"
         titleCategoryTextField.backgroundColor = UIColor(named: "E6E8EB")
         titleCategoryTextField.layer.cornerRadius = 16
+        titleCategoryTextField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 75))
+        titleCategoryTextField.leftViewMode = .always
         
         titleCategoryTextField.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(titleCategoryTextField)

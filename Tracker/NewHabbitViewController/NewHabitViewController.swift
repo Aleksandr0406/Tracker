@@ -88,6 +88,8 @@ final class NewHabitViewController: UIViewController {
         titleHabitTextField.backgroundColor = UIColor(named: "E6E8EB")
         titleHabitTextField.layer.cornerRadius = 16
         titleHabitTextField.clearButtonMode = .always
+        titleHabitTextField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 75))
+        titleHabitTextField.leftViewMode = .always
         
         titleHabitTextField.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(titleHabitTextField)
