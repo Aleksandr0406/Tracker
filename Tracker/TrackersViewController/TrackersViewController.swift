@@ -244,7 +244,6 @@ final class TrackersViewController: UIViewController {
         ]
         
         savedDayNumberOfWeekend = savedDays.compactMap { dayNumbers[$0] }
-        print("savedDayNumberOfWeekend: ", savedDayNumberOfWeekend)
     }
 }
 
