@@ -17,7 +17,6 @@ final class NewScheduleViewController: UIViewController {
     ]
     
     private var doneButton: UIButton = UIButton()
-    
     private var scheduleTableView: UITableView = {
         let tableView = UITableView()
         tableView.register(NewScheduleTableViewCell.self, forCellReuseIdentifier: NewScheduleTableViewCell.cellIdentifier)
@@ -59,7 +58,7 @@ final class NewScheduleViewController: UIViewController {
     }
     
     private func createScheduleTableView() {
-        scheduleTableView.backgroundColor = UIColor(named: "E6E8EB")
+        scheduleTableView.backgroundColor = UIColor(named: "E6E8EB_30%")
         scheduleTableView.layer.cornerRadius = 16
         
         scheduleTableView.translatesAutoresizingMaskIntoConstraints = false
@@ -111,7 +110,7 @@ extension NewScheduleViewController: UITableViewDataSource {
         
         cell.tag = indexPath.row
         cell.accessoryView = switchView
-        cell.backgroundColor = UIColor(named: "E6E8EB")
+        cell.backgroundColor = UIColor(named: "E6E8EB_30%")
         cell.textLabel?.text = days[indexPath.row]
         cell.textLabel?.font = .systemFont(ofSize: 17)
         cell.textLabel?.textColor = .black

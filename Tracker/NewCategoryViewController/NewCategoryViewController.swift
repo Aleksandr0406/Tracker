@@ -34,27 +34,6 @@ final class NewCategoryViewController: UIViewController {
         }
     }
     
-    private func hidePlaceholder() {
-        backgroundImage.isHidden = true
-        backgroundTextLabel.isHidden = true
-        categoriesTable.isHidden = false
-        categoriesTable.isScrollEnabled = false
-    }
-    
-    private func createCategoriesTable() {
-        categoriesTable.backgroundColor = UIColor.white
-        categoriesTable.layer.cornerRadius = 16
-        categoriesTable.isScrollEnabled = false
-        
-        categoriesTable.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(categoriesTable)
-        
-        categoriesTable.isHidden = true
-        
-        categoriesTable.dataSource = self
-        categoriesTable.delegate = self
-    }
-    
     private func setBarItem() {
         navigationItem.title = "Категория"
         let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16)]
@@ -103,6 +82,20 @@ final class NewCategoryViewController: UIViewController {
         present(navigationViewController, animated: true)
     }
     
+    private func createCategoriesTable() {
+        categoriesTable.backgroundColor = UIColor.white
+        categoriesTable.layer.cornerRadius = 16
+        categoriesTable.isScrollEnabled = false
+        
+        categoriesTable.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(categoriesTable)
+        
+        categoriesTable.isHidden = true
+        
+        categoriesTable.dataSource = self
+        categoriesTable.delegate = self
+    }
+    
     private func setConstraints() {
         NSLayoutConstraint.activate([
             categoriesTable.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
@@ -123,6 +116,13 @@ final class NewCategoryViewController: UIViewController {
             addCategoryButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
             addCategoryButton.heightAnchor.constraint(equalToConstant: 60)
         ])
+    }
+    
+    private func hidePlaceholder() {
+        backgroundImage.isHidden = true
+        backgroundTextLabel.isHidden = true
+        categoriesTable.isHidden = false
+        categoriesTable.isScrollEnabled = false
     }
 }
 
@@ -152,11 +152,11 @@ extension NewCategoryViewController: UITableViewDataSource {
         let cell = UITableViewCell()
         
         if indexPath.row == index {
-            cell.backgroundColor = UIColor(named: "E6E8EB")
+            cell.backgroundColor = UIColor(named: "E6E8EB_30%")
             cell.textLabel?.text = names[index]
             cell.accessoryType = .checkmark
         } else {
-            cell.backgroundColor = UIColor(named: "E6E8EB")
+            cell.backgroundColor = UIColor(named: "E6E8EB_30%")
             cell.textLabel?.text = names[indexPath.row]
             cell.accessoryType = .none
         }

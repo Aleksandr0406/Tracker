@@ -31,7 +31,7 @@ final class NewCategoryNameViewController: UIViewController, UITextFieldDelegate
     
     private func createTitleCategoryTextField() {
         titleCategoryTextField.placeholder = "Введите название категории"
-        titleCategoryTextField.backgroundColor = UIColor(named: "E6E8EB")
+        titleCategoryTextField.backgroundColor = UIColor(named: "E6E8EB_30%")
         titleCategoryTextField.layer.cornerRadius = 16
         titleCategoryTextField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 75))
         titleCategoryTextField.leftViewMode = .always
