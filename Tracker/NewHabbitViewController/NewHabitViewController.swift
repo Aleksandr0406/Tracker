@@ -8,14 +8,18 @@
 import UIKit
 
 final class NewHabitViewController: UIViewController {
-    var onAddHabitButtonTapped: ((String, String, [String]) -> ())?
+    var onAddHabitButtonTapped: ((String, String, [String], String, UIColor) -> ())?
     var categoriesAndSchedule: [String] = []
     
+    private let trackerCategoryStore: TrackerCategoryStore = TrackerCategoryStore()
+    private var trackerCategoryName: String?
     private let emojiIndexSection = 0
     private let numberOfSections = 2
     private let enableNumberOfTypingLettersInTextField = 38
     private let numbersDaysInWeek = 7
     private var savedDays: [String] = []
+    private var savedEmoji: String?
+    private var savedColor: UIColor?
     
     private let emojis =
     [
@@ -24,7 +28,24 @@ final class NewHabitViewController: UIViewController {
     
     private let colors =
     [
-        UIColor(named: "FD4C49")
+        UIColor(named: "FD4C49"),
+        UIColor(named: "FF881E"),
+        UIColor(named: "007BFA"),
+        UIColor(named: "6E44FE"),
+        UIColor(named: "33CF69"),
+        UIColor(named: "E66DD4"),
+        UIColor(named: "F9D4D4"),
+        UIColor(named: "34A7FE"),
+        UIColor(named: "46E69D"),
+        UIColor(named: "35347C"),
+        UIColor(named: "FF674D"),
+        UIColor(named: "FF99CC"),
+        UIColor(named: "F6C48B"),
+        UIColor(named: "7994F5"),
+        UIColor(named: "832CF1"),
+        UIColor(named: "AD56DA"),
+        UIColor(named: "8D72E6"),
+        UIColor(named: "2FD058")
     ]
     
     private let shortNamesDaysOfWeek: [String : String] =
@@ -83,7 +104,7 @@ final class NewHabitViewController: UIViewController {
     
     private func createTitleHabitTextField() {
         titleHabitTextField.placeholder = "Введите название трекера"
-        titleHabitTextField.backgroundColor = UIColor(named: "E6E8EB")
+        titleHabitTextField.backgroundColor = UIColor(named: "E6E8EB_30%")
         titleHabitTextField.layer.cornerRadius = 16
         titleHabitTextField.clearButtonMode = .always
         titleHabitTextField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 75))
@@ -114,7 +135,7 @@ final class NewHabitViewController: UIViewController {
     }
     
     private func createCategoryAndScheduleTable() {
-        categoryAndScheduleTable.backgroundColor = UIColor(named: "E6E8EB")
+        categoryAndScheduleTable.backgroundColor = UIColor(named: "E6E8EB_30%")
         categoryAndScheduleTable.layer.cornerRadius = 16
         categoryAndScheduleTable.isScrollEnabled = false
         
@@ -162,13 +183,17 @@ final class NewHabitViewController: UIViewController {
         guard
             let habitName = titleHabitTextField.text,
             let categoryName = categoryAndScheduleTable.cellForRow(at: IndexPath(row: 0, section: 0))?.detailTextLabel?.text,
+            let savedEmoji = savedEmoji,
+            let savedColor = savedColor,
             let onAddHabitButtonTapped = onAddHabitButtonTapped
         else { return }
-        onAddHabitButtonTapped(habitName, categoryName, savedDays)
+        onAddHabitButtonTapped(habitName, categoryName, savedDays, savedEmoji, savedColor)
         UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
     }
     
     private func createCollection() {
+        collection.allowsMultipleSelection = true
+        
         collection.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(collection)
         
@@ -254,32 +279,42 @@ final class NewHabitViewController: UIViewController {
     
     private func checkAllFields() {
         if categoriesAndSchedule.count > 1 {
-            let checkTextField = titleHabitTextField.hasText
-            guard let checkCategorySubtitle = categoryAndScheduleTable.cellForRow(at: IndexPath(row: 0, section: 0))?.detailTextLabel?.text?.isEmpty,
-                  let checkScheduleSubtitle = categoryAndScheduleTable.cellForRow(at: IndexPath(row: 1, section: 0))?.detailTextLabel?.text?.isEmpty else { return }
-            
-            if checkTextField && !checkCategorySubtitle && !checkScheduleSubtitle {
-                addHabitButton.backgroundColor = .black
-                addHabitButton.isEnabled = true
-            } else {
-                addHabitButton.backgroundColor = UIColor(named: "Add_Button")
-                addHabitButton.layer.borderColor = UIColor(named: "Add_Button")?.cgColor
-                addHabitButton.layer.borderWidth = 1
-                addHabitButton.isEnabled = false
-            }
+            checkFieldsForRegularHabit()
         } else {
-            let checkTextField = titleHabitTextField.hasText
-            guard let checkCategorySubtitle = categoryAndScheduleTable.cellForRow(at: IndexPath(row: 0, section: 0))?.detailTextLabel?.text?.isEmpty else { return }
-            
-            if checkTextField && !checkCategorySubtitle {
-                addHabitButton.backgroundColor = .black
-                addHabitButton.isEnabled = true
-            } else {
-                addHabitButton.backgroundColor = UIColor(named: "Add_Button")
-                addHabitButton.layer.borderColor = UIColor(named: "Add_Button")?.cgColor
-                addHabitButton.layer.borderWidth = 1
-                addHabitButton.isEnabled = false
-            }
+            checkFieldsForNonRegularEvent()
+        }
+    }
+    
+    private func checkFieldsForRegularHabit() {
+        let checkTextField = titleHabitTextField.hasText
+        
+        guard let checkCategorySubtitle = categoryAndScheduleTable.cellForRow(at: IndexPath(row: 0, section: 0))?.detailTextLabel?.text?.isEmpty,
+              let checkScheduleSubtitle = categoryAndScheduleTable.cellForRow(at: IndexPath(row: 1, section: 0))?.detailTextLabel?.text?.isEmpty else { return }
+        
+        if checkTextField && !checkCategorySubtitle && !checkScheduleSubtitle && savedEmoji != nil && savedColor != nil {
+            addHabitButton.backgroundColor = .black
+            addHabitButton.isEnabled = true
+        } else {
+            addHabitButton.backgroundColor = UIColor(named: "Add_Button")
+            addHabitButton.layer.borderColor = UIColor(named: "Add_Button")?.cgColor
+            addHabitButton.layer.borderWidth = 1
+            addHabitButton.isEnabled = false
+        }
+    }
+    
+    private func checkFieldsForNonRegularEvent() {
+        let checkTextField = titleHabitTextField.hasText
+        
+        guard let checkCategorySubtitle = categoryAndScheduleTable.cellForRow(at: IndexPath(row: 0, section: 0))?.detailTextLabel?.text?.isEmpty else { return }
+        
+        if checkTextField && !checkCategorySubtitle && savedEmoji != nil && savedColor != nil {
+            addHabitButton.backgroundColor = .black
+            addHabitButton.isEnabled = true
+        } else {
+            addHabitButton.backgroundColor = UIColor(named: "Add_Button")
+            addHabitButton.layer.borderColor = UIColor(named: "Add_Button")?.cgColor
+            addHabitButton.layer.borderWidth = 1
+            addHabitButton.isEnabled = false
         }
     }
 }
@@ -323,6 +358,58 @@ extension NewHabitViewController: UICollectionViewDelegateFlowLayout {
         return headerView.systemLayoutSizeFitting(CGSize(width: collectionView.frame.width,
                                                          height: UIView.layoutFittingExpandedSize.height))
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let emojiCell = collectionView.cellForItem(at: indexPath) as? NewHabitEmojiCollectionCell {
+            emojiCell.backgroundColor = UIColor(named: "E6E8EB")
+            emojiCell.layer.cornerRadius = 16
+            emojiCell.layer.masksToBounds = true
+            
+            savedEmoji = emojiCell.titleLabel.text
+        } else {
+            let colorCell = collectionView.cellForItem(at: indexPath) as? NewHabitColorCollectionCell
+            let backColor = colorCell?.titleLabel.backgroundColor?.withAlphaComponent(0.3)
+            colorCell?.layer.borderWidth = 3
+            colorCell?.layer.borderColor = backColor?.cgColor
+            colorCell?.layer.cornerRadius = 8
+            colorCell?.layer.masksToBounds = true
+            
+            savedColor = backColor
+        }
+        
+        guard let selectedRows = collectionView.indexPathsForSelectedItems else { return }
+        
+        selectedRows.forEach { selectedRow in
+            if selectedRow.section == indexPath.section && indexPath.section == 0 && selectedRow.row != indexPath.row {
+                let selectedEmojiCell = collectionView.cellForItem(at: selectedRow) as? NewHabitEmojiCollectionCell
+                selectedEmojiCell?.backgroundColor = .white
+                selectedEmojiCell?.layer.masksToBounds = true
+                collectionView.deselectItem(at: selectedRow, animated: false)
+            }
+            
+            if selectedRow.section == indexPath.section && indexPath.section == 1 && selectedRow.row != indexPath.row {
+                let selectedColorCell = collectionView.cellForItem(at: selectedRow) as? NewHabitColorCollectionCell
+                selectedColorCell?.layer.borderWidth = 0
+                selectedColorCell?.layer.masksToBounds = true
+                collectionView.deselectItem(at: selectedRow, animated: false)
+            }
+        }
+        checkAllFields()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        if let selectedEmojiCell = collectionView.cellForItem(at: indexPath) as? NewHabitEmojiCollectionCell {
+            selectedEmojiCell.backgroundColor = .white
+            selectedEmojiCell.layer.masksToBounds = true
+            savedEmoji = nil
+        } else {
+            let selectedColorCell = collectionView.cellForItem(at: indexPath) as? NewHabitColorCollectionCell
+            selectedColorCell?.layer.borderWidth = 0
+            selectedColorCell?.layer.masksToBounds = true
+            savedColor = nil
+        }
+        checkAllFields()
+    }
 }
 
 extension NewHabitViewController: UICollectionViewDataSource {
@@ -348,8 +435,9 @@ extension NewHabitViewController: UICollectionViewDataSource {
                 return UICollectionViewCell()
             }
             
-            colorCell.layer.cornerRadius = 8
-            colorCell.backgroundColor = colors[indexPath.row]
+            colorCell.titleLabel.layer.cornerRadius = 8
+            colorCell.titleLabel.layer.masksToBounds = true
+            colorCell.titleLabel.backgroundColor = colors[indexPath.row]
             return colorCell
         }
     }
@@ -374,36 +462,6 @@ extension NewHabitViewController: UICollectionViewDataSource {
 
 //MARK: TableView Protocols
 
-extension NewHabitViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-        if indexPath.row == 0 {
-            let viewcontroller = NewCategoryViewController()
-            viewcontroller.onAddCategoryButtonTapped = { subtitleNameCategory in
-                self.addSubtitleToCategory(subtitleNameCategory)
-                self.categoryAndScheduleTable.reloadData()
-                self.checkAllFields()
-            }
-            let navigationViewController = UINavigationController(rootViewController: viewcontroller)
-            present(navigationViewController, animated: true)
-        } else {
-            let viewcontroller = NewScheduleViewController()
-            viewcontroller.onDoneButtonTapped = { days in
-                self.addSubtitleToSchedule(days)
-                self.categoryAndScheduleTable.reloadData()
-                self.checkAllFields()
-                self.savedDays = days
-            }
-            let navigationViewController = UINavigationController(rootViewController: viewcontroller)
-            present(navigationViewController, animated: true)
-        }
-        return indexPath
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        tableView.bounds.height / CGFloat(categoriesAndSchedule.count)
-    }
-}
-
 extension NewHabitViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return categoriesAndSchedule.count
@@ -418,7 +476,7 @@ extension NewHabitViewController: UITableViewDataSource {
             cell = UITableViewCell(style: .default, reuseIdentifier: NewHabitTableViewCell.cellIdentifier)
         }
         
-        cell.backgroundColor = UIColor(named: "E6E8EB")
+        cell.backgroundColor = UIColor(named: "E6E8EB_30%")
         cell.accessoryType = .disclosureIndicator
         cell.textLabel?.text = categoriesAndSchedule[indexPath.row]
         
@@ -426,7 +484,36 @@ extension NewHabitViewController: UITableViewDataSource {
     }
 }
 
-
+extension NewHabitViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        if indexPath.row == 0 {
+            let viewcontroller = NewCategoryViewController()
+            viewcontroller.onAddCategoryButtonTapped = { trackerCategoryName in
+                self.trackerCategoryName = trackerCategoryName
+                self.addSubtitleToCategory(trackerCategoryName)
+                self.categoryAndScheduleTable.reloadData()
+                self.checkAllFields()
+            }
+            let navigationViewController = UINavigationController(rootViewController: viewcontroller)
+            present(navigationViewController, animated: true)
+        } else {
+            let viewcontroller = NewScheduleViewController()
+            viewcontroller.onDoneButtonTapped = { days in
+                self.addSubtitleToSchedule(days)
+                self.categoryAndScheduleTable.reloadData()
+                self.savedDays = days
+                self.checkAllFields()
+            }
+            let navigationViewController = UINavigationController(rootViewController: viewcontroller)
+            present(navigationViewController, animated: true)
+        }
+        return indexPath
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        tableView.bounds.height / CGFloat(categoriesAndSchedule.count)
+    }
+}
 
 
 
