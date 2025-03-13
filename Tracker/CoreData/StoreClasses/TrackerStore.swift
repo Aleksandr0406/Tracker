@@ -19,18 +19,18 @@ enum TrackerStoreError: Error {
 final class TrackerStore: NSObject {
     private let uiColorMarshalling: UIColorMarshalling = UIColorMarshalling()
     private let context: NSManagedObjectContext
-    private var fetchedResultsController: NSFetchedResultsController<TrackerCoreData>!
+    private var fetchedResultsController: NSFetchedResultsController<TrackerCoreData>?
     
     var trackers: [Tracker] {
         guard
-            let objects = self.fetchedResultsController.fetchedObjects,
+            let objects = self.fetchedResultsController?.fetchedObjects,
             let trackers = try? objects.map({ try self.trackerFetch(from: $0) })
         else { return [] }
         return trackers
     }
     
     convenience override init() {
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        let context = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext ?? NSManagedObjectContext()
         try! self.init(context: context)
     }
     

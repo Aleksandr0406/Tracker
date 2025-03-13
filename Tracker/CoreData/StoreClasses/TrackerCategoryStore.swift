@@ -37,7 +37,7 @@ protocol TrackerCategoryStoreDelegate: AnyObject {
 
 final class TrackerCategoryStore: NSObject {
     private let context: NSManagedObjectContext
-    private var fetchedResultsController: NSFetchedResultsController<TrackerCategoryCoreData>!
+    private var fetchedResultsController: NSFetchedResultsController<TrackerCategoryCoreData>?
     
     weak var delegate: TrackerCategoryStoreDelegate?
     private var insertedIndexes: IndexSet?
@@ -47,14 +47,14 @@ final class TrackerCategoryStore: NSObject {
     
     var trackerCategories: [TrackerCategory] {
         guard
-            let objects = self.fetchedResultsController.fetchedObjects,
+            let objects = self.fetchedResultsController?.fetchedObjects,
             let trackers = try? objects.map({ try self.trackerFetch(from: $0) })
         else { return [] }
         return trackers
     }
     
     convenience override init() {
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        let context = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext ?? NSManagedObjectContext()
         try! self.init(context: context)
     }
     
@@ -111,14 +111,14 @@ final class TrackerCategoryStore: NSObject {
                       let schedule = $0.schedule else {
                     throw TrackerCategoryStoreError.decodingErrorInvalidTracker
                 }
-                return Tracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule as! [Int])
+                return Tracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule as? [Int] ?? [])
             }
             return TrackerCategory(name: name, trackers: trackers)
         }
     }
     
     func checkCategoryExistence(categoryName: String) -> TrackerCategoryCoreData? {
-        if let categoryAlreadyExists = fetchedResultsController.fetchedObjects?.first(where: { $0.name == categoryName }) {
+        if let categoryAlreadyExists = fetchedResultsController?.fetchedObjects?.first(where: { $0.name == categoryName }) {
             return categoryAlreadyExists
         }
         return nil
@@ -134,22 +134,28 @@ extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        guard let insertedIndexes = insertedIndexes,
+              let deletedIndexes = deletedIndexes,
+              let updatedIndexes = updatedIndexes,
+              let movedIndexes = movedIndexes
+        else { return }
+        
         delegate?.trackerStore(
             self,
             didUpdate: TrackerCategoryStoreUpdate(
-                insertedIndexes: insertedIndexes!,
-                deletedIndexes: deletedIndexes!,
-                updatedIndexes: updatedIndexes!,
-                movedIndexes: movedIndexes!
+                insertedIndexes: insertedIndexes,
+                deletedIndexes: deletedIndexes,
+                updatedIndexes: updatedIndexes,
+                movedIndexes: movedIndexes
             )
         )
         if delegate == nil {
             print("controllerDidChangeContent")
         }
-        insertedIndexes = nil
-        deletedIndexes = nil
-        updatedIndexes = nil
-        movedIndexes = nil
+        self.insertedIndexes = nil
+        self.deletedIndexes = nil
+        self.updatedIndexes = nil
+        self.movedIndexes = nil
     }
     
     func controller(

@@ -33,7 +33,7 @@ protocol TrackerRecordStoreDelegate: AnyObject {
 
 final class TrackerRecordStore: NSObject {
     private let context: NSManagedObjectContext
-    private var fetchedResultsController: NSFetchedResultsController<TrackerRecordCoreData>!
+    private var fetchedResultsController: NSFetchedResultsController<TrackerRecordCoreData>?
     
     weak var delegate: TrackerRecordStoreDelegate?
     private var insertedIndexes: IndexSet?
@@ -43,15 +43,15 @@ final class TrackerRecordStore: NSObject {
     
     var completedTrackers: [TrackerRecord] {
         guard
-            let objects = self.fetchedResultsController.fetchedObjects,
+            let objects = self.fetchedResultsController?.fetchedObjects,
             let trackers = try? objects.map({ try self.trackerFetch(from: $0) })
         else { return [] }
         return trackers
     }
     
     convenience override init() {
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-        try! self.init(context: context)
+        let context = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext ?? NSManagedObjectContext()
+            try! self.init(context: context)
     }
     
     init(context: NSManagedObjectContext) throws {
@@ -93,15 +93,15 @@ final class TrackerRecordStore: NSObject {
     }
     
     func checkRecordExistence(trackerRecord: TrackerRecord) -> Bool {
-        guard let isExist = fetchedResultsController.fetchedObjects?.contains(where: { $0.id == trackerRecord.id }) else { return false }
+        guard let isExist = fetchedResultsController?.fetchedObjects?.contains(where: { $0.id == trackerRecord.id }) else { return false }
         return isExist
     }
     
     func remove(_ trackerRecord: TrackerRecord) {
-        let recordsForDelete = fetchedResultsController.fetchedObjects?.filter {
+        let recordsForDelete = fetchedResultsController?.fetchedObjects?.filter {
             $0.id == trackerRecord.id }
         recordsForDelete?.forEach { context.delete($0) }
-        try! context.save()
+        try? context.save()
     }
 }
 
@@ -114,22 +114,28 @@ extension TrackerRecordStore: NSFetchedResultsControllerDelegate {
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        guard let insertedIndexes = insertedIndexes,
+              let deletedIndexes = deletedIndexes,
+              let updatedIndexes = updatedIndexes,
+              let movedIndexes = movedIndexes
+        else { return }
+        
         delegate?.trackerRecordStore(
             self,
             didUpdate: TrackerRecordStoreUpdate(
-                insertedIndexes: insertedIndexes!,
-                deletedIndexes: deletedIndexes!,
-                updatedIndexes: updatedIndexes!,
-                movedIndexes: movedIndexes!
+                insertedIndexes: insertedIndexes,
+                deletedIndexes: deletedIndexes,
+                updatedIndexes: updatedIndexes,
+                movedIndexes: movedIndexes
             )
         )
         if delegate == nil {
             print("controllerDidChangeContent")
         }
-        insertedIndexes = nil
-        deletedIndexes = nil
-        updatedIndexes = nil
-        movedIndexes = nil
+        self.insertedIndexes = nil
+        self.deletedIndexes = nil
+        self.updatedIndexes = nil
+        self.movedIndexes = nil
     }
     
     func controller(

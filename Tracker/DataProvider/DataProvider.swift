@@ -14,7 +14,7 @@ final class DataProvider: NSObject {
     private let trackerRecordStore: TrackerRecordStore = TrackerRecordStore()
     
     private var context: NSManagedObjectContext? {
-        return (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext
     }
     
     func addTracker(categoryName: String, tracker: Tracker) {
@@ -43,7 +43,11 @@ final class DataProvider: NSObject {
         if recordIsExist {
             print("This record exist")
         } else {
-            try! trackerRecordStore.addNewTrackerRecord(trackerRecord)
+            do {
+                try trackerRecordStore.addNewTrackerRecord(trackerRecord)
+            } catch {
+                print("Cant store trackerRecord")
+            }
         }
     }
     
