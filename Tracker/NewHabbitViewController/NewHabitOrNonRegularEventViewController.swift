@@ -488,21 +488,21 @@ extension NewHabitViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         if indexPath.row == 0 {
             let viewcontroller = NewCategoryViewController()
-            viewcontroller.onAddCategoryButtonTapped = { trackerCategoryName in
-                self.trackerCategoryName = trackerCategoryName
-                self.addSubtitleToCategory(trackerCategoryName)
-                self.categoryAndScheduleTable.reloadData()
-                self.checkAllFields()
+            viewcontroller.onAddCategoryButtonTapped = { [weak self] trackerCategoryName in
+                self?.trackerCategoryName = trackerCategoryName
+                self?.addSubtitleToCategory(trackerCategoryName)
+                self?.categoryAndScheduleTable.reloadData()
+                self?.checkAllFields()
             }
             let navigationViewController = UINavigationController(rootViewController: viewcontroller)
             present(navigationViewController, animated: true)
         } else {
             let viewcontroller = NewScheduleViewController()
-            viewcontroller.onDoneButtonTapped = { days in
-                self.addSubtitleToSchedule(days)
-                self.categoryAndScheduleTable.reloadData()
-                self.savedDays = days
-                self.checkAllFields()
+            viewcontroller.onDoneButtonTapped = { [weak self] days in
+                self?.addSubtitleToSchedule(days)
+                self?.categoryAndScheduleTable.reloadData()
+                self?.savedDays = days
+                self?.checkAllFields()
             }
             let navigationViewController = UINavigationController(rootViewController: viewcontroller)
             present(navigationViewController, animated: true)
