@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class NewHabitViewController: UIViewController {
+final class NewHabitOrNonRegularEventViewController: UIViewController {
     var onAddHabitButtonTapped: ((String, String, [String], String, UIColor) -> ())?
     var categoriesAndSchedule: [String] = []
     
@@ -66,15 +66,15 @@ final class NewHabitViewController: UIViewController {
     
     private var categoryAndScheduleTable: UITableView = {
         let tableView = UITableView()
-        tableView.register(NewHabitTableViewCell.self, forCellReuseIdentifier: NewHabitTableViewCell.cellIdentifier)
+        tableView.register(NewHabitOrNonRegularEventTableViewCell.self, forCellReuseIdentifier: NewHabitOrNonRegularEventTableViewCell.cellIdentifier)
         return tableView
     }()
     
     private var collection: UICollectionView = {
         let collection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-        collection.register(NewHabitEmojiCollectionCell.self, forCellWithReuseIdentifier: NewHabitEmojiCollectionCell.cellIdentifier)
-        collection.register(NewHabitColorCollectionCell.self, forCellWithReuseIdentifier: NewHabitColorCollectionCell.cellIdentifier)
-        collection.register(NewHabitCollectionSupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: NewHabitCollectionSupplementaryView.headerIdentifier)
+        collection.register(NewHabitOrNonRegularEventEmojiCollectionCell.self, forCellWithReuseIdentifier: NewHabitOrNonRegularEventEmojiCollectionCell.cellIdentifier)
+        collection.register(NewHabitOrNonRegularEventColorCollectionCell.self, forCellWithReuseIdentifier: NewHabitOrNonRegularEventColorCollectionCell.cellIdentifier)
+        collection.register(NewHabitOrNonRegularEventCollectionSupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: NewHabitOrNonRegularEventCollectionSupplementaryView.headerIdentifier)
         return collection
     }()
     
@@ -255,9 +255,9 @@ final class NewHabitViewController: UIViewController {
     }
     
     private func setShortNamesToDaysOfWeek(_ savedLongNamesOfWeek: [String]) -> String {
-        var savedDaysNames = ""
-        var day = ""
-        var shortNameDay = ""
+        var savedDaysNames: String = ""
+        var day: String = ""
+        var shortNameDay: String = ""
         
         for dayNumber in 0..<savedLongNamesOfWeek.count {
             if savedLongNamesOfWeek.count == numbersDaysInWeek {
@@ -265,11 +265,11 @@ final class NewHabitViewController: UIViewController {
             } else {
                 if dayNumber == savedLongNamesOfWeek.count - 1{
                     day = savedLongNamesOfWeek[dayNumber]
-                    shortNameDay = shortNamesDaysOfWeek[day]!
+                    shortNameDay = shortNamesDaysOfWeek[day] ?? ""
                     savedDaysNames += shortNameDay
                 } else {
                     day = savedLongNamesOfWeek[dayNumber]
-                    shortNameDay = shortNamesDaysOfWeek[day]!
+                    shortNameDay = shortNamesDaysOfWeek[day] ?? ""
                     savedDaysNames += shortNameDay + ", "
                 }
             }
@@ -321,7 +321,7 @@ final class NewHabitViewController: UIViewController {
 
 //MARK: TextField Protocols
 
-extension NewHabitViewController: UITextFieldDelegate {
+extension NewHabitOrNonRegularEventViewController: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         let maxLength = 38
         let currentString = (textField.text ?? "") as NSString
@@ -333,7 +333,7 @@ extension NewHabitViewController: UITextFieldDelegate {
 
 //MARK: CollectionView Protocols
 
-extension NewHabitViewController: UICollectionViewDelegateFlowLayout {
+extension NewHabitOrNonRegularEventViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         CGSize(width: 52, height: 52)
     }
@@ -351,7 +351,7 @@ extension NewHabitViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        let headerView = NewHabitCollectionSupplementaryView()
+        let headerView = NewHabitOrNonRegularEventCollectionSupplementaryView()
         
         section == emojiIndexSection ? (headerView.titleLabel.text = "Emoji") : (headerView.titleLabel.text = "Цвет")
         
@@ -360,14 +360,14 @@ extension NewHabitViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if let emojiCell = collectionView.cellForItem(at: indexPath) as? NewHabitEmojiCollectionCell {
+        if let emojiCell = collectionView.cellForItem(at: indexPath) as? NewHabitOrNonRegularEventEmojiCollectionCell {
             emojiCell.backgroundColor = UIColor(named: "E6E8EB")
             emojiCell.layer.cornerRadius = 16
             emojiCell.layer.masksToBounds = true
             
             savedEmoji = emojiCell.titleLabel.text
         } else {
-            let colorCell = collectionView.cellForItem(at: indexPath) as? NewHabitColorCollectionCell
+            let colorCell = collectionView.cellForItem(at: indexPath) as? NewHabitOrNonRegularEventColorCollectionCell
             let backColor = colorCell?.titleLabel.backgroundColor?.withAlphaComponent(0.3)
             colorCell?.layer.borderWidth = 3
             colorCell?.layer.borderColor = backColor?.cgColor
@@ -381,14 +381,14 @@ extension NewHabitViewController: UICollectionViewDelegateFlowLayout {
         
         selectedRows.forEach { selectedRow in
             if selectedRow.section == indexPath.section && indexPath.section == 0 && selectedRow.row != indexPath.row {
-                let selectedEmojiCell = collectionView.cellForItem(at: selectedRow) as? NewHabitEmojiCollectionCell
+                let selectedEmojiCell = collectionView.cellForItem(at: selectedRow) as? NewHabitOrNonRegularEventEmojiCollectionCell
                 selectedEmojiCell?.backgroundColor = .white
                 selectedEmojiCell?.layer.masksToBounds = true
                 collectionView.deselectItem(at: selectedRow, animated: false)
             }
             
             if selectedRow.section == indexPath.section && indexPath.section == 1 && selectedRow.row != indexPath.row {
-                let selectedColorCell = collectionView.cellForItem(at: selectedRow) as? NewHabitColorCollectionCell
+                let selectedColorCell = collectionView.cellForItem(at: selectedRow) as? NewHabitOrNonRegularEventColorCollectionCell
                 selectedColorCell?.layer.borderWidth = 0
                 selectedColorCell?.layer.masksToBounds = true
                 collectionView.deselectItem(at: selectedRow, animated: false)
@@ -398,12 +398,12 @@ extension NewHabitViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        if let selectedEmojiCell = collectionView.cellForItem(at: indexPath) as? NewHabitEmojiCollectionCell {
+        if let selectedEmojiCell = collectionView.cellForItem(at: indexPath) as? NewHabitOrNonRegularEventEmojiCollectionCell {
             selectedEmojiCell.backgroundColor = .white
             selectedEmojiCell.layer.masksToBounds = true
             savedEmoji = nil
         } else {
-            let selectedColorCell = collectionView.cellForItem(at: indexPath) as? NewHabitColorCollectionCell
+            let selectedColorCell = collectionView.cellForItem(at: indexPath) as? NewHabitOrNonRegularEventColorCollectionCell
             selectedColorCell?.layer.borderWidth = 0
             selectedColorCell?.layer.masksToBounds = true
             savedColor = nil
@@ -412,7 +412,7 @@ extension NewHabitViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-extension NewHabitViewController: UICollectionViewDataSource {
+extension NewHabitOrNonRegularEventViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         numberOfSections
     }
@@ -423,7 +423,7 @@ extension NewHabitViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         if indexPath.section == emojiIndexSection {
-            guard let emojiCell = collectionView.dequeueReusableCell(withReuseIdentifier: NewHabitEmojiCollectionCell.cellIdentifier, for: indexPath) as? NewHabitEmojiCollectionCell else {
+            guard let emojiCell = collectionView.dequeueReusableCell(withReuseIdentifier: NewHabitOrNonRegularEventEmojiCollectionCell.cellIdentifier, for: indexPath) as? NewHabitOrNonRegularEventEmojiCollectionCell else {
                 return UICollectionViewCell()
             }
             
@@ -431,7 +431,7 @@ extension NewHabitViewController: UICollectionViewDataSource {
             return emojiCell
             
         } else {
-            guard let colorCell = collectionView.dequeueReusableCell(withReuseIdentifier: NewHabitColorCollectionCell.cellIdentifier, for: indexPath) as? NewHabitColorCollectionCell else {
+            guard let colorCell = collectionView.dequeueReusableCell(withReuseIdentifier: NewHabitOrNonRegularEventColorCollectionCell.cellIdentifier, for: indexPath) as? NewHabitOrNonRegularEventColorCollectionCell else {
                 return UICollectionViewCell()
             }
             
@@ -446,14 +446,14 @@ extension NewHabitViewController: UICollectionViewDataSource {
         var id: String
         switch kind {
         case UICollectionView.elementKindSectionHeader:
-            id = NewHabitCollectionSupplementaryView.headerIdentifier
+            id = NewHabitOrNonRegularEventCollectionSupplementaryView.headerIdentifier
         case UICollectionView.elementKindSectionFooter:
             id = "footer"
         default:
             id = ""
         }
         
-        guard let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as? NewHabitCollectionSupplementaryView else { return UICollectionReusableView() }
+        guard let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as? NewHabitOrNonRegularEventCollectionSupplementaryView else { return UICollectionReusableView() }
         
         (indexPath.section == emojiIndexSection) ? (headerView.titleLabel.text = "Emoji") : (headerView.titleLabel.text = "Цвет")
         return headerView
@@ -462,7 +462,7 @@ extension NewHabitViewController: UICollectionViewDataSource {
 
 //MARK: TableView Protocols
 
-extension NewHabitViewController: UITableViewDataSource {
+extension NewHabitOrNonRegularEventViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return categoriesAndSchedule.count
     }
@@ -470,10 +470,10 @@ extension NewHabitViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) ->  UITableViewCell {
         let cell: UITableViewCell
         
-        if let newHabitCell = tableView.dequeueReusableCell(withIdentifier: NewHabitTableViewCell.cellIdentifier, for: indexPath) as? NewHabitTableViewCell {
+        if let newHabitCell = tableView.dequeueReusableCell(withIdentifier: NewHabitOrNonRegularEventTableViewCell.cellIdentifier, for: indexPath) as? NewHabitOrNonRegularEventTableViewCell {
             cell = newHabitCell
         } else {
-            cell = UITableViewCell(style: .default, reuseIdentifier: NewHabitTableViewCell.cellIdentifier)
+            cell = UITableViewCell(style: .default, reuseIdentifier: NewHabitOrNonRegularEventTableViewCell.cellIdentifier)
         }
         
         cell.backgroundColor = UIColor(named: "E6E8EB_30%")
@@ -484,7 +484,7 @@ extension NewHabitViewController: UITableViewDataSource {
     }
 }
 
-extension NewHabitViewController: UITableViewDelegate {
+extension NewHabitOrNonRegularEventViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         if indexPath.row == 0 {
             let viewcontroller = NewCategoryViewController()
