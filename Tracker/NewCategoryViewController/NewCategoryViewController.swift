@@ -36,7 +36,7 @@ final class NewCategoryViewController: UIViewController {
     
     private func setBarItem() {
         navigationItem.title = "Категория"
-        let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16)]
+        let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.medium)]
         navigationController?.navigationBar.titleTextAttributes = attributes
     }
     
@@ -52,7 +52,7 @@ final class NewCategoryViewController: UIViewController {
         backgroundTextLabel.text = #"Привычки и события можно\#n объединить по смыслу"#
         backgroundTextLabel.numberOfLines = 2
         backgroundTextLabel.textColor = .black
-        backgroundTextLabel.font = .systemFont(ofSize: 12)
+        backgroundTextLabel.font = .systemFont(ofSize: 12, weight: UIFont.Weight.medium)
         backgroundTextLabel.textAlignment = .center
         
         backgroundTextLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -62,6 +62,7 @@ final class NewCategoryViewController: UIViewController {
     private func createAddCategoryButton() {
         addCategoryButton.backgroundColor = .black
         addCategoryButton.setTitle("Добавить категорию", for: .normal)
+        addCategoryButton.titleLabel?.font = .systemFont(ofSize: 16, weight: UIFont.Weight.medium)
         addCategoryButton.setTitleColor(UIColor.white, for: .normal)
         addCategoryButton.layer.cornerRadius = 16
         
@@ -73,10 +74,10 @@ final class NewCategoryViewController: UIViewController {
     
     @objc private func didTapAddCategoryButton() {
         let viewcontroller = NewCategoryNameViewController()
-        viewcontroller.onDoneButtonTapped = { nameCategory in
-            self.names.append(nameCategory)
-            self.hidePlaceholder()
-            self.categoriesTable.reloadData()
+        viewcontroller.onDoneButtonTapped = { [weak self] nameCategory in
+            self?.names.append(nameCategory)
+            self?.hidePlaceholder()
+            self?.categoriesTable.reloadData()
         }
         let navigationViewController = UINavigationController(rootViewController: viewcontroller)
         present(navigationViewController, animated: true)
@@ -109,7 +110,8 @@ final class NewCategoryViewController: UIViewController {
             backgroundImage.heightAnchor.constraint(equalToConstant: 80),
             
             backgroundTextLabel.topAnchor.constraint(equalTo: backgroundImage.bottomAnchor, constant: 8),
-            backgroundTextLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            backgroundTextLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            backgroundTextLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
             addCategoryButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             addCategoryButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
@@ -150,6 +152,16 @@ extension NewCategoryViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
+        
+        if indexPath.row == names.count - 1 {
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: tableView.bounds.width)
+            cell.layer.masksToBounds = true
+            cell.layer.cornerRadius = 16
+            cell.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        } else {
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+            cell.layer.masksToBounds = true
+        }
         
         if indexPath.row == index {
             cell.backgroundColor = UIColor(named: "E6E8EB_30%")
