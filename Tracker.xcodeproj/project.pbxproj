@@ -111,7 +111,7 @@
 				334D81A12D820A820090591D /* Helpers */,
 				3379E4782D5244D7002FCC3C /* Models */,
 				33C158B22D610744003C2894 /* NewCategoryViewController */,
-				33ADD4432D5BB0000088A503 /* NewHabbitViewController */,
+				33ADD4432D5BB0000088A503 /* NewHabbitOrNonRegularEventViewController */,
 				33C158B52D610848003C2894 /* NewScheduleViewController */,
 				3305E73A2D4BC23E00B18609 /* StatisticsViewController */,
 				3305E7362D4BBF8900B18609 /* TabBarController */,
@@ -204,7 +204,7 @@
 			path = StoreClasses;
 			sourceTree = "<group>";
 		};
-		33ADD4432D5BB0000088A503 /* NewHabbitViewController */ = {
+		33ADD4432D5BB0000088A503 /* NewHabbitOrNonRegularEventViewController */ = {
 			isa = PBXGroup;
 			children = (
 				33ADD4442D5BB01D0088A503 /* NewHabitOrNonRegularEventViewController.swift */,
@@ -213,7 +213,7 @@
 				33C158AE2D5E458D003C2894 /* NewHabitOrNonRegularEventColorCollectionCell.swift */,
 				33C158AC2D5E399A003C2894 /* NewHabitOrNonRegularEventCollectionSupplementaryView.swift */,
 			);
-			path = NewHabbitViewController;
+			path = NewHabbitOrNonRegularEventViewController;
 			sourceTree = "<group>";
 		};
 		33B9E5582D75EF8A00824F5F /* CoreData */ = {
