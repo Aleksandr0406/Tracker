@@ -76,7 +76,12 @@ final class TrackersViewController: UIViewController {
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
         
-        let leftButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(didTapAddButton))
+        let leftButton = UIBarButtonItem(
+            image: UIImage(systemName: "plus", withConfiguration: UIImage.SymbolConfiguration(weight: .semibold)),
+            style: .plain,
+            target: self,
+            action: #selector(didTapAddButton))
+        leftButton.tintColor = .black
         navigationItem.setLeftBarButton(leftButton, animated: false)
     }
     
@@ -126,7 +131,7 @@ final class TrackersViewController: UIViewController {
     private func createTitleLabel() {
         titleLabel.text = "Трекеры"
         titleLabel.textColor = .black
-        titleLabel.font = .boldSystemFont(ofSize: 34)
+        titleLabel.font = .systemFont(ofSize: 34, weight: UIFont.Weight.bold)
         
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(titleLabel)
@@ -142,7 +147,7 @@ final class TrackersViewController: UIViewController {
     private func createBackgroundTextLabel() {
         backgroundTextLabel.text = "Что будем отслеживать?"
         backgroundTextLabel.textColor = .black
-        backgroundTextLabel.font = .systemFont(ofSize: 12)
+        backgroundTextLabel.font = .systemFont(ofSize: 12, weight: UIFont.Weight.medium)
         
         backgroundTextLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(backgroundTextLabel)
