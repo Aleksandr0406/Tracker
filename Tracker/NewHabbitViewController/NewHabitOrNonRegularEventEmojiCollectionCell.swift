@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class NewHabitEmojiCollectionCell: UICollectionViewCell {
+final class NewHabitOrNonRegularEventEmojiCollectionCell: UICollectionViewCell {
     static let cellIdentifier = "EmojiCell"
     
     let titleLabel: UILabel = UILabel()

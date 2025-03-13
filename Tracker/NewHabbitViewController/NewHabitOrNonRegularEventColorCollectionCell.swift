@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class NewHabitColorCollectionCell: UICollectionViewCell {
+final class NewHabitOrNonRegularEventColorCollectionCell: UICollectionViewCell {
     static let cellIdentifier = "ColorCell"
     
     let titleLabel: UILabel = UILabel()

@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class NewHabitTableViewCell: UITableViewCell {
+final class NewHabitOrNonRegularEventTableViewCell: UITableViewCell {
     static let cellIdentifier = "HabitCell"
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {

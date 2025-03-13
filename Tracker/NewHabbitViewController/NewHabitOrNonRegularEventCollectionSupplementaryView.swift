@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class NewHabitCollectionSupplementaryView: UICollectionReusableView {
+final class NewHabitOrNonRegularEventCollectionSupplementaryView: UICollectionReusableView {
     static let headerIdentifier = "Header"
     
     let titleLabel: UILabel = UILabel()
