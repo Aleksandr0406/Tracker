@@ -8,7 +8,7 @@
 import UIKit
 
 final class NewTrackerViewController: UIViewController {
-    var onAddHabitButtonTapped: (((String, String, [String], String, UIColor) -> ()))?
+    var onAddHabitOrNonRegularEvenButtonTapped: (((String, String, [String], String, UIColor) -> ()))?
     
     private let addNewTrackerButton: UIButton = UIButton()
     private let addNewNotRegularEventButton: UIButton = UIButton()
@@ -82,10 +82,10 @@ final class NewTrackerViewController: UIViewController {
     }
     
     private func presentHabitOrNotRegularEvent(_ sections: [String]) {
-        let viewcontroller = NewHabitViewController()
-        viewcontroller.onAddHabitButtonTapped = { savedHabitName, savedCategoryName, savedDays, savedEmoji, savedColor in
-            guard let onAddHabitButtonTapped = self.onAddHabitButtonTapped else { return }
-            onAddHabitButtonTapped(savedHabitName, savedCategoryName, savedDays, savedEmoji, savedColor)
+        let viewcontroller = NewHabitOrNonRegularEventViewController()
+        viewcontroller.onAddHabitButtonTapped = { [weak self] savedHabitName, savedCategoryName, savedDays, savedEmoji, savedColor in
+            guard let onAddHabitOrNonRegularEvenButtonTapped = self?.onAddHabitOrNonRegularEvenButtonTapped else { return }
+            onAddHabitOrNonRegularEvenButtonTapped(savedHabitName, savedCategoryName, savedDays, savedEmoji, savedColor)
         }
         
         viewcontroller.categoriesAndSchedule = sections

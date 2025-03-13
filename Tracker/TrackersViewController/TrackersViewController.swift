@@ -7,10 +7,14 @@
 
 import UIKit
 
+private enum Constants {
+    
+}
+
 final class TrackersViewController: UIViewController {
     private let uiColorMarshalling: UIColorMarshalling = UIColorMarshalling()
-    private var trackerRecordStore = TrackerRecordStore()
-    private var trackerCategoryStore = TrackerCategoryStore()
+    private var trackerRecordStore: TrackerRecordStore = TrackerRecordStore()
+    private var trackerCategoryStore: TrackerCategoryStore = TrackerCategoryStore()
     private var dataProvider: DataProvider = DataProvider()
     private var currentDate: Date = Date()
     private var categories: [TrackerCategory] = []
@@ -110,8 +114,8 @@ final class TrackersViewController: UIViewController {
     
     @objc private func didTapAddButton() {
         let viewcontroller = NewTrackerViewController()
-        viewcontroller.onAddHabitButtonTapped = { savedHabitName, savedCategoryName, savedDays, savedEmoji, savedColor in
-            self.updateTrackers(savedHabitName, savedCategoryName, savedDays, savedEmoji, savedColor)
+        viewcontroller.onAddHabitOrNonRegularEvenButtonTapped = { [weak self] savedHabitName, savedCategoryName, savedDays, savedEmoji, savedColor in
+            self?.updateTrackers(savedHabitName, savedCategoryName, savedDays, savedEmoji, savedColor)
         }
         let navigationViewController = UINavigationController(rootViewController: viewcontroller)
         present(navigationViewController, animated: true)
@@ -280,7 +284,7 @@ extension TrackersViewController: UICollectionViewDataSource {
             id = ""
         }
         
-        let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as! TrackersCollectionSupplementaryView
+        guard let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as? TrackersCollectionSupplementaryView else { return UICollectionViewCell() }
         
         headerView.titleLabel.text = visibleCategories[indexPath.section].name
         return headerView
