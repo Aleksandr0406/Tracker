@@ -25,7 +25,7 @@ final class NewTrackerViewController: UIViewController {
     
     private func setBarItem() {
         navigationItem.title = "Создание трекера"
-        let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16)]
+        let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.medium)]
         navigationController?.navigationBar.titleTextAttributes = attributes
     }
     
@@ -35,7 +35,7 @@ final class NewTrackerViewController: UIViewController {
         addNewTrackerButton.setTitle("Привычка", for: .normal)
         addNewTrackerButton.setTitleColor(.white, for: .normal)
         addNewTrackerButton.titleLabel?.textAlignment = .center
-        addNewTrackerButton.titleLabel?.font = .systemFont(ofSize: 16)
+        addNewTrackerButton.titleLabel?.font = .systemFont(ofSize: 16, weight: UIFont.Weight.medium)
         
         addNewTrackerButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(addNewTrackerButton)
@@ -54,7 +54,7 @@ final class NewTrackerViewController: UIViewController {
         addNewNotRegularEventButton.setTitle("Нерегулярное событие", for: .normal)
         addNewNotRegularEventButton.setTitleColor(.white, for: .normal)
         addNewNotRegularEventButton.titleLabel?.textAlignment = .center
-        addNewNotRegularEventButton.titleLabel?.font = .systemFont(ofSize: 16)
+        addNewNotRegularEventButton.titleLabel?.font = .systemFont(ofSize: 16, weight: UIFont.Weight.medium)
         
         addNewNotRegularEventButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(addNewNotRegularEventButton)

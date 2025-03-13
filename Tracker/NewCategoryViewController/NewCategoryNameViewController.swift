@@ -25,7 +25,7 @@ final class NewCategoryNameViewController: UIViewController, UITextFieldDelegate
     
     private func setBarItem() {
         navigationItem.title = "Новая категория"
-        let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16)]
+        let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.medium)]
         navigationController?.navigationBar.titleTextAttributes = attributes
     }
     
@@ -35,6 +35,7 @@ final class NewCategoryNameViewController: UIViewController, UITextFieldDelegate
         titleCategoryTextField.layer.cornerRadius = 16
         titleCategoryTextField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 75))
         titleCategoryTextField.leftViewMode = .always
+        titleCategoryTextField.font = .systemFont(ofSize: 17, weight: UIFont.Weight.regular)
         
         titleCategoryTextField.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(titleCategoryTextField)
@@ -58,6 +59,7 @@ final class NewCategoryNameViewController: UIViewController, UITextFieldDelegate
         doneButton.setTitle("Готово", for: .normal)
         doneButton.setTitleColor(UIColor.white, for: .normal)
         doneButton.layer.cornerRadius = 16
+        doneButton.titleLabel?.font = .systemFont(ofSize: 16, weight: UIFont.Weight.medium)
         
         doneButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(doneButton)

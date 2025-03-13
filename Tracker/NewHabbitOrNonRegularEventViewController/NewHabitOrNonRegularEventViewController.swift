@@ -95,9 +95,11 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
     private func setBarItem() {
         if categoriesAndSchedule.count > 1 {
             navigationItem.title = "Новая привычка"
+            let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.medium)]
+            navigationController?.navigationBar.titleTextAttributes = attributes
         } else {
             navigationItem.title = "Новое нерегулярное событие"
-            let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16)]
+            let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.medium)]
             navigationController?.navigationBar.titleTextAttributes = attributes
         }
     }
@@ -153,6 +155,7 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
         cancelButton.setTitle("Отменить", for: .normal)
         cancelButton.setTitleColor(UIColor(named: "Cancel_Button"), for: .normal)
         cancelButton.layer.cornerRadius = 16
+        cancelButton.titleLabel?.font = .systemFont(ofSize: 16, weight: UIFont.Weight.medium)
         
         cancelButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(cancelButton)
@@ -171,6 +174,7 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
         addHabitButton.setTitle("Создать", for: .normal)
         addHabitButton.setTitleColor(UIColor.white, for: .normal)
         addHabitButton.layer.cornerRadius = 16
+        addHabitButton.titleLabel?.font = .systemFont(ofSize: 16, weight: UIFont.Weight.medium)
         
         addHabitButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(addHabitButton)
@@ -455,6 +459,8 @@ extension NewHabitOrNonRegularEventViewController: UICollectionViewDataSource {
         
         guard let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as? NewHabitOrNonRegularEventCollectionSupplementaryView else { return UICollectionReusableView() }
         
+        headerView.titleLabel.font = .systemFont(ofSize: 19, weight: UIFont.Weight.bold)
+        
         (indexPath.section == emojiIndexSection) ? (headerView.titleLabel.text = "Emoji") : (headerView.titleLabel.text = "Цвет")
         return headerView
     }
@@ -479,6 +485,17 @@ extension NewHabitOrNonRegularEventViewController: UITableViewDataSource {
         cell.backgroundColor = UIColor(named: "E6E8EB_30%")
         cell.accessoryType = .disclosureIndicator
         cell.textLabel?.text = categoriesAndSchedule[indexPath.row]
+        cell.textLabel?.font = .systemFont(ofSize: 17, weight: UIFont.Weight.regular)
+        
+        if indexPath.row == categoriesAndSchedule.count - 1 {
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: tableView.bounds.width)
+            cell.layer.masksToBounds = true
+            cell.layer.cornerRadius = 16
+            cell.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        } else {
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+            cell.layer.masksToBounds = true
+        }
         
         return cell
     }
