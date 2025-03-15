@@ -17,7 +17,6 @@ final class NewScheduleViewController: UIViewController {
     ]
     
     private var doneButton: UIButton = UIButton()
-    
     private var scheduleTableView: UITableView = {
         let tableView = UITableView()
         tableView.register(NewScheduleTableViewCell.self, forCellReuseIdentifier: NewScheduleTableViewCell.cellIdentifier)
@@ -36,7 +35,7 @@ final class NewScheduleViewController: UIViewController {
     
     private func setBarItem() {
         navigationItem.title = "Расписание"
-        let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16)]
+        let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.medium)]
         navigationController?.navigationBar.titleTextAttributes = attributes
     }
     
@@ -45,6 +44,7 @@ final class NewScheduleViewController: UIViewController {
         doneButton.setTitle("Готово", for: .normal)
         doneButton.setTitleColor(UIColor.white, for: .normal)
         doneButton.layer.cornerRadius = 16
+        doneButton.titleLabel?.font = .systemFont(ofSize: 16, weight: UIFont.Weight.medium)
         
         doneButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(doneButton)
@@ -59,7 +59,7 @@ final class NewScheduleViewController: UIViewController {
     }
     
     private func createScheduleTableView() {
-        scheduleTableView.backgroundColor = UIColor(named: "E6E8EB")
+        scheduleTableView.backgroundColor = UIColor(named: "E6E8EB_30%")
         scheduleTableView.layer.cornerRadius = 16
         
         scheduleTableView.translatesAutoresizingMaskIntoConstraints = false
@@ -111,10 +111,20 @@ extension NewScheduleViewController: UITableViewDataSource {
         
         cell.tag = indexPath.row
         cell.accessoryView = switchView
-        cell.backgroundColor = UIColor(named: "E6E8EB")
+        cell.backgroundColor = UIColor(named: "E6E8EB_30%")
         cell.textLabel?.text = days[indexPath.row]
-        cell.textLabel?.font = .systemFont(ofSize: 17)
+        cell.textLabel?.font = .systemFont(ofSize: 17, weight: UIFont.Weight.regular)
         cell.textLabel?.textColor = .black
+        
+        if indexPath.row == days.count - 1 {
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: tableView.bounds.width)
+            cell.layer.masksToBounds = true
+            cell.layer.cornerRadius = 16
+            cell.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        } else {
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+            cell.layer.masksToBounds = true
+        }
         
         return cell
     }

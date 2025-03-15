@@ -8,10 +8,10 @@
 import UIKit
 
 final class NewTrackerViewController: UIViewController {
-    var onAddHabitButtonTapped: (((String, String, [String]) -> ()))?
+    var onAddHabitOrNonRegularEvenButtonTapped: (((String, String, [String], String, UIColor) -> ()))?
     
     private let addNewTrackerButton: UIButton = UIButton()
-    private let addNewNotRegularTrackerButton: UIButton = UIButton()
+    private let addNewNotRegularEventButton: UIButton = UIButton()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,13 +19,13 @@ final class NewTrackerViewController: UIViewController {
         
         setBarItem()
         createAddNewTrackerButton()
-        createAddNewNotRegularTrackerButton()
+        createAddNewNotRegularEventButton()
         setConstraints()
     }
     
     private func setBarItem() {
         navigationItem.title = "Создание трекера"
-        let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16)]
+        let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.medium)]
         navigationController?.navigationBar.titleTextAttributes = attributes
     }
     
@@ -35,7 +35,7 @@ final class NewTrackerViewController: UIViewController {
         addNewTrackerButton.setTitle("Привычка", for: .normal)
         addNewTrackerButton.setTitleColor(.white, for: .normal)
         addNewTrackerButton.titleLabel?.textAlignment = .center
-        addNewTrackerButton.titleLabel?.font = .systemFont(ofSize: 16)
+        addNewTrackerButton.titleLabel?.font = .systemFont(ofSize: 16, weight: UIFont.Weight.medium)
         
         addNewTrackerButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(addNewTrackerButton)
@@ -45,26 +45,26 @@ final class NewTrackerViewController: UIViewController {
     
     @objc private func didTapAddNewTrackerButton() {
         let sections = ["Категория", "Расписание"]
-        presentHabitOrNotRegularTracker(sections)
+        presentHabitOrNotRegularEvent(sections)
     }
     
-    private func createAddNewNotRegularTrackerButton() {
-        addNewNotRegularTrackerButton.layer.cornerRadius = 16
-        addNewNotRegularTrackerButton.backgroundColor = .black
-        addNewNotRegularTrackerButton.setTitle("Нерегулярное событие", for: .normal)
-        addNewNotRegularTrackerButton.setTitleColor(.white, for: .normal)
-        addNewNotRegularTrackerButton.titleLabel?.textAlignment = .center
-        addNewNotRegularTrackerButton.titleLabel?.font = .systemFont(ofSize: 16)
+    private func createAddNewNotRegularEventButton() {
+        addNewNotRegularEventButton.layer.cornerRadius = 16
+        addNewNotRegularEventButton.backgroundColor = .black
+        addNewNotRegularEventButton.setTitle("Нерегулярное событие", for: .normal)
+        addNewNotRegularEventButton.setTitleColor(.white, for: .normal)
+        addNewNotRegularEventButton.titleLabel?.textAlignment = .center
+        addNewNotRegularEventButton.titleLabel?.font = .systemFont(ofSize: 16, weight: UIFont.Weight.medium)
         
-        addNewNotRegularTrackerButton.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(addNewNotRegularTrackerButton)
+        addNewNotRegularEventButton.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(addNewNotRegularEventButton)
         
-        addNewNotRegularTrackerButton.addTarget(self, action: #selector(didTapAddNewNotRegularTrackerButton), for: .touchUpInside)
+        addNewNotRegularEventButton.addTarget(self, action: #selector(didTapAddNewNotRegularEventButton), for: .touchUpInside)
     }
     
-    @objc private func didTapAddNewNotRegularTrackerButton() {
+    @objc private func didTapAddNewNotRegularEventButton() {
         let sections = ["Категория"]
-        presentHabitOrNotRegularTracker(sections)
+        presentHabitOrNotRegularEvent(sections)
     }
     
     private func setConstraints() {
@@ -74,20 +74,20 @@ final class NewTrackerViewController: UIViewController {
             addNewTrackerButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             addNewTrackerButton.heightAnchor.constraint(equalToConstant: 60),
             
-            addNewNotRegularTrackerButton.topAnchor.constraint(equalTo: addNewTrackerButton.bottomAnchor, constant: 16),
-            addNewNotRegularTrackerButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            addNewNotRegularTrackerButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            addNewNotRegularTrackerButton.heightAnchor.constraint(equalToConstant: 60)
+            addNewNotRegularEventButton.topAnchor.constraint(equalTo: addNewTrackerButton.bottomAnchor, constant: 16),
+            addNewNotRegularEventButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            addNewNotRegularEventButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            addNewNotRegularEventButton.heightAnchor.constraint(equalToConstant: 60)
         ])
     }
     
-    private func presentHabitOrNotRegularTracker(_ sections: [String]) {
-        let viewcontroller = NewHabitViewController()
-        viewcontroller.onAddHabitButtonTapped = { savedHabitName, savedCategoryName, savedDays in
-            guard let onAddHabitButtonTapped = self.onAddHabitButtonTapped else { return }
-            onAddHabitButtonTapped(savedHabitName, savedCategoryName, savedDays)
-            print("NewTrackerViewController", "Habit:", savedHabitName, ", ", "Category:", savedCategoryName, "Days: ", savedDays)
+    private func presentHabitOrNotRegularEvent(_ sections: [String]) {
+        let viewcontroller = NewHabitOrNonRegularEventViewController()
+        viewcontroller.onAddHabitButtonTapped = { [weak self] savedHabitName, savedCategoryName, savedDays, savedEmoji, savedColor in
+            guard let onAddHabitOrNonRegularEvenButtonTapped = self?.onAddHabitOrNonRegularEvenButtonTapped else { return }
+            onAddHabitOrNonRegularEvenButtonTapped(savedHabitName, savedCategoryName, savedDays, savedEmoji, savedColor)
         }
+        
         viewcontroller.categoriesAndSchedule = sections
         let navigationViewController = UINavigationController(rootViewController: viewcontroller)
         present(navigationViewController, animated: true)
