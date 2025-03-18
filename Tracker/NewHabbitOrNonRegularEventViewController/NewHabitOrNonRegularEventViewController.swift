@@ -192,7 +192,7 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
             let onAddHabitButtonTapped = onAddHabitButtonTapped
         else { return }
         onAddHabitButtonTapped(habitName, categoryName, savedDays, savedEmoji, savedColor)
-        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true)
+        self.presentingViewController?.presentingViewController?.dismiss(animated: true)
     }
     
     private func createCollection() {
