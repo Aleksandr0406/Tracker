@@ -51,7 +51,7 @@ final class TrackerRecordStore: NSObject {
     
     convenience override init() {
         let context = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext ?? NSManagedObjectContext()
-            try! self.init(context: context)
+        try! self.init(context: context)
     }
     
     init(context: NSManagedObjectContext) throws {
