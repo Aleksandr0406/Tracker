@@ -1,5 +1,5 @@
 //
-//  RedOnBordingViewController.swift
+//  BlueOnBordingViewController.swift
 //  Tracker
 //
 //  Created by 1111 on 17.03.2025.
@@ -7,10 +7,18 @@
 
 import UIKit
 
-final class RedOnBoardingViewController: UIViewController {
+final class BlueOrRedOnBoardingViewController: UIViewController {
+    private let blueType = "Blue"
+    private var onboardingScreen: String = ""
+    
     private let label: UILabel = UILabel()
     private let button: UIButton = UIButton()
-    private var backImage: UIImageView = UIImageView()
+    private let backImage: UIImageView = UIImageView()
+    
+    convenience init(onboardingScreen: String) {
+        self.init()
+        self.onboardingScreen = onboardingScreen
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,8 +30,10 @@ final class RedOnBoardingViewController: UIViewController {
     }
     
     private func setBackImage() {
-        guard let image = UIImage(named: "RedOnBoarding") else { return }
-        backImage.image = image
+        guard let blueImage = UIImage(named: "BlueOnBoarding"),
+              let redImage = UIImage(named: "RedOnBoarding") else { return }
+        
+        backImage.image = onboardingScreen == blueType ? blueImage : redImage
         backImage.contentMode = .scaleAspectFit
         
         backImage.translatesAutoresizingMaskIntoConstraints = false
@@ -31,7 +41,7 @@ final class RedOnBoardingViewController: UIViewController {
     }
     
     private func setLabel() {
-        label.text = "Даже если это\n не литры воды и йога"
+        label.text = onboardingScreen == blueType ? "Отслеживайте только\n то, что хотите" : "Даже если это\n не литры воды и йога"
         label.font = .systemFont(ofSize: 32, weight: UIFont.Weight.bold)
         label.textAlignment = .center
         label.numberOfLines = 2

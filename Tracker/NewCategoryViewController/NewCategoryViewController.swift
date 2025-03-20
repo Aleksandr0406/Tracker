@@ -10,7 +10,7 @@ import UIKit
 final class NewCategoryViewController: UIViewController {
     var onAddCategoryButtonTapped: ((String) -> ())?
     
-    private var viewModel: ViewModel = ViewModel()
+    private var viewModel: CategoriesViewModel = CategoriesViewModel()
     
     private var categoriesTable: UITableView = UITableView()
     private var backgroundImage: UIImageView = UIImageView()

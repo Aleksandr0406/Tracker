@@ -15,7 +15,7 @@
 import UIKit
 
 final class OnBoardingViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
-    lazy var pageControl: UIPageControl = {
+    private lazy var pageControl: UIPageControl = {
         let pageControl = UIPageControl()
         pageControl.numberOfPages = pages.count
         pageControl.currentPage = 0
@@ -27,7 +27,7 @@ final class OnBoardingViewController: UIPageViewController, UIPageViewController
         return pageControl
     }()
     
-    lazy var pages: [UIViewController] = [BlueOnBoardingViewController(), RedOnBoardingViewController()]
+    private lazy var pages: [UIViewController] = [BlueOrRedOnBoardingViewController(onboardingScreen: "Blue"), BlueOrRedOnBoardingViewController(onboardingScreen: "Red")]
     
     override func viewDidLoad() {
         super.viewDidLoad()

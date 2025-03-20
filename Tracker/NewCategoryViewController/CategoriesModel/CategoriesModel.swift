@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class Model {
+final class CategoriesModel {
     private let dataProvider: DataProvider = DataProvider()
     
     func saveCreatedCategoryNames(with newCategoryName: String) {
