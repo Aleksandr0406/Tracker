@@ -10,8 +10,7 @@ import UIKit
 final class NewCategoryViewController: UIViewController {
     var onAddCategoryButtonTapped: ((String) -> ())?
     
-    private var index: Int = 0
-    private var names: [String] = []
+    private var viewModel: CategoriesViewModel = CategoriesViewModel()
     
     private var categoriesTable: UITableView = UITableView()
     private var backgroundImage: UIImageView = UIImageView()
@@ -28,9 +27,22 @@ final class NewCategoryViewController: UIViewController {
         createAddCategoryButton()
         createCategoriesTable()
         setConstraints()
+        bind()
         
-        if !names.isEmpty {
+        checkPlaceholder()
+    }
+    
+    private func checkPlaceholder() {
+        let categoryNames = viewModel.loadSavedCategoriesNames()
+        if !categoryNames.isEmpty {
             hidePlaceholder()
+        }
+    }
+    
+    private func bind() {
+        viewModel.newCategoryNamesCreated = { [weak self] in
+            self?.hidePlaceholder()
+            self?.categoriesTable.reloadData()
         }
     }
     
@@ -75,9 +87,7 @@ final class NewCategoryViewController: UIViewController {
     @objc private func didTapAddCategoryButton() {
         let viewcontroller = NewCategoryNameViewController()
         viewcontroller.onDoneButtonTapped = { [weak self] nameCategory in
-            self?.names.append(nameCategory)
-            self?.hidePlaceholder()
-            self?.categoriesTable.reloadData()
+            self?.viewModel.didCreateNewCategory(with: nameCategory)
         }
         let navigationViewController = UINavigationController(rootViewController: viewcontroller)
         present(navigationViewController, animated: true)
@@ -128,32 +138,20 @@ final class NewCategoryViewController: UIViewController {
     }
 }
 
-extension NewCategoryViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        75
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.cellForRow(at: IndexPath(row: index, section: 0))?.accessoryType = .none
-        tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-        index = indexPath.row
-        guard let subtitleNameCategory = tableView.cellForRow(at: indexPath)?.textLabel?.text,
-              let onAddCategoryButtonTapped = onAddCategoryButtonTapped else { return }
-        onAddCategoryButtonTapped(subtitleNameCategory)
-        
-        dismiss(animated: true)
-    }
-}
-
 extension NewCategoryViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        names.count
+        let numbersOfRows = viewModel.loadSavedCategoriesNames().count
+        return numbersOfRows
+        
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
         
-        if indexPath.row == names.count - 1 {
+        let categoriesNames = viewModel.loadSavedCategoriesNames()
+        let numbersOfRows = categoriesNames.count
+        
+        if indexPath.row == numbersOfRows - 1 {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: tableView.bounds.width)
             cell.layer.masksToBounds = true
             cell.layer.cornerRadius = 16
@@ -163,15 +161,28 @@ extension NewCategoryViewController: UITableViewDataSource {
             cell.layer.masksToBounds = true
         }
         
-        if indexPath.row == index {
-            cell.backgroundColor = UIColor(named: "E6E8EB_30%")
-            cell.textLabel?.text = names[index]
-            cell.accessoryType = .checkmark
-        } else {
-            cell.backgroundColor = UIColor(named: "E6E8EB_30%")
-            cell.textLabel?.text = names[indexPath.row]
-            cell.accessoryType = .none
-        }
+        cell.backgroundColor = UIColor(named: "E6E8EB_30%")
+        cell.textLabel?.text = categoriesNames[indexPath.row]
+        
         return cell
+    }
+}
+
+extension NewCategoryViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        75
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let selectedCell = tableView.cellForRow(at: indexPath) else { return }
+        if selectedCell.accessoryType == .none {
+            selectedCell.accessoryType = .checkmark
+        }
+        
+        guard let subtitleNameCategory = selectedCell.textLabel?.text,
+              let onAddCategoryButtonTapped = onAddCategoryButtonTapped else { return }
+        onAddCategoryButtonTapped(subtitleNameCategory)
+        
+        dismiss(animated: true)
     }
 }
