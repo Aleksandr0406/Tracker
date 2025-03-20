@@ -93,13 +93,18 @@ final class TrackerRecordStore: NSObject {
     }
     
     func checkRecordExistence(trackerRecord: TrackerRecord) -> Bool {
-        guard let isExist = fetchedResultsController?.fetchedObjects?.contains(where: { $0.id == trackerRecord.id }) else { return false }
+        guard let isExist = fetchedResultsController?.fetchedObjects?.contains(where:{
+            let sameDay = Calendar.current.isDate($0.date ?? Date(), inSameDayAs: trackerRecord.date)
+            return $0.id == trackerRecord.id && sameDay
+        })
+        else { return false }
         return isExist
     }
     
     func remove(_ trackerRecord: TrackerRecord) {
         let recordsForDelete = fetchedResultsController?.fetchedObjects?.filter {
-            $0.id == trackerRecord.id }
+            let sameDay = Calendar.current.isDate($0.date ?? Date(), inSameDayAs: trackerRecord.date)
+            return $0.id == trackerRecord.id && sameDay }
         recordsForDelete?.forEach { context.delete($0) }
         try? context.save()
     }
