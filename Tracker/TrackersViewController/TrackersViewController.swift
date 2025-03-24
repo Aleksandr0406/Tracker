@@ -7,10 +7,6 @@
 
 import UIKit
 
-private enum Constants {
-    
-}
-
 final class TrackersViewController: UIViewController {
     private let uiColorMarshalling: UIColorMarshalling = UIColorMarshalling()
     private var trackerRecordStore: TrackerRecordStore = TrackerRecordStore()
@@ -31,10 +27,6 @@ final class TrackersViewController: UIViewController {
         let datePicker = UIDatePicker()
         let currentDate = Date()
         let calendar = Calendar.current
-        let minDate = calendar.date(byAdding: .year, value: 0, to: currentDate)
-        let maxDate = calendar.date(byAdding: .year, value: 100, to: currentDate)
-        datePicker.minimumDate = minDate
-        datePicker.maximumDate = maxDate
         
         datePicker.preferredDatePickerStyle = .compact
         datePicker.datePickerMode = .date
@@ -63,6 +55,7 @@ final class TrackersViewController: UIViewController {
         
         trackerRecordStore.delegate = self
         completedTrackers = trackerRecordStore.completedTrackers
+        completedTrackers.forEach { print($0) }
         
         trackerCategoryStore.delegate = self
         categories = trackerCategoryStore.trackerCategories
@@ -266,7 +259,7 @@ extension TrackersViewController: UICollectionViewDataSource {
             $0.id == tracker.id
         }.count
         
-        cell.configure(with: tracker, isCompletedToday: isCompletedToday, indexPath: indexPath, completedDays: completedDays, color: color)
+        cell.configure(with: tracker, isCompletedToday: isCompletedToday, completedDays: completedDays, color: color)
         
         return cell
     }
@@ -321,9 +314,13 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
 //MARK: Delegate Protocol
 
 extension TrackersViewController: TrackersCollectionCellDelegate {
-    func completeTracker(id: UUID, at indexPath: IndexPath) {
+    func completeTracker(id: UUID) {
         let sameDay = Calendar.current.isDate(currentDate, inSameDayAs: datePicker.date)
-        if sameDay {
+        
+        // validDay - проверка на то, что в datePicker выбран текущий день или прошедшая дата для чека трека
+        let validDay = currentDate > datePicker.date || sameDay
+        
+        if validDay {
             let trackerRecord = TrackerRecord(id: id, date: datePicker.date)
             dataProvider.addTrackerRecord(trackerRecord: trackerRecord)
         } else {
@@ -331,13 +328,18 @@ extension TrackersViewController: TrackersCollectionCellDelegate {
         }
     }
     
-    func uncompleteTracker(id: UUID, at indexPath: IndexPath) {
+    func uncompleteTracker(id: UUID) {
         let sameDay = Calendar.current.isDate(currentDate, inSameDayAs: datePicker.date)
-        if sameDay {
+        
+        // validDay - проверка на то, что в datePicker выбран текущий день или прошедшая дата для чека трека
+        let validDay = currentDate > datePicker.date || sameDay
+        
+        if validDay {
             let trackerRecord = TrackerRecord(id: id, date: datePicker.date)
+            print(trackerRecord.date)
             dataProvider.remove(trackerRecord)
         } else {
-            print("Cant add day")
+            print("Cant remove day")
         }
     }
 }

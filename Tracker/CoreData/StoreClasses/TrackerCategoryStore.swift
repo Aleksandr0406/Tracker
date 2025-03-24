@@ -48,9 +48,9 @@ final class TrackerCategoryStore: NSObject {
     var trackerCategories: [TrackerCategory] {
         guard
             let objects = self.fetchedResultsController?.fetchedObjects,
-            let trackers = try? objects.map({ try self.trackerFetch(from: $0) })
+            let trackerCategories = try? objects.map({ try self.trackerFetch(from: $0) })
         else { return [] }
-        return trackers
+        return trackerCategories
     }
     
     convenience override init() {

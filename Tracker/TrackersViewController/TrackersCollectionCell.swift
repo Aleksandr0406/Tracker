@@ -8,8 +8,8 @@
 import UIKit
 
 protocol TrackersCollectionCellDelegate: AnyObject {
-    func completeTracker(id: UUID, at indexPath: IndexPath)
-    func uncompleteTracker(id: UUID, at indexPath: IndexPath)
+    func completeTracker(id: UUID)
+    func uncompleteTracker(id: UUID)
 }
 
 final class TrackersCollectionCell: UICollectionViewCell {
@@ -26,7 +26,6 @@ final class TrackersCollectionCell: UICollectionViewCell {
     
     private var isCompletedToday: Bool = false
     private var trackerId: UUID?
-    private var indexPath: IndexPath?
     private let doneImage = UIImage(named: "Check_Tracker")
     private let plusImage: UIImage = {
         let pointSize = UIImage.SymbolConfiguration(pointSize: 11)
@@ -50,10 +49,9 @@ final class TrackersCollectionCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with tracker: Tracker, isCompletedToday: Bool, indexPath: IndexPath, completedDays: Int, color: UIColor) {
+    func configure(with tracker: Tracker, isCompletedToday: Bool, completedDays: Int, color: UIColor) {
         self.trackerId = tracker.id
         self.isCompletedToday = isCompletedToday
-        self.indexPath = indexPath
         
         emojiLabel.text = tracker.emoji
         habitNameLabel.text = tracker.name
@@ -115,13 +113,12 @@ final class TrackersCollectionCell: UICollectionViewCell {
     }
     
     @objc private func didTapAddDayButton() {
-        guard let indexPath = indexPath,
-              let trackerId = trackerId else { return }
+        guard let trackerId = trackerId else { return }
         
         if isCompletedToday {
-            delegate?.uncompleteTracker(id: trackerId, at: indexPath)
+            delegate?.uncompleteTracker(id: trackerId)
         } else {
-            delegate?.completeTracker(id: trackerId, at: indexPath)
+            delegate?.completeTracker(id: trackerId)
         }
     }
     

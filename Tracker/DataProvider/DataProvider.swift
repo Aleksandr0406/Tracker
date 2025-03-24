@@ -10,11 +10,25 @@ import UIKit
 
 final class DataProvider: NSObject {
     private let trackerStore: TrackerStore = TrackerStore()
-    private let trackerCategoryStore: TrackerCategoryStore = TrackerCategoryStore()
+    let trackerCategoryStore: TrackerCategoryStore = TrackerCategoryStore()
     private let trackerRecordStore: TrackerRecordStore = TrackerRecordStore()
     
     private var context: NSManagedObjectContext? {
         (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext
+    }
+    
+    func addTrackerCategory(categoryName: String) {
+        guard let context = context else { return }
+        
+        let categoryIsExist = trackerCategoryStore.checkCategoryExistence(categoryName: categoryName)
+        
+        if  categoryIsExist != nil {
+            print("This category is already exist")
+        } else {
+            let trackerCategory = TrackerCategoryCoreData(context: context)
+            trackerCategory.name = categoryName
+            try? context.save()
+        }
     }
     
     func addTracker(categoryName: String, tracker: Tracker) {
