@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -27,6 +27,8 @@
 		3379E47A2D5244E8002FCC3C /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3379E4792D5244E8002FCC3C /* Tracker.swift */; };
 		3379E47C2D5245BF002FCC3C /* TrackerCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3379E47B2D5245BF002FCC3C /* TrackerCategory.swift */; };
 		3379E47E2D524600002FCC3C /* TrackerRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3379E47D2D524600002FCC3C /* TrackerRecord.swift */; };
+		33A31FCD2D95D44D00C428DF /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 33A31FCC2D95D44D00C428DF /* SnapshotTesting */; };
+		33A31FD52D95E50200C428DF /* ColorsForDarkLightTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A31FD42D95E50200C428DF /* ColorsForDarkLightTheme.swift */; };
 		33A765712D7B30DF00952C29 /* TrackerCategoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A765702D7B30DF00952C29 /* TrackerCategoryStore.swift */; };
 		33ADD43F2D5B8C100088A503 /* NewTrackerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33ADD43E2D5B8C100088A503 /* NewTrackerViewController.swift */; };
 		33ADD4452D5BB01D0088A503 /* NewHabitOrNonRegularEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33ADD4442D5BB01D0088A503 /* NewHabitOrNonRegularEventViewController.swift */; };
@@ -43,6 +45,16 @@
 		33F6422F2D7F161C001FE40A /* TrackerRecordStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F6422E2D7F161C001FE40A /* TrackerRecordStore.swift */; };
 		33F642312D7F1852001FE40A /* TrackerScheduleValueTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F642302D7F1852001FE40A /* TrackerScheduleValueTransformer.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		33A31FC62D95D3F500C428DF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3305E7172D4BB1E200B18609 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3305E71E2D4BB1E200B18609;
+			remoteInfo = Tracker;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		3305E71F2D4BB1E200B18609 /* Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -67,6 +79,8 @@
 		3379E4792D5244E8002FCC3C /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
 		3379E47B2D5245BF002FCC3C /* TrackerCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategory.swift; sourceTree = "<group>"; };
 		3379E47D2D524600002FCC3C /* TrackerRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecord.swift; sourceTree = "<group>"; };
+		33A31FC22D95D3F500C428DF /* TrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		33A31FD42D95E50200C428DF /* ColorsForDarkLightTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorsForDarkLightTheme.swift; sourceTree = "<group>"; };
 		33A765702D7B30DF00952C29 /* TrackerCategoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategoryStore.swift; sourceTree = "<group>"; };
 		33ADD43E2D5B8C100088A503 /* NewTrackerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTrackerViewController.swift; sourceTree = "<group>"; };
 		33ADD4442D5BB01D0088A503 /* NewHabitOrNonRegularEventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitOrNonRegularEventViewController.swift; sourceTree = "<group>"; };
@@ -84,11 +98,23 @@
 		33F642302D7F1852001FE40A /* TrackerScheduleValueTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerScheduleValueTransformer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		33A31FC32D95D3F500C428DF /* TrackerTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = TrackerTests; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
+
 /* Begin PBXFrameworksBuildPhase section */
 		3305E71C2D4BB1E200B18609 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		33A31FBF2D95D3F500C428DF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				33A31FCD2D95D44D00C428DF /* SnapshotTesting in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -99,6 +125,7 @@
 			isa = PBXGroup;
 			children = (
 				3305E7212D4BB1E200B18609 /* Tracker */,
+				33A31FC32D95D3F500C428DF /* TrackerTests */,
 				3305E7202D4BB1E200B18609 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -107,6 +134,7 @@
 			isa = PBXGroup;
 			children = (
 				3305E71F2D4BB1E200B18609 /* Tracker.app */,
+				33A31FC22D95D3F500C428DF /* TrackerTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -174,6 +202,7 @@
 				33F642302D7F1852001FE40A /* TrackerScheduleValueTransformer.swift */,
 				334D819F2D81F6FD0090591D /* UIColorMarshalling.swift */,
 				3305E73D2D4BE6D700B18609 /* DateExtension.swift */,
+				33A31FD42D95E50200C428DF /* ColorsForDarkLightTheme.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -302,6 +331,30 @@
 			productReference = 3305E71F2D4BB1E200B18609 /* Tracker.app */;
 			productType = "com.apple.product-type.application";
 		};
+		33A31FC12D95D3F500C428DF /* TrackerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 33A31FC82D95D3F500C428DF /* Build configuration list for PBXNativeTarget "TrackerTests" */;
+			buildPhases = (
+				33A31FBE2D95D3F500C428DF /* Sources */,
+				33A31FBF2D95D3F500C428DF /* Frameworks */,
+				33A31FC02D95D3F500C428DF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				33A31FC72D95D3F500C428DF /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				33A31FC32D95D3F500C428DF /* TrackerTests */,
+			);
+			name = TrackerTests;
+			packageProductDependencies = (
+				33A31FCC2D95D44D00C428DF /* SnapshotTesting */,
+			);
+			productName = TrackerTests;
+			productReference = 33A31FC22D95D3F500C428DF /* TrackerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -309,11 +362,15 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1540;
+				LastSwiftUpdateCheck = 1620;
 				LastUpgradeCheck = 1540;
 				TargetAttributes = {
 					3305E71E2D4BB1E200B18609 = {
 						CreatedOnToolsVersion = 15.4;
+					};
+					33A31FC12D95D3F500C428DF = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = 3305E71E2D4BB1E200B18609;
 					};
 				};
 			};
@@ -326,11 +383,15 @@
 				Base,
 			);
 			mainGroup = 3305E7162D4BB1E200B18609;
+			packageReferences = (
+				33A31FCB2D95D44D00C428DF /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
+			);
 			productRefGroup = 3305E7202D4BB1E200B18609 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				3305E71E2D4BB1E200B18609 /* Tracker */,
+				33A31FC12D95D3F500C428DF /* TrackerTests */,
 			);
 		};
 /* End PBXProject section */
@@ -345,6 +406,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		33A31FC02D95D3F500C428DF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -354,6 +422,7 @@
 			files = (
 				33C158AB2D5E20C9003C2894 /* NewHabitOrNonRegularEventEmojiCollectionCell.swift in Sources */,
 				336A00D32D6BCFF100DC232C /* TrackersCollectionSupplementaryView.swift in Sources */,
+				33A31FD52D95E50200C428DF /* ColorsForDarkLightTheme.swift in Sources */,
 				33A765712D7B30DF00952C29 /* TrackerCategoryStore.swift in Sources */,
 				33F6422F2D7F161C001FE40A /* TrackerRecordStore.swift in Sources */,
 				33C158B42D610768003C2894 /* NewCategoryViewController.swift in Sources */,
@@ -388,7 +457,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		33A31FBE2D95D3F500C428DF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		33A31FC72D95D3F500C428DF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3305E71E2D4BB1E200B18609 /* Tracker */;
+			targetProxy = 33A31FC62D95D3F500C428DF /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		3305E72D2D4BB1E300B18609 /* LaunchScreen.storyboard */ = {
@@ -585,6 +669,44 @@
 			};
 			name = Release;
 		};
+		33A31FC92D95D3F500C428DF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 96QUDFWHW9;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.abaliev.TrackerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Tracker.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Tracker";
+			};
+			name = Debug;
+		};
+		33A31FCA2D95D3F500C428DF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 96QUDFWHW9;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.abaliev.TrackerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Tracker.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Tracker";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -606,7 +728,35 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		33A31FC82D95D3F500C428DF /* Build configuration list for PBXNativeTarget "TrackerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				33A31FC92D95D3F500C428DF /* Debug */,
+				33A31FCA2D95D3F500C428DF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		33A31FCB2D95D44D00C428DF /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.18.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		33A31FCC2D95D44D00C428DF /* SnapshotTesting */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 33A31FCB2D95D44D00C428DF /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			productName = SnapshotTesting;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		33B9E55C2D75F09000824F5F /* Tracker.xcdatamodeld */ = {
