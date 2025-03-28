@@ -11,6 +11,7 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
     var onAddHabitButtonTapped: ((String, String, [String], String, UIColor) -> ())?
     var categoriesAndSchedule: [String] = []
     
+    private let colorsForDarkLightTheme: ColorsForDarkLightTheme = ColorsForDarkLightTheme()
     private let trackerCategoryStore: TrackerCategoryStore = TrackerCategoryStore()
     private var trackerCategoryName: String?
     private let emojiIndexSection = 0
@@ -80,7 +81,7 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = colorsForDarkLightTheme.whiteBlackDLT
         
         setBarItem()
         createTitleHabitTextField()
@@ -95,18 +96,18 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
     private func setBarItem() {
         if categoriesAndSchedule.count > 1 {
             navigationItem.title = "Новая привычка"
-            let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.medium)]
+            let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.medium), NSAttributedString.Key.foregroundColor: colorsForDarkLightTheme.blackWhiteDLT]
             navigationController?.navigationBar.titleTextAttributes = attributes
         } else {
             navigationItem.title = "Новое нерегулярное событие"
-            let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.medium)]
+            let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.medium), NSAttributedString.Key.foregroundColor: colorsForDarkLightTheme.blackWhiteDLT]
             navigationController?.navigationBar.titleTextAttributes = attributes
         }
     }
     
     private func createTitleHabitTextField() {
         titleHabitTextField.placeholder = "Введите название трекера"
-        titleHabitTextField.backgroundColor = UIColor(named: "E6E8EB_30%")
+        titleHabitTextField.backgroundColor = colorsForDarkLightTheme.backgroundAndPlaceholderBackgroundOtherVC
         titleHabitTextField.layer.cornerRadius = 16
         titleHabitTextField.clearButtonMode = .always
         titleHabitTextField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 75))
@@ -137,9 +138,10 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
     }
     
     private func createCategoryAndScheduleTable() {
-        categoryAndScheduleTable.backgroundColor = UIColor(named: "E6E8EB_30%")
+        categoryAndScheduleTable.backgroundColor = colorsForDarkLightTheme.backgroundAndPlaceholderBackgroundOtherVC
         categoryAndScheduleTable.layer.cornerRadius = 16
         categoryAndScheduleTable.isScrollEnabled = false
+        categoryAndScheduleTable.separatorColor = UIColor(named: "SeparatorColor")
         
         categoryAndScheduleTable.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(categoryAndScheduleTable)
@@ -149,7 +151,7 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
     }
     
     private func createCancelButton() {
-        cancelButton.backgroundColor = .white
+        cancelButton.backgroundColor = colorsForDarkLightTheme.whiteBlackDLT
         cancelButton.layer.borderColor = UIColor(named: "Cancel_Button")?.cgColor
         cancelButton.layer.borderWidth = 1
         cancelButton.setTitle("Отменить", for: .normal)
@@ -296,9 +298,11 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
               let checkScheduleSubtitle = categoryAndScheduleTable.cellForRow(at: IndexPath(row: 1, section: 0))?.detailTextLabel?.text?.isEmpty else { return }
         
         if checkTextField && !checkCategorySubtitle && !checkScheduleSubtitle && savedEmoji != nil && savedColor != nil {
-            addHabitButton.backgroundColor = .black
+            addHabitButton.setTitleColor(colorsForDarkLightTheme.whiteBlackDLT, for: .normal)
+            addHabitButton.backgroundColor = colorsForDarkLightTheme.blackWhiteDLT
             addHabitButton.isEnabled = true
         } else {
+            addHabitButton.setTitleColor(UIColor.white, for: .normal)
             addHabitButton.backgroundColor = UIColor(named: "Add_Button")
             addHabitButton.layer.borderColor = UIColor(named: "Add_Button")?.cgColor
             addHabitButton.layer.borderWidth = 1
@@ -312,9 +316,11 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
         guard let checkCategorySubtitle = categoryAndScheduleTable.cellForRow(at: IndexPath(row: 0, section: 0))?.detailTextLabel?.text?.isEmpty else { return }
         
         if checkTextField && !checkCategorySubtitle && savedEmoji != nil && savedColor != nil {
-            addHabitButton.backgroundColor = .black
+            addHabitButton.setTitleColor(colorsForDarkLightTheme.whiteBlackDLT, for: .normal)
+            addHabitButton.backgroundColor = colorsForDarkLightTheme.blackWhiteDLT
             addHabitButton.isEnabled = true
         } else {
+            addHabitButton.setTitleColor(UIColor.white, for: .normal)
             addHabitButton.backgroundColor = UIColor(named: "Add_Button")
             addHabitButton.layer.borderColor = UIColor(named: "Add_Button")?.cgColor
             addHabitButton.layer.borderWidth = 1
@@ -386,7 +392,7 @@ extension NewHabitOrNonRegularEventViewController: UICollectionViewDelegateFlowL
         selectedRows.forEach { selectedRow in
             if selectedRow.section == indexPath.section && indexPath.section == 0 && selectedRow.row != indexPath.row {
                 let selectedEmojiCell = collectionView.cellForItem(at: selectedRow) as? NewHabitOrNonRegularEventEmojiCollectionCell
-                selectedEmojiCell?.backgroundColor = .white
+                selectedEmojiCell?.backgroundColor = colorsForDarkLightTheme.whiteBlackDLT
                 selectedEmojiCell?.layer.masksToBounds = true
                 collectionView.deselectItem(at: selectedRow, animated: false)
             }
@@ -403,7 +409,7 @@ extension NewHabitOrNonRegularEventViewController: UICollectionViewDelegateFlowL
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         if let selectedEmojiCell = collectionView.cellForItem(at: indexPath) as? NewHabitOrNonRegularEventEmojiCollectionCell {
-            selectedEmojiCell.backgroundColor = .white
+            selectedEmojiCell.backgroundColor = colorsForDarkLightTheme.whiteBlackDLT
             selectedEmojiCell.layer.masksToBounds = true
             savedEmoji = nil
         } else {
@@ -460,7 +466,7 @@ extension NewHabitOrNonRegularEventViewController: UICollectionViewDataSource {
         guard let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as? NewHabitOrNonRegularEventCollectionSupplementaryView else { return UICollectionReusableView() }
         
         headerView.titleLabel.font = .systemFont(ofSize: 19, weight: UIFont.Weight.bold)
-        
+        headerView.tintColor = colorsForDarkLightTheme.blackWhiteDLT
         (indexPath.section == emojiIndexSection) ? (headerView.titleLabel.text = "Emoji") : (headerView.titleLabel.text = "Цвет")
         return headerView
     }
@@ -482,10 +488,11 @@ extension NewHabitOrNonRegularEventViewController: UITableViewDataSource {
             cell = UITableViewCell(style: .default, reuseIdentifier: NewHabitOrNonRegularEventTableViewCell.cellIdentifier)
         }
         
-        cell.backgroundColor = UIColor(named: "E6E8EB_30%")
+        cell.backgroundColor = colorsForDarkLightTheme.backgroundAndPlaceholderBackgroundOtherVC
         cell.accessoryType = .disclosureIndicator
         cell.textLabel?.text = categoriesAndSchedule[indexPath.row]
         cell.textLabel?.font = .systemFont(ofSize: 17, weight: UIFont.Weight.regular)
+        cell.textLabel?.textColor = colorsForDarkLightTheme.blackWhiteDLT
         
         if indexPath.row == categoriesAndSchedule.count - 1 {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: tableView.bounds.width)

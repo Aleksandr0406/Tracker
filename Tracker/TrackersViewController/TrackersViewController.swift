@@ -8,6 +8,7 @@
 import UIKit
 
 final class TrackersViewController: UIViewController {
+    private let colorsForDarkLightTheme: ColorsForDarkLightTheme = ColorsForDarkLightTheme()
     private let uiColorMarshalling: UIColorMarshalling = UIColorMarshalling()
     private var trackerRecordStore: TrackerRecordStore = TrackerRecordStore()
     private var trackerCategoryStore: TrackerCategoryStore = TrackerCategoryStore()
@@ -43,7 +44,7 @@ final class TrackersViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .white
+        self.view.backgroundColor = colorsForDarkLightTheme.whiteBlackDLT
         
         setNaviBar()
         createTitleLabel()
@@ -74,7 +75,7 @@ final class TrackersViewController: UIViewController {
             style: .plain,
             target: self,
             action: #selector(didTapAddButton))
-        leftButton.tintColor = .black
+        leftButton.tintColor = colorsForDarkLightTheme.blackWhiteDLT
         navigationItem.setLeftBarButton(leftButton, animated: false)
     }
     
@@ -123,7 +124,7 @@ final class TrackersViewController: UIViewController {
     
     private func createTitleLabel() {
         titleLabel.text = "Трекеры"
-        titleLabel.textColor = .black
+        titleLabel.textColor = colorsForDarkLightTheme.blackWhiteDLT
         titleLabel.font = .systemFont(ofSize: 34, weight: UIFont.Weight.bold)
         
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -139,7 +140,7 @@ final class TrackersViewController: UIViewController {
     
     private func createBackgroundTextLabel() {
         backgroundTextLabel.text = "Что будем отслеживать?"
-        backgroundTextLabel.textColor = .black
+        backgroundTextLabel.textColor = colorsForDarkLightTheme.blackWhiteDLT
         backgroundTextLabel.font = .systemFont(ofSize: 12, weight: UIFont.Weight.medium)
         
         backgroundTextLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -147,10 +148,11 @@ final class TrackersViewController: UIViewController {
     }
     
     private func createSearchTextField() {
-        searchTextField.backgroundColor = .lightText
-        searchTextField.textColor = .black
+        searchTextField.backgroundColor = colorsForDarkLightTheme.backgroundColorSearchTextFieldTrackVC
+        searchTextField.textColor = colorsForDarkLightTheme.blackWhiteDLT
         searchTextField.font = UIFont.systemFont(ofSize: 17)
-        searchTextField.placeholder = "Поиск"
+//        searchTextField.placeholder = "Поиск"
+        searchTextField.attributedPlaceholder = NSAttributedString(string: "Поиск", attributes: [NSAttributedString.Key.foregroundColor: colorsForDarkLightTheme.placeholderSearchTextFieldTextColorTrackVC ?? UIColor()])
         
         searchTextField.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(searchTextField)

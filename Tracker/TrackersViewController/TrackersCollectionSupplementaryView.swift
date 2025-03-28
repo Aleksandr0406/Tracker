@@ -9,6 +9,8 @@ import UIKit
 
 final class TrackersCollectionSupplementaryView: UICollectionReusableView {
     static let headerIdentifier = "Header"
+    
+    let colorsForDarkLightTheme: ColorsForDarkLightTheme = ColorsForDarkLightTheme()
 
     let titleLabel: UILabel = UILabel()
     
@@ -19,6 +21,7 @@ final class TrackersCollectionSupplementaryView: UICollectionReusableView {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.textAlignment = .left
         titleLabel.font = .boldSystemFont(ofSize: 19)
+        titleLabel.textColor = colorsForDarkLightTheme.blackWhiteDLT
         
         NSLayoutConstraint.activate([
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),

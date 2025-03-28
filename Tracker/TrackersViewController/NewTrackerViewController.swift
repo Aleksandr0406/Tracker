@@ -10,12 +10,13 @@ import UIKit
 final class NewTrackerViewController: UIViewController {
     var onAddHabitOrNonRegularEvenButtonTapped: (((String, String, [String], String, UIColor) -> ()))?
     
+    private let colorsForDarkLightTheme: ColorsForDarkLightTheme = ColorsForDarkLightTheme()
     private let addNewTrackerButton: UIButton = UIButton()
     private let addNewNotRegularEventButton: UIButton = UIButton()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = colorsForDarkLightTheme.whiteBlackDLT
         
         setBarItem()
         createAddNewTrackerButton()
@@ -25,15 +26,15 @@ final class NewTrackerViewController: UIViewController {
     
     private func setBarItem() {
         navigationItem.title = "Создание трекера"
-        let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.medium)]
+        let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.medium), NSAttributedString.Key.foregroundColor: colorsForDarkLightTheme.blackWhiteDLT]
         navigationController?.navigationBar.titleTextAttributes = attributes
     }
     
     private func createAddNewTrackerButton() {
         addNewTrackerButton.layer.cornerRadius = 16
-        addNewTrackerButton.backgroundColor = .black
+        addNewTrackerButton.backgroundColor = colorsForDarkLightTheme.blackWhiteDLT
         addNewTrackerButton.setTitle("Привычка", for: .normal)
-        addNewTrackerButton.setTitleColor(.white, for: .normal)
+        addNewTrackerButton.setTitleColor(colorsForDarkLightTheme.whiteBlackDLT, for: .normal)
         addNewTrackerButton.titleLabel?.textAlignment = .center
         addNewTrackerButton.titleLabel?.font = .systemFont(ofSize: 16, weight: UIFont.Weight.medium)
         
@@ -50,9 +51,9 @@ final class NewTrackerViewController: UIViewController {
     
     private func createAddNewNotRegularEventButton() {
         addNewNotRegularEventButton.layer.cornerRadius = 16
-        addNewNotRegularEventButton.backgroundColor = .black
+        addNewNotRegularEventButton.backgroundColor = colorsForDarkLightTheme.blackWhiteDLT
         addNewNotRegularEventButton.setTitle("Нерегулярное событие", for: .normal)
-        addNewNotRegularEventButton.setTitleColor(.white, for: .normal)
+        addNewNotRegularEventButton.setTitleColor(colorsForDarkLightTheme.whiteBlackDLT, for: .normal)
         addNewNotRegularEventButton.titleLabel?.textAlignment = .center
         addNewNotRegularEventButton.titleLabel?.font = .systemFont(ofSize: 16, weight: UIFont.Weight.medium)
         

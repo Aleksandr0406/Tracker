@@ -10,12 +10,14 @@ import UIKit
 final class NewCategoryNameViewController: UIViewController, UITextFieldDelegate {
     var onDoneButtonTapped: ((String) -> ())?
     
+    private let colorsForDarkLightTheme: ColorsForDarkLightTheme = ColorsForDarkLightTheme()
+    
     private var doneButton: UIButton = UIButton()
     private var titleCategoryTextField: UITextField = UITextField()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = colorsForDarkLightTheme.whiteBlackDLT
         
         setBarItem()
         createTitleCategoryTextField()
@@ -25,17 +27,18 @@ final class NewCategoryNameViewController: UIViewController, UITextFieldDelegate
     
     private func setBarItem() {
         navigationItem.title = "Новая категория"
-        let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.medium)]
+        let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.medium), NSAttributedString.Key.foregroundColor: colorsForDarkLightTheme.blackWhiteDLT]
         navigationController?.navigationBar.titleTextAttributes = attributes
     }
     
     private func createTitleCategoryTextField() {
         titleCategoryTextField.placeholder = "Введите название категории"
-        titleCategoryTextField.backgroundColor = UIColor(named: "E6E8EB_30%")
+        titleCategoryTextField.backgroundColor = colorsForDarkLightTheme.backgroundAndPlaceholderBackgroundOtherVC
         titleCategoryTextField.layer.cornerRadius = 16
         titleCategoryTextField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 75))
         titleCategoryTextField.leftViewMode = .always
         titleCategoryTextField.font = .systemFont(ofSize: 17, weight: UIFont.Weight.regular)
+        titleCategoryTextField.textColor = colorsForDarkLightTheme.blackWhiteDLT
         
         titleCategoryTextField.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(titleCategoryTextField)
@@ -46,10 +49,12 @@ final class NewCategoryNameViewController: UIViewController, UITextFieldDelegate
     
     @objc private func didEditCategoryTextField() {
         if titleCategoryTextField.hasText {
-            doneButton.backgroundColor = .black
+            doneButton.backgroundColor = colorsForDarkLightTheme.blackWhiteDLT
+            doneButton.setTitleColor(colorsForDarkLightTheme.whiteBlackDLT, for: .normal)
             doneButton.isEnabled = true
         } else {
             doneButton.backgroundColor = UIColor(named: "Add_Button")
+            doneButton.setTitleColor(UIColor.white, for: .normal)
             doneButton.isEnabled = false
         }
     }
