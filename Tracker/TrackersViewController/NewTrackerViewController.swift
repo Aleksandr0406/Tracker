@@ -10,6 +10,7 @@ import UIKit
 final class NewTrackerViewController: UIViewController {
     var onAddHabitOrNonRegularEvenButtonTapped: (((String, String, [String], String, UIColor) -> ()))?
     
+    private let localizableStrings: LocalizableStringsNewTrackerVC = LocalizableStringsNewTrackerVC()
     private let colorsForDarkLightTheme: ColorsForDarkLightTheme = ColorsForDarkLightTheme()
     private let addNewTrackerButton: UIButton = UIButton()
     private let addNewNotRegularEventButton: UIButton = UIButton()
@@ -19,21 +20,21 @@ final class NewTrackerViewController: UIViewController {
         view.backgroundColor = colorsForDarkLightTheme.whiteBlackDLT
         
         setBarItem()
-        createAddNewTrackerButton()
+        createAddNewHabitButton()
         createAddNewNotRegularEventButton()
         setConstraints()
     }
     
     private func setBarItem() {
-        navigationItem.title = "Создание трекера"
+        navigationItem.title = localizableStrings.title
         let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.medium), NSAttributedString.Key.foregroundColor: colorsForDarkLightTheme.blackWhiteDLT]
         navigationController?.navigationBar.titleTextAttributes = attributes
     }
     
-    private func createAddNewTrackerButton() {
+    private func createAddNewHabitButton() {
         addNewTrackerButton.layer.cornerRadius = 16
         addNewTrackerButton.backgroundColor = colorsForDarkLightTheme.blackWhiteDLT
-        addNewTrackerButton.setTitle("Привычка", for: .normal)
+        addNewTrackerButton.setTitle(localizableStrings.addNewHabitButtonTitle, for: .normal)
         addNewTrackerButton.setTitleColor(colorsForDarkLightTheme.whiteBlackDLT, for: .normal)
         addNewTrackerButton.titleLabel?.textAlignment = .center
         addNewTrackerButton.titleLabel?.font = .systemFont(ofSize: 16, weight: UIFont.Weight.medium)
@@ -41,18 +42,18 @@ final class NewTrackerViewController: UIViewController {
         addNewTrackerButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(addNewTrackerButton)
         
-        addNewTrackerButton.addTarget(self, action: #selector(didTapAddNewTrackerButton), for: .touchUpInside)
+        addNewTrackerButton.addTarget(self, action: #selector(didTapAddNewHabitButton), for: .touchUpInside)
     }
     
-    @objc private func didTapAddNewTrackerButton() {
-        let sections = ["Категория", "Расписание"]
+    @objc private func didTapAddNewHabitButton() {
+        let sections = [localizableStrings.categoryLoc, localizableStrings.scheduleLoc]
         presentHabitOrNotRegularEvent(sections)
     }
     
     private func createAddNewNotRegularEventButton() {
         addNewNotRegularEventButton.layer.cornerRadius = 16
         addNewNotRegularEventButton.backgroundColor = colorsForDarkLightTheme.blackWhiteDLT
-        addNewNotRegularEventButton.setTitle("Нерегулярное событие", for: .normal)
+        addNewNotRegularEventButton.setTitle(localizableStrings.addNewNotRegularEventButton, for: .normal)
         addNewNotRegularEventButton.setTitleColor(colorsForDarkLightTheme.whiteBlackDLT, for: .normal)
         addNewNotRegularEventButton.titleLabel?.textAlignment = .center
         addNewNotRegularEventButton.titleLabel?.font = .systemFont(ofSize: 16, weight: UIFont.Weight.medium)
@@ -64,7 +65,7 @@ final class NewTrackerViewController: UIViewController {
     }
     
     @objc private func didTapAddNewNotRegularEventButton() {
-        let sections = ["Категория"]
+        let sections = [localizableStrings.categoryLoc]
         presentHabitOrNotRegularEvent(sections)
     }
     

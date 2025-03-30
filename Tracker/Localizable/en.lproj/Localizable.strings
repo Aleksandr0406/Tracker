@@ -1,0 +1,46 @@
+/* 
+  Localizable.strings
+  Tracker
+
+  Created by 1111 on 30.03.2025.
+  
+*/
+
+"Трекеры" = "Trackers";
+"Статистика" = "Statistics";
+"Что будем отслеживать?" = "What we will track?";
+"Поиск" = "Search";
+"Понедельник" = "Monday";
+"Вторник" = "Tuesday";
+"Среда" = "Wednesday";
+"Четверг" = "Thursday";
+"Пятница" = "Friday";
+"Суббота" = "Saturday";
+"Воскресенье" = "Sunday";
+"день" = "day";
+"дни" = "days";
+"Создание трекера" = "Tracker creation";
+"Привычка" = "Habit";
+"Категория" = "Category";
+"Расписание" = "Schedule";
+"Нерегулярное событие" = "Non regular event";
+"Пнд" = "Mon";
+"Вт" = "Tue";
+"Ср" = "Wed";
+"Чт" = "Thurs";
+"Пт" = "Fri";
+"Сб" = "Sat";
+"Вс" = "Sun";
+"Новая привычка" = "New habit";
+"Новое нерегулярное событие" = "New non regular event";
+"Введите название трекера" = "Enter tracker name";
+"Ограничение 38 символов" = "38 character limit";
+"Отменить" = "Cancel";
+"Создать" = "Create";
+"Каждый день" = "Everyday";
+"Цвет" = "Color";
+"Привычки и события можно\#n объединить по смыслу" = "Habits and events\#n can be combined by meaning";
+"Добавить категорию" = "Add category";
+"Новая категория" = "New category";
+"Введите название категории" = "Enter category name";
+"Готово" = "Done";

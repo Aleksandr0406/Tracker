@@ -10,6 +10,7 @@ import UIKit
 final class NewCategoryViewController: UIViewController {
     var onAddCategoryButtonTapped: ((String) -> ())?
     
+    private let localizableStrings: LocalizableStringsNewCategoryVC = LocalizableStringsNewCategoryVC()
     private let colorsForDarkLightTheme: ColorsForDarkLightTheme = ColorsForDarkLightTheme()
     private var viewModel: CategoriesViewModel = CategoriesViewModel()
     
@@ -48,7 +49,7 @@ final class NewCategoryViewController: UIViewController {
     }
     
     private func setBarItem() {
-        navigationItem.title = "Категория"
+        navigationItem.title = localizableStrings.categoryTitle
         let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.medium), NSAttributedString.Key.foregroundColor: colorsForDarkLightTheme.blackWhiteDLT]
         navigationController?.navigationBar.titleTextAttributes = attributes
     }
@@ -62,7 +63,7 @@ final class NewCategoryViewController: UIViewController {
     }
     
     private func createBackgroundTextLabel() {
-        backgroundTextLabel.text = #"Привычки и события можно\#n объединить по смыслу"#
+        backgroundTextLabel.text = localizableStrings.placeholderTextPartOne + "\n" + localizableStrings.placeholderTextPartTwo
         backgroundTextLabel.numberOfLines = 2
         backgroundTextLabel.textColor = colorsForDarkLightTheme.blackWhiteDLT
         backgroundTextLabel.font = .systemFont(ofSize: 12, weight: UIFont.Weight.medium)
@@ -74,7 +75,7 @@ final class NewCategoryViewController: UIViewController {
     
     private func createAddCategoryButton() {
         addCategoryButton.backgroundColor = colorsForDarkLightTheme.blackWhiteDLT
-        addCategoryButton.setTitle("Добавить категорию", for: .normal)
+        addCategoryButton.setTitle(localizableStrings.addCategoryButtonTitle, for: .normal)
         addCategoryButton.titleLabel?.font = .systemFont(ofSize: 16, weight: UIFont.Weight.medium)
         addCategoryButton.setTitleColor(colorsForDarkLightTheme.whiteBlackDLT, for: .normal)
         addCategoryButton.layer.cornerRadius = 16

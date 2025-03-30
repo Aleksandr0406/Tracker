@@ -10,6 +10,7 @@ import UIKit
 final class NewCategoryNameViewController: UIViewController, UITextFieldDelegate {
     var onDoneButtonTapped: ((String) -> ())?
     
+    private let localizableStrings: LocalizableStringsNewCategoryNameVC = LocalizableStringsNewCategoryNameVC()
     private let colorsForDarkLightTheme: ColorsForDarkLightTheme = ColorsForDarkLightTheme()
     
     private var doneButton: UIButton = UIButton()
@@ -26,13 +27,13 @@ final class NewCategoryNameViewController: UIViewController, UITextFieldDelegate
     }
     
     private func setBarItem() {
-        navigationItem.title = "Новая категория"
+        navigationItem.title = localizableStrings.title
         let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.medium), NSAttributedString.Key.foregroundColor: colorsForDarkLightTheme.blackWhiteDLT]
         navigationController?.navigationBar.titleTextAttributes = attributes
     }
     
     private func createTitleCategoryTextField() {
-        titleCategoryTextField.placeholder = "Введите название категории"
+        titleCategoryTextField.placeholder = localizableStrings.textFieldPlaceholderText
         titleCategoryTextField.backgroundColor = colorsForDarkLightTheme.backgroundAndPlaceholderBackgroundOtherVC
         titleCategoryTextField.layer.cornerRadius = 16
         titleCategoryTextField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 75))
@@ -61,7 +62,7 @@ final class NewCategoryNameViewController: UIViewController, UITextFieldDelegate
     
     private func createDoneButton() {
         doneButton.backgroundColor = UIColor(named: "Add_Button")
-        doneButton.setTitle("Готово", for: .normal)
+        doneButton.setTitle(localizableStrings.doneButtonTitle, for: .normal)
         doneButton.setTitleColor(UIColor.white, for: .normal)
         doneButton.layer.cornerRadius = 16
         doneButton.titleLabel?.font = .systemFont(ofSize: 16, weight: UIFont.Weight.medium)

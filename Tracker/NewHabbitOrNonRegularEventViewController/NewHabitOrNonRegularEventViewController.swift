@@ -49,16 +49,20 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
         UIColor(named: "2FD058")
     ]
     
-    private let shortNamesDaysOfWeek: [String : String] =
-    [
-        "Понедельник" : "Пнд",
-        "Вторник" : "Вт",
-        "Среда" : "Ср",
-        "Четверг" : "Чт",
-        "Пятница" : "Пт",
-        "Суббота" : "Сб",
-        "Воскресенье" : "Вс"
-    ]
+    private let localizableStrings: LocalizableStringsNewHabitOrNonRegularEventVC = LocalizableStringsNewHabitOrNonRegularEventVC()
+    
+    private var shortNamesDaysOfWeek: [String : String] {
+        let shortNamesDaysOfWeek = [
+            localizableStrings.mondayLoc : localizableStrings.monLoc,
+            localizableStrings.tuesdayLoc : localizableStrings.tueLoc,
+            localizableStrings.wednesdayLoc : localizableStrings.wedLoc,
+            localizableStrings.thursdayLoc : localizableStrings.thursLoc,
+            localizableStrings.fridayLoc : localizableStrings.friLoc,
+            localizableStrings.saturdayLoc : localizableStrings.satLoc,
+            localizableStrings.sundayLoc : localizableStrings.sunLoc
+        ]
+        return shortNamesDaysOfWeek
+    }
     
     private var warningLabel: UILabel = UILabel()
     private var titleHabitTextField: UITextField = UITextField()
@@ -95,18 +99,18 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
     
     private func setBarItem() {
         if categoriesAndSchedule.count > 1 {
-            navigationItem.title = "Новая привычка"
+            navigationItem.title = localizableStrings.titleHabit
             let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.medium), NSAttributedString.Key.foregroundColor: colorsForDarkLightTheme.blackWhiteDLT]
             navigationController?.navigationBar.titleTextAttributes = attributes
         } else {
-            navigationItem.title = "Новое нерегулярное событие"
+            navigationItem.title = localizableStrings.titleNotRegularEvent
             let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.medium), NSAttributedString.Key.foregroundColor: colorsForDarkLightTheme.blackWhiteDLT]
             navigationController?.navigationBar.titleTextAttributes = attributes
         }
     }
     
     private func createTitleHabitTextField() {
-        titleHabitTextField.placeholder = "Введите название трекера"
+        titleHabitTextField.placeholder = localizableStrings.textFieldPlaceholderText
         titleHabitTextField.backgroundColor = colorsForDarkLightTheme.backgroundAndPlaceholderBackgroundOtherVC
         titleHabitTextField.layer.cornerRadius = 16
         titleHabitTextField.clearButtonMode = .always
@@ -127,7 +131,7 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
     }
     
     private func createWarningLabel() {
-        warningLabel.text = "Ограничение 38 символов"
+        warningLabel.text = localizableStrings.warningText
         warningLabel.font = .systemFont(ofSize: 17)
         warningLabel.textColor = .red
         warningLabel.textAlignment = .center
@@ -154,7 +158,7 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
         cancelButton.backgroundColor = colorsForDarkLightTheme.whiteBlackDLT
         cancelButton.layer.borderColor = UIColor(named: "Cancel_Button")?.cgColor
         cancelButton.layer.borderWidth = 1
-        cancelButton.setTitle("Отменить", for: .normal)
+        cancelButton.setTitle(localizableStrings.cancelButtonText, for: .normal)
         cancelButton.setTitleColor(UIColor(named: "Cancel_Button"), for: .normal)
         cancelButton.layer.cornerRadius = 16
         cancelButton.titleLabel?.font = .systemFont(ofSize: 16, weight: UIFont.Weight.medium)
@@ -173,7 +177,7 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
         addHabitButton.backgroundColor = UIColor(named: "Add_Button")
         addHabitButton.layer.borderColor = UIColor(named: "Add_Button")?.cgColor
         addHabitButton.layer.borderWidth = 1
-        addHabitButton.setTitle("Создать", for: .normal)
+        addHabitButton.setTitle(localizableStrings.addTrackerButtonText, for: .normal)
         addHabitButton.setTitleColor(UIColor.white, for: .normal)
         addHabitButton.layer.cornerRadius = 16
         addHabitButton.titleLabel?.font = .systemFont(ofSize: 16, weight: UIFont.Weight.medium)
@@ -267,7 +271,7 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
         
         for dayNumber in 0..<savedLongNamesOfWeek.count {
             if savedLongNamesOfWeek.count == numbersDaysInWeek {
-                savedDaysNames = "Каждый день"
+                savedDaysNames = localizableStrings.everydayScheduleText
             } else {
                 if dayNumber == savedLongNamesOfWeek.count - 1{
                     day = savedLongNamesOfWeek[dayNumber]
@@ -363,7 +367,7 @@ extension NewHabitOrNonRegularEventViewController: UICollectionViewDelegateFlowL
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         let headerView = NewHabitOrNonRegularEventCollectionSupplementaryView()
         
-        section == emojiIndexSection ? (headerView.titleLabel.text = "Emoji") : (headerView.titleLabel.text = "Цвет")
+        section == emojiIndexSection ? (headerView.titleLabel.text = "Emoji") : (headerView.titleLabel.text = localizableStrings.collectionTitleColor)
         
         return headerView.systemLayoutSizeFitting(CGSize(width: collectionView.frame.width,
                                                          height: UIView.layoutFittingExpandedSize.height))
@@ -467,7 +471,7 @@ extension NewHabitOrNonRegularEventViewController: UICollectionViewDataSource {
         
         headerView.titleLabel.font = .systemFont(ofSize: 19, weight: UIFont.Weight.bold)
         headerView.tintColor = colorsForDarkLightTheme.blackWhiteDLT
-        (indexPath.section == emojiIndexSection) ? (headerView.titleLabel.text = "Emoji") : (headerView.titleLabel.text = "Цвет")
+        (indexPath.section == emojiIndexSection) ? (headerView.titleLabel.text = "Emoji") : (headerView.titleLabel.text = localizableStrings.collectionTitleColor)
         return headerView
     }
 }

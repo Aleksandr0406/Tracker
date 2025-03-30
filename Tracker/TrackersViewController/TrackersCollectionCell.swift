@@ -26,6 +26,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
     
     weak var delegate: TrackersCollectionCellDelegate?
     
+    private let localizableStrings: LocalizableStringsTrackersCollectionCell = LocalizableStringsTrackersCollectionCell()
     private var isCompletedToday: Bool = false
     private var trackerId: UUID?
     private let doneImage = UIImage(named: "Check_Tracker")
@@ -58,9 +59,14 @@ final class TrackersCollectionCell: UICollectionViewCell {
         emojiLabel.text = tracker.emoji
         habitNameLabel.text = tracker.name
         
-        let completedDaysString = "\(completedDays) день"
+        if completedDays <= 1 {
+            let completedDaysString = "\(completedDays) " + localizableStrings.dayLoc
         dayLabel.text = completedDaysString
-        
+        } else {
+            let completedDaysString = "\(completedDays) " + localizableStrings.daysLoc
+            dayLabel.text = completedDaysString
+        }
+    
         habitCardColorLabel.layer.backgroundColor = color.cgColor
         
         let image = isCompletedToday ? doneImage : plusImage

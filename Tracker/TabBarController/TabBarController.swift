@@ -8,12 +8,13 @@
 import UIKit
 
 final class TabBarController: UITabBarController  {
+    private let localizableStrings: LocalizableStringsTabBarC = LocalizableStringsTabBarC()
     override func viewDidLoad() {
         let trackersViewController = UINavigationController(rootViewController: TrackersViewController())
-        trackersViewController.tabBarItem = UITabBarItem(title: "Трекеры", image: UIImage(named: "Tab_trackers"), selectedImage: nil)
+        trackersViewController.tabBarItem = UITabBarItem(title: localizableStrings.titleTrackers, image: UIImage(named: "Tab_trackers"), selectedImage: nil)
         
         let statisticsViewController = UINavigationController(rootViewController: StatisticsViewController())
-        statisticsViewController.tabBarItem = UITabBarItem(title: "Статистика", image: UIImage(named: "Tab_statistics"), selectedImage: nil)
+        statisticsViewController.tabBarItem = UITabBarItem(title: localizableStrings.titleStatistics, image: UIImage(named: "Tab_statistics"), selectedImage: nil)
         
         self.setViewControllers([trackersViewController, statisticsViewController], animated: true)
     }

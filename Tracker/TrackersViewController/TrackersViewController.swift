@@ -8,6 +8,7 @@
 import UIKit
 
 final class TrackersViewController: UIViewController {
+    private let localizableStrings: LocalizableStringsTrackersVC = LocalizableStringsTrackersVC()
     private let colorsForDarkLightTheme: ColorsForDarkLightTheme = ColorsForDarkLightTheme()
     private let uiColorMarshalling: UIColorMarshalling = UIColorMarshalling()
     private var trackerRecordStore: TrackerRecordStore = TrackerRecordStore()
@@ -123,7 +124,7 @@ final class TrackersViewController: UIViewController {
     //MARK: Creating elements on screen
     
     private func createTitleLabel() {
-        titleLabel.text = "Трекеры"
+        titleLabel.text = localizableStrings.title
         titleLabel.textColor = colorsForDarkLightTheme.blackWhiteDLT
         titleLabel.font = .systemFont(ofSize: 34, weight: UIFont.Weight.bold)
         
@@ -139,7 +140,7 @@ final class TrackersViewController: UIViewController {
     }
     
     private func createBackgroundTextLabel() {
-        backgroundTextLabel.text = "Что будем отслеживать?"
+        backgroundTextLabel.text = localizableStrings.placeholderTitle
         backgroundTextLabel.textColor = colorsForDarkLightTheme.blackWhiteDLT
         backgroundTextLabel.font = .systemFont(ofSize: 12, weight: UIFont.Weight.medium)
         
@@ -151,8 +152,7 @@ final class TrackersViewController: UIViewController {
         searchTextField.backgroundColor = colorsForDarkLightTheme.backgroundColorSearchTextFieldTrackVC
         searchTextField.textColor = colorsForDarkLightTheme.blackWhiteDLT
         searchTextField.font = UIFont.systemFont(ofSize: 17)
-//        searchTextField.placeholder = "Поиск"
-        searchTextField.attributedPlaceholder = NSAttributedString(string: "Поиск", attributes: [NSAttributedString.Key.foregroundColor: colorsForDarkLightTheme.placeholderSearchTextFieldTextColorTrackVC ?? UIColor()])
+        searchTextField.attributedPlaceholder = NSAttributedString(string: localizableStrings.searchTextFiledPlaceholderText, attributes: [NSAttributedString.Key.foregroundColor: colorsForDarkLightTheme.placeholderSearchTextFieldTextColorTrackVC ?? UIColor()])
         
         searchTextField.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(searchTextField)
@@ -210,8 +210,13 @@ final class TrackersViewController: UIViewController {
     
     private func convertSavedDaysToNumbersOfWeekend(_ savedDays: [String]) {
         let dayNumbers: [String: Int] = [
-            "Понедельник": 2, "Вторник": 3, "Среда": 4,
-            "Четверг": 5, "Пятница": 6, "Суббота": 7, "Воскресенье": 1
+            localizableStrings.mondayLoc: 2,
+            localizableStrings.tuesdayLoc: 3,
+            localizableStrings.wednesdayLoc: 4,
+            localizableStrings.thursdayLoc: 5,
+            localizableStrings.fridayLoc: 6,
+            localizableStrings.saturdayLoc: 7,
+            localizableStrings.sundayLoc: 1
         ]
         
         savedDayNumberOfWeekend = savedDays.compactMap { dayNumbers[$0] }
