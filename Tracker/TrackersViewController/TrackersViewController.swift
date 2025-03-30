@@ -55,6 +55,8 @@ final class TrackersViewController: UIViewController {
         createTrackersCollectionView()
         setConstraints()
         
+        searchTextField.delegate = self
+        
         trackerRecordStore.delegate = self
         completedTrackers = trackerRecordStore.completedTrackers
         completedTrackers.forEach { print($0) }
@@ -81,18 +83,58 @@ final class TrackersViewController: UIViewController {
     }
     
     @objc private func didChangeDate() {
+//        let calendar = Calendar.current
+//        let filterWeekday = calendar.component(.weekday, from: datePicker.date)
+//        
+//        visibleCategories = categories.compactMap { category in
+//            let trackersWithSchedule = category.trackers.filter { tracker in
+//                tracker.schedule.contains { weekDay in
+//                    weekDay == filterWeekday
+//                }
+//            }
+//            
+//            let trackersWithNoSchedule = category.trackers.filter { tracker in
+//                tracker.schedule.isEmpty
+//            }
+//            
+//            let trackers = trackersWithSchedule + trackersWithNoSchedule
+//            
+//            if trackers.isEmpty {
+//                return nil
+//            }
+//            
+//            return TrackerCategory(name: category.name, trackers: trackers)
+//        }
+//        
+//        let isEmpty = visibleCategories.allSatisfy { $0.trackers.isEmpty }
+//        trackersCollectionView.isHidden = isEmpty
+//        backgroundImage.isHidden = !isEmpty
+//        backgroundTextLabel.isHidden = !isEmpty
+//        
+//        trackersCollectionView.reloadData()
+        reloadVisibleCategories()
+    }
+    
+    private func reloadVisibleCategories() {
         let calendar = Calendar.current
         let filterWeekday = calendar.component(.weekday, from: datePicker.date)
+        let filterText = (searchTextField.text ?? "").lowercased()
         
         visibleCategories = categories.compactMap { category in
             let trackersWithSchedule = category.trackers.filter { tracker in
-                tracker.schedule.contains { weekDay in
+                let textCondition = filterText.isEmpty || tracker.name.lowercased().contains(filterText)
+                let dateCondition = tracker.schedule.contains { weekDay in
                     weekDay == filterWeekday
                 }
+                
+                return textCondition && dateCondition
             }
             
             let trackersWithNoSchedule = category.trackers.filter { tracker in
-                tracker.schedule.isEmpty
+                let textCondition = filterText.isEmpty || tracker.name.lowercased().contains(filterText)
+                let dateCondition = tracker.schedule.isEmpty
+                
+                return textCondition && dateCondition
             }
             
             let trackers = trackersWithSchedule + trackersWithNoSchedule
@@ -202,9 +244,15 @@ final class TrackersViewController: UIViewController {
         
         convertSavedDaysToNumbersOfWeekend(savedDays)
         
-        let tracker = Tracker(id: UUID(), name: savedHabitName, color: uiColorMarshalling.hexString(from: savedColor), emoji: savedEmoji, schedule: savedDayNumberOfWeekend)
-        dataProvider.addTracker(categoryName: savedCategoryName, tracker: tracker)
+        let tracker = Tracker(
+            id: UUID(),
+            name: savedHabitName,
+            color: uiColorMarshalling.hexString(from: savedColor),
+            emoji: savedEmoji,
+            schedule: savedDayNumberOfWeekend
+        )
         
+        dataProvider.addTracker(categoryName: savedCategoryName, tracker: tracker)
         didChangeDate()
     }
     
@@ -318,7 +366,7 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-//MARK: Delegate Protocol
+//MARK: Collection Delegate Protocol
 
 extension TrackersViewController: TrackersCollectionCellDelegate {
     func completeTracker(id: UUID) {
@@ -348,6 +396,16 @@ extension TrackersViewController: TrackersCollectionCellDelegate {
         } else {
             print("Cant remove day")
         }
+    }
+}
+
+//MARK: TextField Delegate Protocol
+
+extension TrackersViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        reloadVisibleCategories()
+        return true
     }
 }
 
