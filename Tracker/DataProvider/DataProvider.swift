@@ -9,8 +9,8 @@ import CoreData
 import UIKit
 
 final class DataProvider: NSObject {
-    private let trackerStore: TrackerStore = TrackerStore()
     let trackerCategoryStore: TrackerCategoryStore = TrackerCategoryStore()
+    private let trackerStore: TrackerStore = TrackerStore()
     private let trackerRecordStore: TrackerRecordStore = TrackerRecordStore()
     
     private var context: NSManagedObjectContext? {
@@ -46,6 +46,31 @@ final class DataProvider: NSObject {
             try? context.save()
             do {
                 try trackerStore.addNewTracker(category: trackerCategory, tracker: tracker)
+            } catch {
+                print("Cant add tracker to category")
+            }
+        }
+    }
+    
+    func removeTracker(id: UUID) {
+        trackerStore.remove(id)
+    }
+    
+    func updateTracker(updatingTracker: Tracker, updateCategoryName: String) {
+        guard let context = context else { return }
+        
+        if let categoryIsExist = trackerCategoryStore.checkCategoryExistence(categoryName: updateCategoryName) {
+            do {
+                try trackerStore.updateTracker(updatingTracker: updatingTracker, updateCategoryName: categoryIsExist)
+            } catch {
+                print("Cant update newTracker")
+            }
+        } else {
+            let trackerCategory = TrackerCategoryCoreData(context: context)
+            trackerCategory.name = updateCategoryName
+            try? context.save()
+            do {
+                try trackerStore.updateTracker(updatingTracker: updatingTracker, updateCategoryName: trackerCategory)
             } catch {
                 print("Cant add tracker to category")
             }

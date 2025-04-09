@@ -24,11 +24,12 @@ final class TrackersCollectionCell: UICollectionViewCell {
     let addDayButton: UIButton = UIButton()
     let dayLabel: UILabel = UILabel()
     
+    var trackerId: UUID?
+    
     weak var delegate: TrackersCollectionCellDelegate?
     
     private let localizableStrings: LocalizableStringsTrackersCollectionCell = LocalizableStringsTrackersCollectionCell()
     private var isCompletedToday: Bool = false
-    private var trackerId: UUID?
     private let doneImage = UIImage(named: "Check_Tracker")
     private let plusImage: UIImage = {
         let pointSize = UIImage.SymbolConfiguration(pointSize: 11)

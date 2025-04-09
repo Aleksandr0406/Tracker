@@ -87,4 +87,33 @@ final class TrackerStore: NSObject {
         
         return Tracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule)
     }
+    
+    func updateTracker(updatingTracker: Tracker, updateCategoryName: TrackerCategoryCoreData) throws {
+        let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
+        let trackers = try? context.fetch(fetchRequest)
+        guard let updatingStoreTracker = trackers?.first(where: {
+            $0.id == updatingTracker.id
+        }) else { return }
+        
+        updatingStoreTracker.category = updateCategoryName
+        updatingStoreTracker.name = updatingTracker.name
+        updatingStoreTracker.color = updatingTracker.color
+        updatingStoreTracker.emoji = updatingTracker.emoji
+        updatingStoreTracker.schedule = updatingTracker.schedule as NSObject
+        
+        try? context.save()
+    }
+    
+    func remove(_ id: UUID) {
+        let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
+        let trackers = try? context.fetch(fetchRequest)
+        guard let currentTracker = trackers?.first(where: {
+            $0.id == id
+        }) else { return }
+        
+        context.delete(currentTracker)
+        try? context.save()
+    }
 }
+
+
