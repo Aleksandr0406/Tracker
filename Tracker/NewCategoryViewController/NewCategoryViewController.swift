@@ -182,9 +182,9 @@ extension NewCategoryViewController: UITableViewDelegate {
             selectedCell.accessoryType = .checkmark
         }
         
-        guard let subtitleNameCategory = selectedCell.textLabel?.text,
-              let onAddCategoryButtonTapped = onAddCategoryButtonTapped else { return }
-        onAddCategoryButtonTapped(subtitleNameCategory)
+        guard let subtitleNameCategory = selectedCell.textLabel?.text else { return }
+        
+        onAddCategoryButtonTapped?(subtitleNameCategory)
         
         dismiss(animated: true)
     }

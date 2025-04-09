@@ -75,10 +75,9 @@ final class NewCategoryNameViewController: UIViewController, UITextFieldDelegate
     }
     
     @objc private func didTapDoneButton() {
-        guard let nameCategory = titleCategoryTextField.text,
-              let onDoneButtonTapped = onDoneButtonTapped else { return }
+        guard let nameCategory = titleCategoryTextField.text else { return }
         
-        onDoneButtonTapped(nameCategory)
+        onDoneButtonTapped?(nameCategory)
         
         dismiss(animated: true)
     }
