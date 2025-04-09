@@ -8,12 +8,25 @@
 import UIKit
 
 final class NewHabitOrNonRegularEventViewController: UIViewController {
-    var onAddHabitButtonTapped: ((String, String, [String], String, UIColor) -> ())?
+    private let convertScheduleDays: ConvertScheduleDays = ConvertScheduleDays()
+    
+    init(editTracker: Tracker?, categoryName: String?, completedDays: String?, isTrackerIsEditing: Bool) {
+        self.editTracker = editTracker
+        self.categoryName = categoryName
+        self.completedDays = completedDays
+        self.isTrackerIsEditing = isTrackerIsEditing
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    var onAddHabitButtonTapped: ((String, String, [String], String, UIColor, UUID?) -> ())?
     var categoriesAndSchedule: [String] = []
     
     private let colorsForDarkLightTheme: ColorsForDarkLightTheme = ColorsForDarkLightTheme()
     private let trackerCategoryStore: TrackerCategoryStore = TrackerCategoryStore()
-    private var trackerCategoryName: String?
     private let emojiIndexSection = 0
     private let numberOfSections = 2
     private let enableNumberOfTypingLettersInTextField = 38
@@ -21,6 +34,13 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
     private var savedDays: [String] = []
     private var savedEmoji: String?
     private var savedColor: UIColor?
+    private var savedId: UUID?
+    private var subtitleTextSchedule: String?
+    
+    private let completedDays: String?
+    private let categoryName: String?
+    private let editTracker: Tracker?
+    private var isTrackerIsEditing: Bool
     
     private let emojis =
     [
@@ -64,6 +84,7 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
         return shortNamesDaysOfWeek
     }
     
+    private var completedDaysLabel: UILabel = UILabel()
     private var warningLabel: UILabel = UILabel()
     private var titleHabitTextField: UITextField = UITextField()
     private var cancelButton: UIButton = UIButton()
@@ -88,6 +109,7 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
         view.backgroundColor = colorsForDarkLightTheme.whiteBlackDLT
         
         setBarItem()
+        createCompletedDaysLabel()
         createTitleHabitTextField()
         createWarningLabel()
         createCategoryAndScheduleTable()
@@ -95,10 +117,26 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
         createAddHabitButton()
         createCollection()
         setConstraints()
+        
+        if isTrackerIsEditing {
+            guard let schedule = editTracker?.schedule else { return }
+            self.savedDays = convertScheduleDays.convertIntDaysToStringDays(schedule)
+            self.subtitleTextSchedule = setShortNamesToDaysOfWeek(savedDays)
+            self.savedEmoji = editTracker?.emoji
+        }
     }
     
+//    override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//        checkAllFields()
+//    }
+    
     private func setBarItem() {
-        if categoriesAndSchedule.count > 1 {
+        if isTrackerIsEditing {
+            navigationItem.title = "Редактирование привычки"
+            let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.medium), NSAttributedString.Key.foregroundColor: colorsForDarkLightTheme.blackWhiteDLT]
+            navigationController?.navigationBar.titleTextAttributes = attributes
+        } else if categoriesAndSchedule.count > 1 {
             navigationItem.title = localizableStrings.titleHabit
             let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.medium), NSAttributedString.Key.foregroundColor: colorsForDarkLightTheme.blackWhiteDLT]
             navigationController?.navigationBar.titleTextAttributes = attributes
@@ -109,7 +147,26 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
         }
     }
     
+    private func createCompletedDaysLabel() {
+        completedDaysLabel.text = completedDays
+        completedDaysLabel.font = .systemFont(ofSize: 32, weight: UIFont.Weight.bold)
+        completedDaysLabel.textAlignment = .center
+        
+        completedDaysLabel.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(completedDaysLabel)
+        
+        if isTrackerIsEditing {
+            completedDaysLabel.isHidden = false
+        } else {
+            completedDaysLabel.isHidden = true
+        }
+    }
+    
     private func createTitleHabitTextField() {
+        if isTrackerIsEditing {
+            titleHabitTextField.text = self.editTracker?.name
+        }
+        
         titleHabitTextField.placeholder = localizableStrings.textFieldPlaceholderText
         titleHabitTextField.backgroundColor = colorsForDarkLightTheme.backgroundAndPlaceholderBackgroundOtherVC
         titleHabitTextField.layer.cornerRadius = 16
@@ -177,7 +234,7 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
         addHabitButton.backgroundColor = UIColor(named: "Add_Button")
         addHabitButton.layer.borderColor = UIColor(named: "Add_Button")?.cgColor
         addHabitButton.layer.borderWidth = 1
-        addHabitButton.setTitle(localizableStrings.addTrackerButtonText, for: .normal)
+        addHabitButton.setTitle(isTrackerIsEditing ? "Сохранить" : localizableStrings.addTrackerButtonText, for: .normal)
         addHabitButton.setTitleColor(UIColor.white, for: .normal)
         addHabitButton.layer.cornerRadius = 16
         addHabitButton.titleLabel?.font = .systemFont(ofSize: 16, weight: UIFont.Weight.medium)
@@ -194,11 +251,19 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
             let habitName = titleHabitTextField.text,
             let categoryName = categoryAndScheduleTable.cellForRow(at: IndexPath(row: 0, section: 0))?.detailTextLabel?.text,
             let savedEmoji = savedEmoji,
-            let savedColor = savedColor,
-            let onAddHabitButtonTapped = onAddHabitButtonTapped
+            let savedColor = savedColor
         else { return }
-        onAddHabitButtonTapped(habitName, categoryName, savedDays, savedEmoji, savedColor)
-        self.presentingViewController?.presentingViewController?.dismiss(animated: true)
+        
+        print(savedEmoji)
+        
+        if let savedId = editTracker?.id {
+            onAddHabitButtonTapped?(habitName, categoryName, savedDays, savedEmoji, savedColor, savedId)
+            self.presentingViewController?.dismiss(animated: true)
+        } else {
+            onAddHabitButtonTapped?(habitName, categoryName, savedDays, savedEmoji, savedColor, nil)
+            self.presentingViewController?.presentingViewController?.dismiss(animated: true)
+        }
+        
     }
     
     private func createCollection() {
@@ -212,10 +277,10 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
     }
     
     private func addSubtitleToCategory(_ subtitleNameCategory: String) {
-        guard let cell = categoryAndScheduleTable.cellForRow(at: IndexPath(row: 0, section: 0)) else { return }
-        cell.detailTextLabel?.text = subtitleNameCategory
-        cell.detailTextLabel?.textColor = UIColor(named: "Add_Button")
-        cell.detailTextLabel?.font = .systemFont(ofSize: 17)
+        let cell = categoryAndScheduleTable.cellForRow(at: IndexPath(row: 0, section: 0))
+        cell?.detailTextLabel?.text = subtitleNameCategory
+        cell?.detailTextLabel?.textColor = UIColor(named: "Add_Button")
+        cell?.detailTextLabel?.font = .systemFont(ofSize: 17)
     }
     
     private func addSubtitleToSchedule(_ subtitleNameSchedule: [String]) {
@@ -231,7 +296,7 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
         let constraintValue: CGFloat = categoriesAndSchedule.count > 1 ? 150 : 75
         
         NSLayoutConstraint.activate([
-            titleHabitTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
+            titleHabitTextField.topAnchor.constraint(equalTo: isTrackerIsEditing ? completedDaysLabel.bottomAnchor : view.safeAreaLayoutGuide.topAnchor, constant: isTrackerIsEditing ? 40 : 24),
             titleHabitTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             titleHabitTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             titleHabitTextField.heightAnchor.constraint(equalToConstant: 75),
@@ -260,31 +325,20 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
             collection.topAnchor.constraint(equalTo: categoryAndScheduleTable.bottomAnchor, constant: 32),
             collection.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
             collection.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
-            collection.bottomAnchor.constraint(equalTo: cancelButton.topAnchor, constant: -24)
+            collection.bottomAnchor.constraint(equalTo: cancelButton.topAnchor, constant: -24),
+            
+            completedDaysLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
+            completedDaysLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            completedDaysLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            completedDaysLabel.heightAnchor.constraint(equalToConstant: 38)
         ])
     }
     
     private func setShortNamesToDaysOfWeek(_ savedLongNamesOfWeek: [String]) -> String {
-        var savedDaysNames: String = ""
-        var day: String = ""
-        var shortNameDay: String = ""
-        
-        for dayNumber in 0..<savedLongNamesOfWeek.count {
-            if savedLongNamesOfWeek.count == numbersDaysInWeek {
-                savedDaysNames = localizableStrings.everydayScheduleText
-            } else {
-                if dayNumber == savedLongNamesOfWeek.count - 1{
-                    day = savedLongNamesOfWeek[dayNumber]
-                    shortNameDay = shortNamesDaysOfWeek[day] ?? ""
-                    savedDaysNames += shortNameDay
-                } else {
-                    day = savedLongNamesOfWeek[dayNumber]
-                    shortNameDay = shortNamesDaysOfWeek[day] ?? ""
-                    savedDaysNames += shortNameDay + ", "
-                }
-            }
-        }
-        return savedDaysNames
+        let stringWeekDays = convertScheduleDays.convertStringDaysToShortStringDays(savedLongNamesOfWeek)
+        var shortWeekDayString = ""
+        stringWeekDays.forEach { shortWeekDayString += $0 }
+        return shortWeekDayString
     }
     
     private func checkAllFields() {
@@ -374,6 +428,8 @@ extension NewHabitOrNonRegularEventViewController: UICollectionViewDelegateFlowL
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print("didSelectItemAt")
+        
         if let emojiCell = collectionView.cellForItem(at: indexPath) as? NewHabitOrNonRegularEventEmojiCollectionCell {
             emojiCell.backgroundColor = UIColor(named: "E6E8EB")
             emojiCell.layer.cornerRadius = 16
@@ -392,6 +448,7 @@ extension NewHabitOrNonRegularEventViewController: UICollectionViewDelegateFlowL
         }
         
         guard let selectedRows = collectionView.indexPathsForSelectedItems else { return }
+        print(selectedRows.count)
         
         selectedRows.forEach { selectedRow in
             if selectedRow.section == indexPath.section && indexPath.section == 0 && selectedRow.row != indexPath.row {
@@ -412,6 +469,7 @@ extension NewHabitOrNonRegularEventViewController: UICollectionViewDelegateFlowL
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        print("didDeselectItemAt")
         if let selectedEmojiCell = collectionView.cellForItem(at: indexPath) as? NewHabitOrNonRegularEventEmojiCollectionCell {
             selectedEmojiCell.backgroundColor = colorsForDarkLightTheme.whiteBlackDLT
             selectedEmojiCell.layer.masksToBounds = true
@@ -438,14 +496,32 @@ extension NewHabitOrNonRegularEventViewController: UICollectionViewDataSource {
         
         if indexPath.section == emojiIndexSection {
             guard let emojiCell = collectionView.dequeueReusableCell(withReuseIdentifier: NewHabitOrNonRegularEventEmojiCollectionCell.cellIdentifier, for: indexPath) as? NewHabitOrNonRegularEventEmojiCollectionCell else {
-                return UICollectionViewCell()
-            }
+                print("Could not create custom emojicell")
+                return UICollectionViewCell() }
             
-            emojiCell.titleLabel.text = emojis[indexPath.row]
-            return emojiCell
+            if isTrackerIsEditing {
+                let rowIndexOfEmoji = emojis.firstIndex(where: { $0 == editTracker?.emoji } )
+                if indexPath.row == rowIndexOfEmoji {
+                    print("check cell")
+                    emojiCell.titleLabel.text = editTracker?.emoji
+                    emojiCell.backgroundColor = UIColor(named: "E6E8EB")
+                    emojiCell.layer.cornerRadius = 16
+                    emojiCell.layer.masksToBounds = true
+                    collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .bottom)
+                    return emojiCell
+                } else {
+                    emojiCell.titleLabel.text = emojis[indexPath.row]
+                    return emojiCell
+                }
+
+            } else {
+                emojiCell.titleLabel.text = emojis[indexPath.row]
+                return emojiCell
+            }
             
         } else {
             guard let colorCell = collectionView.dequeueReusableCell(withReuseIdentifier: NewHabitOrNonRegularEventColorCollectionCell.cellIdentifier, for: indexPath) as? NewHabitOrNonRegularEventColorCollectionCell else {
+                print("Could not create custom colorcell")
                 return UICollectionViewCell()
             }
             
@@ -508,6 +584,21 @@ extension NewHabitOrNonRegularEventViewController: UITableViewDataSource {
             cell.layer.masksToBounds = true
         }
         
+        if isTrackerIsEditing {
+            guard let categoryName = categoryName else {
+                print("here")
+                return UITableViewCell() }
+            if indexPath.row == 0 {
+                cell.detailTextLabel?.text = categoryName
+                cell.detailTextLabel?.textColor = UIColor(named: "Add_Button")
+                cell.detailTextLabel?.font = .systemFont(ofSize: 17)
+            } else {
+                cell.detailTextLabel?.text = subtitleTextSchedule
+                cell.detailTextLabel?.textColor = UIColor(named: "Add_Button")
+                cell.detailTextLabel?.font = .systemFont(ofSize: 17)
+            }
+        }
+        
         return cell
     }
 }
@@ -517,7 +608,6 @@ extension NewHabitOrNonRegularEventViewController: UITableViewDelegate {
         if indexPath.row == 0 {
             let viewcontroller = NewCategoryViewController()
             viewcontroller.onAddCategoryButtonTapped = { [weak self] trackerCategoryName in
-                self?.trackerCategoryName = trackerCategoryName
                 self?.addSubtitleToCategory(trackerCategoryName)
                 self?.categoryAndScheduleTable.reloadData()
                 self?.checkAllFields()
