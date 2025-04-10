@@ -71,6 +71,28 @@ final class TrackersViewController: UIViewController {
         didChangeDate()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        AnalyticsService.report(
+            eventName: "open_main_screen",
+            params: [
+                "event": "open",
+                "screen": "Main"
+            ]
+        )
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        AnalyticsService.report(
+            eventName: "close_main_screen",
+            params: [
+                "event": "close",
+                "screen": "Main"
+            ]
+        )
+    }
+    
     private func setNaviBar() {
         datePicker.addTarget(self, action: #selector(didChangeDate), for: .valueChanged)
         
@@ -86,50 +108,75 @@ final class TrackersViewController: UIViewController {
     }
     
     @objc private func didChangeDate() {
-        reloadVisibleCategories()
+        if savedCheckedFilterCategory == localizableStrings.categoryNotDoneTrackers {
+            reloadVisibleCategoriesWithFilterNotDoneTrackers()
+        } else if savedCheckedFilterCategory == localizableStrings.categoryDoneTrackers {
+            reloadVisibleCategoriesWithFilterDoneTrackers()
+        } else {
+            reloadVisibleCategories()
+        }
     }
     
     private func reloadVisibleCategories() {
-        let calendar = Calendar.current
-        let filterWeekday = calendar.component(.weekday, from: datePicker.date)
-        let filterText = (searchTextField.text ?? "").lowercased()
-        
-        visibleCategories = categories.compactMap { category in
-            let trackersWithSchedule = category.trackers.filter { tracker in
-                let textCondition = filterText.isEmpty || tracker.name.lowercased().contains(filterText)
-                let dateCondition = tracker.schedule.contains { weekDay in
-                    weekDay == filterWeekday
+            let calendar = Calendar.current
+            let filterWeekday = calendar.component(.weekday, from: datePicker.date)
+            let filterText = (searchTextField.text ?? "").lowercased()
+            
+            visibleCategories = categories.compactMap { category in
+                let trackersWithSchedule = category.trackers.filter { tracker in
+                    let textCondition = filterText.isEmpty || tracker.name.lowercased().contains(filterText)
+                    let dateCondition = tracker.schedule.contains { weekDay in
+                        weekDay == filterWeekday
+                    }
+                    
+                    return textCondition && dateCondition
                 }
                 
-                return textCondition && dateCondition
-            }
-            
-            let trackersWithNoSchedule = category.trackers.filter { tracker in
-                let textCondition = filterText.isEmpty || tracker.name.lowercased().contains(filterText)
-                let dateCondition = tracker.schedule.isEmpty
+                let trackersWithNoSchedule = category.trackers.filter { tracker in
+                    let textCondition = filterText.isEmpty || tracker.name.lowercased().contains(filterText)
+                    let dateCondition = tracker.schedule.isEmpty
+                    
+                    return textCondition && dateCondition
+                }
                 
-                return textCondition && dateCondition
+                let trackers = trackersWithSchedule + trackersWithNoSchedule
+                
+                if trackers.isEmpty {
+                    return nil
+                }
+                
+                return TrackerCategory(name: category.name, trackers: trackers)
             }
             
-            let trackers = trackersWithSchedule + trackersWithNoSchedule
-            
-            if trackers.isEmpty {
-                return nil
-            }
-            
-            return TrackerCategory(name: category.name, trackers: trackers)
+            let isEmpty = visibleCategories.allSatisfy { $0.trackers.isEmpty }
+            trackersCollectionView.isHidden = isEmpty
+            backgroundImage.isHidden = !isEmpty
+            backgroundTextLabel.isHidden = !isEmpty
+            filterButton.isHidden = isEmpty
+        
+            if !isEmpty {
+                let conditionForPlaceholderOption = visibleCategories.contains { category in
+                    category.trackers.contains { tracker in
+                        tracker.name.lowercased().contains(filterText)
+                    }
+                }
+                backgroundImage.image = conditionForPlaceholderOption ? UIImage(named: "No_items") : UIImage(named: "NotEqualTextPlaceholder")
+                backgroundTextLabel.text = localizableStrings.notEqualTextPlaceholder
         }
-        
-        let isEmpty = visibleCategories.allSatisfy { $0.trackers.isEmpty }
-        trackersCollectionView.isHidden = isEmpty
-        backgroundImage.isHidden = !isEmpty
-        backgroundTextLabel.isHidden = !isEmpty
-        filterButton.isHidden = isEmpty
-        
-        trackersCollectionView.reloadData()
-    }
+
+            trackersCollectionView.reloadData()
+        }
     
     @objc private func didTapAddButton() {
+        AnalyticsService.report(
+            eventName: "tap_add_button",
+            params: [
+                "event" : "click",
+                "screen" : "Main",
+                "item" : "add_track"
+            ]
+        )
+        
         let viewcontroller = NewTrackerViewController()
         viewcontroller.onAddHabitOrNonRegularEvenButtonTapped = { [weak self] savedHabitName, savedCategoryName, savedDays, savedEmoji, savedColor, savedId in
             self?.updateTrackers(savedHabitName, savedCategoryName, savedDays, savedEmoji, savedColor, savedId)
@@ -155,21 +202,29 @@ final class TrackersViewController: UIViewController {
     }
     
     @objc private func didTapFilterButton() {
+        AnalyticsService.report(
+            eventName: "tap_filter_button",
+            params: [
+                "event" : "click",
+                "screen" : "Main",
+                "item" : "filter"
+            ]
+        )
         let vc = FilterMainScreenViewController()
         
         if let savedCheckedFilterCategory = savedCheckedFilterCategory {
             vc.checkedFilterCategory = savedCheckedFilterCategory
         }
         
+        vc.onCategoryAllTrackersTapped = { [weak self] checkedFilterCategory in
+            self?.savedCheckedFilterCategory = checkedFilterCategory
+            self?.didChangeDate()
+        }
+        
         vc.onCategoryTodayTrackersTapped = { [weak self] checkedFilterCategory in
             self?.savedCheckedFilterCategory = checkedFilterCategory
             let currentDate = Date()
             self?.datePicker.date = currentDate
-            self?.didChangeDate()
-        }
-        
-        vc.onCategoryAllTrackersTapped = { [weak self] checkedFilterCategory in
-            self?.savedCheckedFilterCategory = checkedFilterCategory
             self?.didChangeDate()
         }
         
@@ -219,10 +274,16 @@ final class TrackersViewController: UIViewController {
         let allTrackersCategories = trackerCategoryStore.trackerCategories
         categories = allTrackersCategories
         
+        let calendar = Calendar.current
+        let filterWeekday = calendar.component(.weekday, from: datePicker.date)
+        
         visibleCategories = categories.compactMap { category in
             let trackersWithNotSameId = category.trackers.filter { tracker in
-                filteredTrackerRecords.contains
-                { $0.id != tracker.id }
+                let notDoneTrackersCondition = !filteredTrackerRecords.contains { $0.id == tracker.id }
+                let scheduleCondition = tracker.schedule.contains { weekday in
+                    weekday == filterWeekday
+                }
+                return notDoneTrackersCondition && scheduleCondition
             }
             return TrackerCategory(name: category.name, trackers: trackersWithNotSameId)
         }
@@ -342,6 +403,15 @@ final class TrackersViewController: UIViewController {
     }
     
     private func editTracker(tracker: Tracker, categoryName: String, isTrackerIsEditing: Bool, completedDays: String) {
+        AnalyticsService.report(
+            eventName: "edit_tracker",
+            params: [
+                "event" : "click",
+                "screen" : "Main",
+                "item" : "edit"
+            ]
+        )
+        
         let editHabitOrNonRegularEventVC = NewHabitOrNonRegularEventViewController(editTracker: tracker, categoryName: categoryName, completedDays: completedDays, isTrackerIsEditing: true)
         
         if tracker.schedule.isEmpty {
@@ -359,6 +429,15 @@ final class TrackersViewController: UIViewController {
     }
     
     private func deleteTracker(id: UUID) {
+        AnalyticsService.report(
+            eventName: "delete_tracker",
+            params: [
+                "event" : "click",
+                "screen" : "Main",
+                "item" : "delete"
+            ]
+        )
+        
         dataProvider.removeTracker(id: id)
     }
 }
@@ -502,6 +581,15 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
 
 extension TrackersViewController: TrackersCollectionCellDelegate {
     func completeTracker(id: UUID) {
+        AnalyticsService.report(
+            eventName: "tap_plus_day",
+            params: [
+                "event" : "click",
+                "screen" : "Main",
+                "item" : "track"
+            ]
+        )
+        
         let sameDay = Calendar.current.isDate(currentDate, inSameDayAs: datePicker.date)
         
         // validDay - проверка на то, что в datePicker выбран текущий день или прошедшая дата для чека трека
@@ -516,6 +604,15 @@ extension TrackersViewController: TrackersCollectionCellDelegate {
     }
     
     func uncompleteTracker(id: UUID) {
+        AnalyticsService.report(
+            eventName: "tap_minus_day",
+            params: [
+                "event" : "click",
+                "screen" : "Main",
+                "item" : "track"
+            ]
+        )
+        
         let sameDay = Calendar.current.isDate(currentDate, inSameDayAs: datePicker.date)
         
         // validDay - проверка на то, что в datePicker выбран текущий день или прошедшая дата для чека трека
