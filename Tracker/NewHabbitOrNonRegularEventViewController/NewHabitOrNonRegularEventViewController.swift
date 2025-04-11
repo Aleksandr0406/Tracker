@@ -37,9 +37,9 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
     private var savedId: UUID?
     private var subtitleTextSchedule: String?
     
-    private let completedDays: String?
-    private let categoryName: String?
     private let editTracker: Tracker?
+    private let categoryName: String?
+    private let completedDays: String?
     private var isTrackerIsEditing: Bool
     
     private let emojis =
@@ -126,14 +126,9 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
         }
     }
     
-//    override func viewWillAppear(_ animated: Bool) {
-//        super.viewWillAppear(animated)
-//        checkAllFields()
-//    }
-    
     private func setBarItem() {
         if isTrackerIsEditing {
-            navigationItem.title = "Редактирование привычки"
+            navigationItem.title = localizableStrings.editTracker
             let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.medium), NSAttributedString.Key.foregroundColor: colorsForDarkLightTheme.blackWhiteDLT]
             navigationController?.navigationBar.titleTextAttributes = attributes
         } else if categoriesAndSchedule.count > 1 {
@@ -234,7 +229,7 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
         addHabitButton.backgroundColor = UIColor(named: "Add_Button")
         addHabitButton.layer.borderColor = UIColor(named: "Add_Button")?.cgColor
         addHabitButton.layer.borderWidth = 1
-        addHabitButton.setTitle(isTrackerIsEditing ? "Сохранить" : localizableStrings.addTrackerButtonText, for: .normal)
+        addHabitButton.setTitle(isTrackerIsEditing ? localizableStrings.saveTracker : localizableStrings.addTrackerButtonText, for: .normal)
         addHabitButton.setTitleColor(UIColor.white, for: .normal)
         addHabitButton.layer.cornerRadius = 16
         addHabitButton.titleLabel?.font = .systemFont(ofSize: 16, weight: UIFont.Weight.medium)
@@ -253,8 +248,6 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
             let savedEmoji = savedEmoji,
             let savedColor = savedColor
         else { return }
-        
-        print(savedEmoji)
         
         if let savedId = editTracker?.id {
             onAddHabitButtonTapped?(habitName, categoryName, savedDays, savedEmoji, savedColor, savedId)
@@ -281,6 +274,7 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
         cell?.detailTextLabel?.text = subtitleNameCategory
         cell?.detailTextLabel?.textColor = UIColor(named: "Add_Button")
         cell?.detailTextLabel?.font = .systemFont(ofSize: 17)
+        self.categoryAndScheduleTable.reloadData()
     }
     
     private func addSubtitleToSchedule(_ subtitleNameSchedule: [String]) {
@@ -290,6 +284,7 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
         cell.detailTextLabel?.text = savedShortNameDays
         cell.detailTextLabel?.textColor = UIColor(named: "Add_Button")
         cell.detailTextLabel?.font = .systemFont(ofSize: 17)
+        self.categoryAndScheduleTable.reloadData()
     }
     
     private func setConstraints() {
@@ -428,7 +423,6 @@ extension NewHabitOrNonRegularEventViewController: UICollectionViewDelegateFlowL
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print("didSelectItemAt")
         
         if let emojiCell = collectionView.cellForItem(at: indexPath) as? NewHabitOrNonRegularEventEmojiCollectionCell {
             emojiCell.backgroundColor = UIColor(named: "E6E8EB")
@@ -448,7 +442,6 @@ extension NewHabitOrNonRegularEventViewController: UICollectionViewDelegateFlowL
         }
         
         guard let selectedRows = collectionView.indexPathsForSelectedItems else { return }
-        print(selectedRows.count)
         
         selectedRows.forEach { selectedRow in
             if selectedRow.section == indexPath.section && indexPath.section == 0 && selectedRow.row != indexPath.row {
@@ -469,7 +462,6 @@ extension NewHabitOrNonRegularEventViewController: UICollectionViewDelegateFlowL
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        print("didDeselectItemAt")
         if let selectedEmojiCell = collectionView.cellForItem(at: indexPath) as? NewHabitOrNonRegularEventEmojiCollectionCell {
             selectedEmojiCell.backgroundColor = colorsForDarkLightTheme.whiteBlackDLT
             selectedEmojiCell.layer.masksToBounds = true
@@ -496,13 +488,11 @@ extension NewHabitOrNonRegularEventViewController: UICollectionViewDataSource {
         
         if indexPath.section == emojiIndexSection {
             guard let emojiCell = collectionView.dequeueReusableCell(withReuseIdentifier: NewHabitOrNonRegularEventEmojiCollectionCell.cellIdentifier, for: indexPath) as? NewHabitOrNonRegularEventEmojiCollectionCell else {
-                print("Could not create custom emojicell")
                 return UICollectionViewCell() }
             
             if isTrackerIsEditing {
                 let rowIndexOfEmoji = emojis.firstIndex(where: { $0 == editTracker?.emoji } )
                 if indexPath.row == rowIndexOfEmoji {
-                    print("check cell")
                     emojiCell.titleLabel.text = editTracker?.emoji
                     emojiCell.backgroundColor = UIColor(named: "E6E8EB")
                     emojiCell.layer.cornerRadius = 16
@@ -513,7 +503,7 @@ extension NewHabitOrNonRegularEventViewController: UICollectionViewDataSource {
                     emojiCell.titleLabel.text = emojis[indexPath.row]
                     return emojiCell
                 }
-
+                
             } else {
                 emojiCell.titleLabel.text = emojis[indexPath.row]
                 return emojiCell
@@ -521,7 +511,6 @@ extension NewHabitOrNonRegularEventViewController: UICollectionViewDataSource {
             
         } else {
             guard let colorCell = collectionView.dequeueReusableCell(withReuseIdentifier: NewHabitOrNonRegularEventColorCollectionCell.cellIdentifier, for: indexPath) as? NewHabitOrNonRegularEventColorCollectionCell else {
-                print("Could not create custom colorcell")
                 return UICollectionViewCell()
             }
             
@@ -585,9 +574,8 @@ extension NewHabitOrNonRegularEventViewController: UITableViewDataSource {
         }
         
         if isTrackerIsEditing {
-            guard let categoryName = categoryName else {
-                print("here")
-                return UITableViewCell() }
+            guard let categoryName = categoryName else { return UITableViewCell() }
+            
             if indexPath.row == 0 {
                 cell.detailTextLabel?.text = categoryName
                 cell.detailTextLabel?.textColor = UIColor(named: "Add_Button")
@@ -609,6 +597,7 @@ extension NewHabitOrNonRegularEventViewController: UITableViewDelegate {
             let viewcontroller = NewCategoryViewController()
             viewcontroller.onAddCategoryButtonTapped = { [weak self] trackerCategoryName in
                 self?.addSubtitleToCategory(trackerCategoryName)
+                self?.isTrackerIsEditing = false
                 self?.categoryAndScheduleTable.reloadData()
                 self?.checkAllFields()
             }
@@ -618,6 +607,7 @@ extension NewHabitOrNonRegularEventViewController: UITableViewDelegate {
             let viewcontroller = NewScheduleViewController()
             viewcontroller.onDoneButtonTapped = { [weak self] days in
                 self?.addSubtitleToSchedule(days)
+                self?.isTrackerIsEditing = false
                 self?.categoryAndScheduleTable.reloadData()
                 self?.savedDays = days
                 self?.checkAllFields()
