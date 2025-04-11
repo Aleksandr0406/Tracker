@@ -8,6 +8,7 @@
 import Foundation
 
 final class CategoriesModel {
+    private let localizableStrings: LocalizableStringsCategoriesModel = LocalizableStringsCategoriesModel()
     private let dataProvider: DataProvider = DataProvider()
     
     func saveCreatedCategoryNames(with newCategoryName: String) {
@@ -15,6 +16,8 @@ final class CategoriesModel {
     }
     
     func loadSavedCategoriesNames() -> [String] {
-        dataProvider.trackerCategoryStore.trackerCategories.map { $0.name }
+        dataProvider.trackerCategoryStore.trackerCategories
+            .map { $0.name }
+            .filter { $0 != localizableStrings.pinTrackers }
     }
 }

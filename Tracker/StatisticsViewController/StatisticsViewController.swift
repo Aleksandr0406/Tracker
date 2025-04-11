@@ -8,6 +8,7 @@
 import UIKit
 
 final class StatisticsViewController: UIViewController {
+    private let localizableStrings: LocalizableStringsStatisticsViewController = LocalizableStringsStatisticsViewController()
     private let trackerStore: TrackerStore = TrackerStore()
     private let trackerCategoriesStore: TrackerCategoryStore = TrackerCategoryStore()
     private let trackerRecordStore: TrackerRecordStore = TrackerRecordStore()
@@ -51,7 +52,7 @@ final class StatisticsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         createTitleLabel()
         createPlaceholderImageView()
         createPlaceholderTextLabel()
@@ -79,7 +80,7 @@ final class StatisticsViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
+        
         checkToHidePlaceholder()
         
         countBestPeriodAndSetToLabel()
@@ -229,7 +230,7 @@ final class StatisticsViewController: UIViewController {
         }
     }
     private func createTitleLabel() {
-        titleLabel.text = "Статистика"
+        titleLabel.text = localizableStrings.statisticsTitle
         titleLabel.font = .systemFont(ofSize: 34, weight: UIFont.Weight.bold)
         titleLabel.textAlignment = .left
         
@@ -238,7 +239,7 @@ final class StatisticsViewController: UIViewController {
     }
     
     private func createPlaceholderTextLabel() {
-        placeholderTextLabel.text = "Анализировать пока нечего"
+        placeholderTextLabel.text = localizableStrings.placeHolderTitle
         placeholderTextLabel.font = .systemFont(ofSize: 12, weight: UIFont.Weight.medium)
         placeholderTextLabel.textAlignment = .center
         
@@ -264,7 +265,7 @@ final class StatisticsViewController: UIViewController {
     }
     
     private func createBestPeriodTitleLabel() {
-        bestPeriodTitleLabel.text = "Лучший период"
+        bestPeriodTitleLabel.text = localizableStrings.bestPeriod
         bestPeriodTitleLabel.font = .systemFont(ofSize: 12, weight: UIFont.Weight.medium)
         bestPeriodTitleLabel.textAlignment = .left
         bestPeriodTitleLabel.isHidden = true
@@ -294,7 +295,7 @@ final class StatisticsViewController: UIViewController {
     }
     
     private func createIdealDaysTitleLabel() {
-        idealDaysTitleLabel.text = "Идеальные дни"
+        idealDaysTitleLabel.text = localizableStrings.idealDays
         idealDaysTitleLabel.font = .systemFont(ofSize: 12, weight: UIFont.Weight.medium)
         idealDaysTitleLabel.textAlignment = .left
         idealDaysTitleLabel.isHidden = true
@@ -323,7 +324,7 @@ final class StatisticsViewController: UIViewController {
     }
     
     private func createTrackersCompletedTitleLabel() {
-        trackersCompletedTitleLabel.text = "Трекеров завершено"
+        trackersCompletedTitleLabel.text = localizableStrings.trackersCompleted
         trackersCompletedTitleLabel.font = .systemFont(ofSize: 12, weight: UIFont.Weight.medium)
         trackersCompletedTitleLabel.textAlignment = .left
         trackersCompletedTitleLabel.isHidden = true
@@ -352,7 +353,7 @@ final class StatisticsViewController: UIViewController {
     }
     
     private func createAverageValueTitleLabel() {
-        averageValueTitleLabel.text = "Среднее значение"
+        averageValueTitleLabel.text = localizableStrings.averageValue
         averageValueTitleLabel.font = .systemFont(ofSize: 12, weight: UIFont.Weight.medium)
         averageValueTitleLabel.textAlignment = .left
         averageValueTitleLabel.isHidden = true
@@ -435,7 +436,7 @@ final class StatisticsViewController: UIViewController {
             averageValueNumberValueLabel.leadingAnchor.constraint(equalTo: averageValueLabel.leadingAnchor, constant: 12),
             averageValueNumberValueLabel.trailingAnchor.constraint(equalTo: averageValueLabel.trailingAnchor, constant: -12),
             averageValueNumberValueLabel.heightAnchor.constraint(equalToConstant: 41),
-
+            
             
             averageValueTitleLabel.bottomAnchor.constraint(equalTo: averageValueLabel.bottomAnchor, constant: -12),
             averageValueTitleLabel.leadingAnchor.constraint(equalTo: averageValueLabel.leadingAnchor, constant: 12),

@@ -30,4 +30,6 @@ struct LocalizableStringsNewHabitOrNonRegularEventVC {
     let addTrackerButtonText = NSLocalizedString("Создать", comment: "Создать")
     let everydayScheduleText = NSLocalizedString("Каждый день", comment: "Каждый день")
     let collectionTitleColor = NSLocalizedString("Цвет", comment: "Цвет")
+    let editTracker = NSLocalizedString("Редактирование привычки", comment: "Редактирование привычки")
+    let saveTracker = NSLocalizedString("Сохранить", comment: "Сохранить")
 }

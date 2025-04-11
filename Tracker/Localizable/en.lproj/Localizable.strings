@@ -6,6 +6,27 @@
   
 */
 
+"Закрепить" = "Pin";
+"Редактировать" = "Edit";
+"Удалить" = "Delete";
+"Статистика" = "Statistics";
+"Анализировать пока нечего" = "Nothing to analyze";
+"Лучший период" = "Best period";
+"Идеальные дни" = "Ideal days";
+"Трекеров завершено" = "Completed trackers";
+"Среднее значение" = "Average value";
+"Вот это технологии!" = "OMG!!";
+"Отслеживайте только\n то, что хотите" = "Track only\n what you want";
+"Даже если это\n не литры воды и йога" = "Even if it's not\n liters of water and yoga";
+"Сохранить" = "Save tracker";
+"Редактирование привычки" = "Edit tracker";
+"Закрепленные" = "Pinned";
+"Ничего не найдено" = "Nothing found";
+"Все трекеры" = "All trackers";
+"Трекеры на сегодня" = "Today trackers";
+"Завершенные" = "Done trackers";
+"Не завершенные" = "Not done trackers";
+"Фильтры" = "Filters";
 "Трекеры" = "Trackers";
 "Статистика" = "Statistics";
 "Что будем отслеживать?" = "What we will track?";
