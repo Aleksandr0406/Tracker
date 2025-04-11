@@ -62,12 +62,12 @@ final class TrackersCollectionCell: UICollectionViewCell {
         
         if completedDays <= 1 {
             let completedDaysString = "\(completedDays) " + localizableStrings.dayLoc
-        dayLabel.text = completedDaysString
+            dayLabel.text = completedDaysString
         } else {
             let completedDaysString = "\(completedDays) " + localizableStrings.daysLoc
             dayLabel.text = completedDaysString
         }
-    
+        
         habitCardColorLabel.layer.backgroundColor = color.cgColor
         
         let image = isCompletedToday ? doneImage : plusImage

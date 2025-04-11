@@ -14,7 +14,7 @@ final class FilterMainScreenViewController: UIViewController {
     var onCategoryAllTrackersTapped: ((String) -> ())?
     var onCategoryDoneTrackersTapped: ((String) -> ())?
     var onCategoryNotDoneTrackersTapped: ((String) -> ())?
-
+    
     private let localizableStrings: LocalizableStringsFilterMainScreenVC = LocalizableStringsFilterMainScreenVC()
     private let colorsForDarkLightTheme: ColorsForDarkLightTheme = ColorsForDarkLightTheme()
     
@@ -90,6 +90,10 @@ extension FilterMainScreenViewController: UITableViewDataSource {
         cell.backgroundColor = colorsForDarkLightTheme.backgroundAndPlaceholderBackgroundOtherVC
         cell.textLabel?.text = filterCategoriesNames[indexPath.row]
         cell.textLabel?.textColor = colorsForDarkLightTheme.blackWhiteDLT
+        
+        if checkedFilterCategory == "" && cell.textLabel?.text == localizableStrings.categoryAllTrackers {
+            cell.accessoryType = .checkmark
+        }
         
         if cell.textLabel?.text == checkedFilterCategory {
             cell.accessoryType = .checkmark

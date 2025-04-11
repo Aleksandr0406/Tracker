@@ -11,7 +11,7 @@ final class TrackersCollectionSupplementaryView: UICollectionReusableView {
     static let headerIdentifier = "Header"
     
     let colorsForDarkLightTheme: ColorsForDarkLightTheme = ColorsForDarkLightTheme()
-
+    
     let titleLabel: UILabel = UILabel()
     
     override init(frame: CGRect) {
