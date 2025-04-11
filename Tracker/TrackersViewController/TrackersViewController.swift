@@ -12,6 +12,7 @@ final class TrackersViewController: UIViewController {
     private let localizableStrings: LocalizableStringsTrackersVC = LocalizableStringsTrackersVC()
     private let colorsForDarkLightTheme: ColorsForDarkLightTheme = ColorsForDarkLightTheme()
     private let uiColorMarshalling: UIColorMarshalling = UIColorMarshalling()
+    private var trackerStore: TrackerStore?
     private var trackerRecordStore: TrackerRecordStore = TrackerRecordStore()
     private var trackerCategoryStore: TrackerCategoryStore = TrackerCategoryStore()
     private var dataProvider: DataProvider = DataProvider()
@@ -20,6 +21,7 @@ final class TrackersViewController: UIViewController {
     private var visibleCategories: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
     private var savedCheckedFilterCategory: String?
+    private var isPinned: Bool = false
     
     private var searchTextField: UISearchTextField = UISearchTextField()
     private var titleLabel: UILabel = UILabel()
@@ -62,10 +64,9 @@ final class TrackersViewController: UIViewController {
         
         trackerRecordStore.delegate = self
         completedTrackers = trackerRecordStore.completedTrackers
-        completedTrackers.forEach { print($0) }
         
         trackerCategoryStore.delegate = self
-        categories = trackerCategoryStore.trackerCategories
+        categories = sortCategories(storeCategories: trackerCategoryStore.trackerCategories, idOfTrackerToHide: nil)
         visibleCategories = categories
         
         didChangeDate()
@@ -118,54 +119,57 @@ final class TrackersViewController: UIViewController {
     }
     
     private func reloadVisibleCategories() {
-            let calendar = Calendar.current
-            let filterWeekday = calendar.component(.weekday, from: datePicker.date)
-            let filterText = (searchTextField.text ?? "").lowercased()
-            
-            visibleCategories = categories.compactMap { category in
-                let trackersWithSchedule = category.trackers.filter { tracker in
-                    let textCondition = filterText.isEmpty || tracker.name.lowercased().contains(filterText)
-                    let dateCondition = tracker.schedule.contains { weekDay in
-                        weekDay == filterWeekday
-                    }
-                    
-                    return textCondition && dateCondition
+        let calendar = Calendar.current
+        let filterWeekday = calendar.component(.weekday, from: datePicker.date)
+        let filterText = (searchTextField.text ?? "").lowercased()
+        
+        visibleCategories = categories.compactMap { category in
+            let trackersWithSchedule = category.trackers.filter { tracker in
+                let textCondition = filterText.isEmpty || tracker.name.lowercased().contains(filterText)
+                let dateCondition = tracker.schedule.contains { weekDay in
+                    weekDay == filterWeekday
                 }
                 
-                let trackersWithNoSchedule = category.trackers.filter { tracker in
-                    let textCondition = filterText.isEmpty || tracker.name.lowercased().contains(filterText)
-                    let dateCondition = tracker.schedule.isEmpty
-                    
-                    return textCondition && dateCondition
-                }
-                
-                let trackers = trackersWithSchedule + trackersWithNoSchedule
-                
-                if trackers.isEmpty {
-                    return nil
-                }
-                
-                return TrackerCategory(name: category.name, trackers: trackers)
+                return textCondition && dateCondition
             }
             
-            let isEmpty = visibleCategories.allSatisfy { $0.trackers.isEmpty }
-            trackersCollectionView.isHidden = isEmpty
-            backgroundImage.isHidden = !isEmpty
-            backgroundTextLabel.isHidden = !isEmpty
-            filterButton.isHidden = isEmpty
+            let trackersWithNoSchedule = category.trackers.filter { tracker in
+                let textCondition = filterText.isEmpty || tracker.name.lowercased().contains(filterText)
+                let dateCondition = tracker.schedule.isEmpty
+                
+                return textCondition && dateCondition
+            }
+            
+            let trackers = trackersWithSchedule + trackersWithNoSchedule
+            
+            if trackers.isEmpty {
+                return nil
+            }
+            
+            return TrackerCategory(name: category.name, trackers: trackers)
+        }
         
-            if !isEmpty {
-                let conditionForPlaceholderOption = visibleCategories.contains { category in
-                    category.trackers.contains { tracker in
-                        tracker.name.lowercased().contains(filterText)
-                    }
+        let sortedCategories = sortCategories(storeCategories: visibleCategories, idOfTrackerToHide: nil)
+        visibleCategories = sortedCategories
+        
+        let isEmpty = visibleCategories.allSatisfy { $0.trackers.isEmpty }
+        trackersCollectionView.isHidden = isEmpty
+        backgroundImage.isHidden = !isEmpty
+        backgroundTextLabel.isHidden = !isEmpty
+        filterButton.isHidden = isEmpty
+        
+        if !isEmpty {
+            let conditionForPlaceholderOption = visibleCategories.contains { category in
+                category.trackers.contains { tracker in
+                    tracker.name.lowercased().contains(filterText)
                 }
-                backgroundImage.image = conditionForPlaceholderOption ? UIImage(named: "No_items") : UIImage(named: "NotEqualTextPlaceholder")
-                backgroundTextLabel.text = localizableStrings.notEqualTextPlaceholder
+            }
+            backgroundImage.image = conditionForPlaceholderOption ? UIImage(named: "No_items") : UIImage(named: "NotEqualTextPlaceholder")
+            backgroundTextLabel.text = localizableStrings.notEqualTextPlaceholder
         }
-
-            trackersCollectionView.reloadData()
-        }
+        
+        trackersCollectionView.reloadData()
+    }
     
     @objc private func didTapAddButton() {
         AnalyticsService.report(
@@ -368,7 +372,7 @@ final class TrackersViewController: UIViewController {
     //MARK: Helpers
     
     private func updateTrackers(_ savedHabitName: String, _ savedCategoryName: String, _ savedDays: [String], _ savedEmoji: String, _ savedColor: UIColor, _ savedId: UUID? ) {
-        print(savedEmoji)
+        
         backgroundImage.isHidden = true
         backgroundTextLabel.isHidden = true
         trackersCollectionView.isHidden = false
@@ -398,8 +402,32 @@ final class TrackersViewController: UIViewController {
         return convertScheduleDays.convertStringDaysToInt(savedDays)
     }
     
-    private func pinTracker(indexPath: IndexPath) {
+    private func pinTracker(id: UUID, categoryName: String) {
         
+        if categoryName == "Закрепленные" {
+            isPinned = true
+        }
+        
+        if isPinned {
+            let allTrackers = dataProvider.getAllTrackers()
+            
+            let trackerToPin = allTrackers.first { $0.id == id }
+            guard let trackerToPin = trackerToPin else { return }
+            dataProvider.removeTracker(id: id)
+            
+        } else {
+            let allTrackers = dataProvider.getAllTrackers()
+            
+            let trackerToPin = allTrackers.first { $0.id == id }
+            guard let trackerToPin = trackerToPin else { return }
+            
+            dataProvider.addTracker(categoryName: localizableStrings.pinnedTrackers, tracker: trackerToPin)
+            
+            categories = sortCategories(storeCategories: trackerCategoryStore.trackerCategories, idOfTrackerToHide: id)
+            visibleCategories = categories
+            
+            didChangeDate()
+        }
     }
     
     private func editTracker(tracker: Tracker, categoryName: String, isTrackerIsEditing: Bool, completedDays: String) {
@@ -412,12 +440,17 @@ final class TrackersViewController: UIViewController {
             ]
         )
         
-        let editHabitOrNonRegularEventVC = NewHabitOrNonRegularEventViewController(editTracker: tracker, categoryName: categoryName, completedDays: completedDays, isTrackerIsEditing: true)
+        let editHabitOrNonRegularEventVC = NewHabitOrNonRegularEventViewController(
+            editTracker: tracker,
+            categoryName: categoryName,
+            completedDays: completedDays,
+            isTrackerIsEditing: true
+        )
         
         if tracker.schedule.isEmpty {
-            editHabitOrNonRegularEventVC.categoriesAndSchedule = ["Категория"]
+            editHabitOrNonRegularEventVC.categoriesAndSchedule = [localizableStrings.category]
         } else {
-            editHabitOrNonRegularEventVC.categoriesAndSchedule = ["Категория", "Расписание"]
+            editHabitOrNonRegularEventVC.categoriesAndSchedule = [localizableStrings.category, localizableStrings.schedule]
         }
         
         editHabitOrNonRegularEventVC.onAddHabitButtonTapped = { [weak self] savedHabitName, savedCategoryName, savedDays, savedEmoji, savedColor, savedId in
@@ -440,12 +473,45 @@ final class TrackersViewController: UIViewController {
         
         dataProvider.removeTracker(id: id)
     }
+    
+    private func sortCategories(storeCategories: [TrackerCategory], idOfTrackerToHide: UUID?) -> [TrackerCategory] {
+        var sortedCategories: [TrackerCategory] = []
+        
+        let neededCategory = storeCategories.first { $0.name == localizableStrings.pinnedTrackers }
+        let neededTrackers = neededCategory?.trackers
+        
+        if let neededCategory = neededCategory {
+            sortedCategories.append(neededCategory)
+        }
+        
+        storeCategories.forEach { category in
+            if category.name != localizableStrings.pinnedTrackers {
+                sortedCategories.append(category)
+            }
+        }
+        
+        let categoriesWithNoPinCategories = storeCategories.filter { $0.name != localizableStrings.pinnedTrackers }
+        
+        var categoriesWithNoPinTrackers = categoriesWithNoPinCategories.compactMap { category in
+            let filteredTrackers = category.trackers.filter { tracker in
+                !(neededTrackers?.contains { $0.id == tracker.id } ?? false)
+            }
+            return TrackerCategory(name: category.name, trackers: filteredTrackers)
+        }
+        
+        if let neededCategory = neededCategory {
+            categoriesWithNoPinTrackers.append(neededCategory)
+        }
+        
+        let finalSortedCategories = categoriesWithNoPinTrackers
+        return finalSortedCategories
+    }
 }
 
 extension TrackersViewController: TrackerCategoryStoreDelegate {
     func trackerStore(_ store: TrackerCategoryStore, didUpdate update: TrackerCategoryStoreUpdate) {
-        categories = store.trackerCategories
         
+        categories = store.trackerCategories
         visibleCategories = categories
         
         didChangeDate()
@@ -538,15 +604,13 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        
         let cell = collectionView.cellForItem(at: indexPath) as? TrackersCollectionCell
-        guard let colorBack = cell?.habitCardColorLabel.layer.backgroundColor,
-              let emoji = cell?.emojiLabel.text,
-              let habitName = cell?.habitNameLabel.text,
-              let id = cell?.trackerId else { return nil }
         
         let tracker = visibleCategories[indexPath.section].trackers[indexPath.row]
+        let categoryName = dataProvider.getCategoryName(id: tracker.id)
+        
         guard let completedDays = cell?.dayLabel.text else {
-            print("contextMenuConfigurationForItemAt")
             return UIContextMenuConfiguration()
         }
         
@@ -554,23 +618,23 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
             identifier: nil,
             previewProvider: {
                 let vc = TrackerCellPreviewViewController(
-                    colorBack: colorBack,
-                    emoji: emoji,
-                    habitName: habitName
+                    colorBack: self.uiColorMarshalling.color(from: tracker.color).cgColor,
+                    emoji: tracker.emoji,
+                    habitName: tracker.name
                 )
                 
                 return vc
             },
             actionProvider: { actions in
                 return UIMenu(children: [
-                    UIAction(title: "Закрепить") { [weak self] _ in
-                        self?.pinTracker(indexPath: indexPath)
+                    UIAction(title: self.localizableStrings.pin) { [weak self] _ in
+                        self?.pinTracker(id: tracker.id, categoryName: categoryName)
                     },
-                    UIAction(title: "Редактировать") { [weak self] _ in
-                        self?.editTracker(tracker: tracker, categoryName: "Placeholder", isTrackerIsEditing: true, completedDays: completedDays)
+                    UIAction(title: self.localizableStrings.edit) { [weak self] _ in
+                        self?.editTracker(tracker: tracker, categoryName: categoryName, isTrackerIsEditing: true, completedDays: completedDays)
                     },
-                    UIAction(title: "Удалить", attributes: .destructive) { [weak self] _ in
-                        self?.deleteTracker(id: id)
+                    UIAction(title: self.localizableStrings.delete, attributes: .destructive) { [weak self] _ in
+                        self?.deleteTracker(id: tracker.id)
                     }
                 ])
             })
@@ -620,7 +684,6 @@ extension TrackersViewController: TrackersCollectionCellDelegate {
         
         if validDay {
             let trackerRecord = TrackerRecord(id: id, date: datePicker.date)
-            print(trackerRecord.date)
             dataProvider.remove(trackerRecord)
         } else {
             print("Cant remove day")

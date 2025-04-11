@@ -17,6 +17,14 @@ final class DataProvider: NSObject {
         (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext
     }
     
+    func getCategoryName(id: UUID) -> String {
+        trackerStore.getCategoryName(id: id)
+    }
+    
+    func getAllTrackers() -> [Tracker] {
+        trackerStore.getAllTrackers()
+    }
+    
     func addTrackerCategory(categoryName: String) {
         guard let context = context else { return }
         
@@ -54,6 +62,10 @@ final class DataProvider: NSObject {
     
     func removeTracker(id: UUID) {
         trackerStore.remove(id)
+    }
+    
+    func removeDuplicateTrackerForPin(_ id: UUID, _ categoryName: String){
+        trackerStore.removeDuplicateTrackerForPin(id, categoryName)
     }
     
     func updateTracker(updatingTracker: Tracker, updateCategoryName: String) {

@@ -52,6 +52,21 @@ final class TrackerStore: NSObject {
         try controller.performFetch()
     }
     
+    func getCategoryName(id: UUID) -> String {
+        let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
+        let objects = try? context.fetch(fetchRequest)
+        let neededTrackerCoreData = objects?.first { $0.id == id } ?? TrackerCoreData()
+        guard let categoryName = neededTrackerCoreData.category?.name else { return "" }
+        return categoryName
+    }
+    
+    func getAllTrackers() -> [Tracker] {
+        let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
+        let objects = try? context.fetch(fetchRequest)
+        let allTrackers = (try? objects?.compactMap { try trackerFetch(from: $0) }) ?? []
+        return allTrackers
+    }
+    
     func addNewTracker(category: TrackerCategoryCoreData, tracker: Tracker) throws {
         let trackerCoreData = TrackerCoreData(context: context)
         
@@ -109,6 +124,25 @@ final class TrackerStore: NSObject {
         let trackers = try? context.fetch(fetchRequest)
         guard let currentTracker = trackers?.first(where: {
             $0.id == id
+        }) else { return }
+        
+        context.delete(currentTracker)
+        try? context.save()
+    }
+    
+    func removeDuplicateTrackerForPin(_ id: UUID, _ categoryName: String) {
+        let fetchRequestTrackers = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
+        let trackers = try? context.fetch(fetchRequestTrackers)
+        
+        let fetchRequestTrackerCategories = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
+        let trackerCategories = try? context.fetch(fetchRequestTrackerCategories)
+        
+        guard let categoryForCheck = trackerCategories?.first(where: {
+            $0.name == categoryName
+        }) else { return }
+        
+        guard let currentTracker = trackers?.first(where: {
+            $0.id == id && $0.category?.name != categoryForCheck.name
         }) else { return }
         
         context.delete(currentTracker)
