@@ -51,7 +51,7 @@ final class NewCategoryViewController: UIViewController {
     private func setBarItem() {
         navigationItem.title = localizableStrings.categoryTitle
         let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.medium), NSAttributedString.Key.foregroundColor: colorsForDarkLightTheme.blackWhiteDLT]
-        navigationController?.navigationBar.titleTextAttributes = attributes
+        navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
     }
     
     private func createBackgroundImage() {
@@ -63,7 +63,7 @@ final class NewCategoryViewController: UIViewController {
     }
     
     private func createBackgroundTextLabel() {
-        backgroundTextLabel.text = localizableStrings.placeholderTextPartOne + "\n" + localizableStrings.placeholderTextPartTwo
+        backgroundTextLabel.text = localizableStrings.placeholderText
         backgroundTextLabel.numberOfLines = 2
         backgroundTextLabel.textColor = colorsForDarkLightTheme.blackWhiteDLT
         backgroundTextLabel.font = .systemFont(ofSize: 12, weight: UIFont.Weight.medium)
@@ -163,7 +163,7 @@ extension NewCategoryViewController: UITableViewDataSource {
             cell.layer.masksToBounds = true
         }
         
-        cell.backgroundColor = colorsForDarkLightTheme.backgroundAndPlaceholderBackgroundOtherVC
+        cell.backgroundColor = colorsForDarkLightTheme.bgAndPhBgOtherVC
         cell.textLabel?.text = categoriesNames[indexPath.row]
         cell.textLabel?.textColor = colorsForDarkLightTheme.blackWhiteDLT
         

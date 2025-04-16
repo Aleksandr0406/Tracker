@@ -46,7 +46,7 @@ final class NewScheduleViewController: UIViewController {
     private func setBarItem() {
         navigationItem.title = localizableStrings.title
         let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.medium), NSAttributedString.Key.foregroundColor: colorsForDarkLightTheme.blackWhiteDLT]
-        navigationController?.navigationBar.titleTextAttributes = attributes
+        navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
     }
     
     private func createDoneButton() {
@@ -69,7 +69,7 @@ final class NewScheduleViewController: UIViewController {
     }
     
     private func createScheduleTableView() {
-        scheduleTableView.backgroundColor = colorsForDarkLightTheme.backgroundAndPlaceholderBackgroundOtherVC
+        scheduleTableView.backgroundColor = colorsForDarkLightTheme.bgAndPhBgOtherVC
         scheduleTableView.layer.cornerRadius = 16
         
         scheduleTableView.translatesAutoresizingMaskIntoConstraints = false
@@ -121,7 +121,7 @@ extension NewScheduleViewController: UITableViewDataSource {
         
         cell.tag = indexPath.row
         cell.accessoryView = switchView
-        cell.backgroundColor = colorsForDarkLightTheme.backgroundAndPlaceholderBackgroundOtherVC
+        cell.backgroundColor = colorsForDarkLightTheme.bgAndPhBgOtherVC
         cell.textLabel?.text = days[indexPath.row]
         cell.textLabel?.font = .systemFont(ofSize: 17, weight: UIFont.Weight.regular)
         cell.textLabel?.textColor = colorsForDarkLightTheme.blackWhiteDLT

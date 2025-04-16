@@ -1,3 +1,4 @@
-/Users/a1111/Desktop/dev/projects/Tracker/Tracker/Tracker.xcodeproj/*.xcuserdata/
+**/*.xcuserdatad/
 Pods/
 Tracker.xcworkspace
+**/*.__Snapshots__/

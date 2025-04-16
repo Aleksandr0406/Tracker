@@ -41,7 +41,7 @@ final class FilterMainScreenViewController: UIViewController {
     private func setBarItem() {
         navigationItem.title = localizableStrings.naviTitle
         let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.medium), NSAttributedString.Key.foregroundColor: colorsForDarkLightTheme.blackWhiteDLT]
-        navigationController?.navigationBar.titleTextAttributes = attributes
+        navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
     }
     
     private func createFilterCategoriesTable() {
@@ -87,7 +87,7 @@ extension FilterMainScreenViewController: UITableViewDataSource {
             cell.layer.masksToBounds = true
         }
         
-        cell.backgroundColor = colorsForDarkLightTheme.backgroundAndPlaceholderBackgroundOtherVC
+        cell.backgroundColor = colorsForDarkLightTheme.bgAndPhBgOtherVC
         cell.textLabel?.text = filterCategoriesNames[indexPath.row]
         cell.textLabel?.textColor = colorsForDarkLightTheme.blackWhiteDLT
         

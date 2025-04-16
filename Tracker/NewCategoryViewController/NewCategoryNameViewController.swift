@@ -29,12 +29,12 @@ final class NewCategoryNameViewController: UIViewController, UITextFieldDelegate
     private func setBarItem() {
         navigationItem.title = localizableStrings.title
         let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.medium), NSAttributedString.Key.foregroundColor: colorsForDarkLightTheme.blackWhiteDLT]
-        navigationController?.navigationBar.titleTextAttributes = attributes
+        navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
     }
     
     private func createTitleCategoryTextField() {
         titleCategoryTextField.placeholder = localizableStrings.textFieldPlaceholderText
-        titleCategoryTextField.backgroundColor = colorsForDarkLightTheme.backgroundAndPlaceholderBackgroundOtherVC
+        titleCategoryTextField.backgroundColor = colorsForDarkLightTheme.bgAndPhBgOtherVC
         titleCategoryTextField.layer.cornerRadius = 16
         titleCategoryTextField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 75))
         titleCategoryTextField.leftViewMode = .always

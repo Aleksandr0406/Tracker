@@ -8,9 +8,13 @@
 import UIKit
 
 struct ColorsForDarkLightTheme {
-    let whiteBlackDLT = UIColor(named: "WhiteBlackDLT")
-    let blackWhiteDLT = UIColor(named: "BlackWhiteDLT")
-    let backgroundColorSearchTextFieldTrackVC = UIColor(named: "767680_12%_767680_24%DLT")
-    let placeholderSearchTextFieldTextColorTrackVC = UIColor(named: "AEAFB4_EBEBF5_DLT")
-    let backgroundAndPlaceholderBackgroundOtherVC = UIColor(named: "E6E8EB_30%_414141_85%DLT")
+    // DLT - Dark&Light Theme
+    // bg(Bg) - background
+    // STF - SearchTextField
+    // ph(Ph) - placeholder
+    let whiteBlackDLT = UIColor(resource: .whiteBlackDLT)
+    let blackWhiteDLT = UIColor(resource: .blackWhiteDLT)
+    let bgColorSTFTrackVC = UIColor(resource: .colorSet1ForDLT)
+    let phSTFTextColorTrackVC = UIColor(resource: .colorSet2ForDLT)
+    let bgAndPhBgOtherVC = UIColor(resource: .colorSet3ForDLT)
 }
