@@ -120,9 +120,9 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
         
         if isTrackerIsEditing {
             guard let schedule = editTracker?.schedule else { return }
-            self.savedDays = convertScheduleDays.convertIntDaysToStringDays(schedule)
-            self.subtitleTextSchedule = setShortNamesToDaysOfWeek(savedDays)
-            self.savedEmoji = editTracker?.emoji
+            savedDays = convertScheduleDays.convertIntDaysToStringDays(schedule)
+            subtitleTextSchedule = setShortNamesToDaysOfWeek(savedDays)
+            savedEmoji = editTracker?.emoji
         }
     }
     
@@ -130,15 +130,15 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
         if isTrackerIsEditing {
             navigationItem.title = localizableStrings.editTracker
             let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.medium), NSAttributedString.Key.foregroundColor: colorsForDarkLightTheme.blackWhiteDLT]
-            navigationController?.navigationBar.titleTextAttributes = attributes
+            navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
         } else if categoriesAndSchedule.count > 1 {
             navigationItem.title = localizableStrings.titleHabit
             let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.medium), NSAttributedString.Key.foregroundColor: colorsForDarkLightTheme.blackWhiteDLT]
-            navigationController?.navigationBar.titleTextAttributes = attributes
+            navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
         } else {
             navigationItem.title = localizableStrings.titleNotRegularEvent
             let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.medium), NSAttributedString.Key.foregroundColor: colorsForDarkLightTheme.blackWhiteDLT]
-            navigationController?.navigationBar.titleTextAttributes = attributes
+            navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
         }
     }
     
@@ -150,20 +150,16 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
         completedDaysLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(completedDaysLabel)
         
-        if isTrackerIsEditing {
-            completedDaysLabel.isHidden = false
-        } else {
-            completedDaysLabel.isHidden = true
-        }
+        completedDaysLabel.isHidden = !isTrackerIsEditing
     }
     
     private func createTitleHabitTextField() {
         if isTrackerIsEditing {
-            titleHabitTextField.text = self.editTracker?.name
+            titleHabitTextField.text = editTracker?.name
         }
         
         titleHabitTextField.placeholder = localizableStrings.textFieldPlaceholderText
-        titleHabitTextField.backgroundColor = colorsForDarkLightTheme.backgroundAndPlaceholderBackgroundOtherVC
+        titleHabitTextField.backgroundColor = colorsForDarkLightTheme.bgAndPhBgOtherVC
         titleHabitTextField.layer.cornerRadius = 16
         titleHabitTextField.clearButtonMode = .always
         titleHabitTextField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 75))
@@ -194,7 +190,7 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
     }
     
     private func createCategoryAndScheduleTable() {
-        categoryAndScheduleTable.backgroundColor = colorsForDarkLightTheme.backgroundAndPlaceholderBackgroundOtherVC
+        categoryAndScheduleTable.backgroundColor = colorsForDarkLightTheme.bgAndPhBgOtherVC
         categoryAndScheduleTable.layer.cornerRadius = 16
         categoryAndScheduleTable.isScrollEnabled = false
         categoryAndScheduleTable.separatorColor = UIColor(named: "SeparatorColor")
@@ -274,7 +270,7 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
         cell?.detailTextLabel?.text = subtitleNameCategory
         cell?.detailTextLabel?.textColor = UIColor(named: "Add_Button")
         cell?.detailTextLabel?.font = .systemFont(ofSize: 17)
-        self.categoryAndScheduleTable.reloadData()
+        categoryAndScheduleTable.reloadData()
     }
     
     private func addSubtitleToSchedule(_ subtitleNameSchedule: [String]) {
@@ -284,7 +280,7 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
         cell.detailTextLabel?.text = savedShortNameDays
         cell.detailTextLabel?.textColor = UIColor(named: "Add_Button")
         cell.detailTextLabel?.font = .systemFont(ofSize: 17)
-        self.categoryAndScheduleTable.reloadData()
+        categoryAndScheduleTable.reloadData()
     }
     
     private func setConstraints() {
@@ -557,7 +553,7 @@ extension NewHabitOrNonRegularEventViewController: UITableViewDataSource {
             cell = UITableViewCell(style: .default, reuseIdentifier: NewHabitOrNonRegularEventTableViewCell.cellIdentifier)
         }
         
-        cell.backgroundColor = colorsForDarkLightTheme.backgroundAndPlaceholderBackgroundOtherVC
+        cell.backgroundColor = colorsForDarkLightTheme.bgAndPhBgOtherVC
         cell.accessoryType = .disclosureIndicator
         cell.textLabel?.text = categoriesAndSchedule[indexPath.row]
         cell.textLabel?.font = .systemFont(ofSize: 17, weight: UIFont.Weight.regular)
@@ -576,15 +572,9 @@ extension NewHabitOrNonRegularEventViewController: UITableViewDataSource {
         if isTrackerIsEditing {
             guard let categoryName = categoryName else { return UITableViewCell() }
             
-            if indexPath.row == 0 {
-                cell.detailTextLabel?.text = categoryName
-                cell.detailTextLabel?.textColor = UIColor(named: "Add_Button")
-                cell.detailTextLabel?.font = .systemFont(ofSize: 17)
-            } else {
-                cell.detailTextLabel?.text = subtitleTextSchedule
-                cell.detailTextLabel?.textColor = UIColor(named: "Add_Button")
-                cell.detailTextLabel?.font = .systemFont(ofSize: 17)
-            }
+            cell.detailTextLabel?.text = indexPath.row == 0 ? categoryName : subtitleTextSchedule
+            cell.detailTextLabel?.textColor = UIColor(resource: .addButton)
+            cell.detailTextLabel?.font = .systemFont(ofSize: 17)
         }
         
         return cell

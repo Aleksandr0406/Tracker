@@ -6,3 +6,7 @@
 //
 
 import Foundation
+
+struct LocalizableStringsTrackerStore {
+    let pinTrackers = NSLocalizedString("Закрепленные", comment: "Закрепленные")
+}

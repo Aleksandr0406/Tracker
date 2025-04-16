@@ -11,16 +11,19 @@ final class TrackerCellPreviewViewController: UIViewController {
     let colorBack: CGColor
     let emoji: String
     let habitName: String
+    let isPinned: Bool
     
     let emojiLabel: UILabel = UILabel()
     let emojiBackLabel: UILabel = UILabel()
     let habitNameLabel: UILabel = UILabel()
+    let pinImage: UIImageView = UIImageView()
     
-    init(colorBack: CGColor, emoji: String, habitName: String) {
+    init(colorBack: CGColor, emoji: String, habitName: String, isPinned: Bool) {
         
         self.colorBack = colorBack
         self.emoji = emoji
         self.habitName = habitName
+        self.isPinned = isPinned
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -38,6 +41,7 @@ final class TrackerCellPreviewViewController: UIViewController {
         createEmojiLabel()
         createEmojiBackLabel()
         createHabitNameLabel()
+        createPinImage()
         setConstraints()
     }
     
@@ -71,6 +75,15 @@ final class TrackerCellPreviewViewController: UIViewController {
         view.addSubview(habitNameLabel)
     }
     
+    private func createPinImage() {
+        pinImage.image = UIImage(resource: .pin)
+        
+        pinImage.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(pinImage)
+        
+        pinImage.isHidden = !isPinned
+    }
+    
     private func setConstraints() {
         NSLayoutConstraint.activate([
             habitNameLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -12),
@@ -86,7 +99,12 @@ final class TrackerCellPreviewViewController: UIViewController {
             emojiLabel.topAnchor.constraint(equalTo: emojiBackLabel.topAnchor, constant: 1),
             emojiLabel.leadingAnchor.constraint(equalTo: emojiBackLabel.leadingAnchor, constant: 4),
             emojiLabel.trailingAnchor.constraint(equalTo: emojiBackLabel.trailingAnchor, constant: -4),
-            emojiLabel.bottomAnchor.constraint(equalTo: emojiBackLabel.bottomAnchor, constant: -1)
+            emojiLabel.bottomAnchor.constraint(equalTo: emojiBackLabel.bottomAnchor, constant: -1),
+            
+            pinImage.topAnchor.constraint(equalTo: view.topAnchor, constant: 12),
+            pinImage.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -4),
+            pinImage.heightAnchor.constraint(equalToConstant: 24),
+            pinImage.widthAnchor.constraint(equalToConstant: 24)
         ])
     }
 }

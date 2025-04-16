@@ -54,7 +54,7 @@ final class TrackerCategoryStore: NSObject {
     }
     
     convenience override init() {
-        let context = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext ?? NSManagedObjectContext()
+        let context = DataBaseStore.shared.persistentContainer.viewContext
         try! self.init(context: context)
     }
     
@@ -118,10 +118,8 @@ final class TrackerCategoryStore: NSObject {
     }
     
     func checkCategoryExistence(categoryName: String) -> TrackerCategoryCoreData? {
-        if let categoryAlreadyExists = fetchedResultsController?.fetchedObjects?.first(where: { $0.name == categoryName }) {
-            return categoryAlreadyExists
-        }
-        return nil
+        guard let categoryAlreadyExists = fetchedResultsController?.fetchedObjects?.first(where: { $0.name == categoryName }) else { return nil }
+        return categoryAlreadyExists
     }
 }
 

@@ -14,7 +14,7 @@ final class DataProvider: NSObject {
     private let trackerRecordStore: TrackerRecordStore = TrackerRecordStore()
     
     private var context: NSManagedObjectContext? {
-        (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext
+        DataBaseStore.shared.persistentContainer.viewContext
     }
     
     func getCategoryName(id: UUID) -> String {
@@ -60,32 +60,21 @@ final class DataProvider: NSObject {
         }
     }
     
+    func unPinTracker(id: UUID) {
+        trackerStore.unPinTracker(id: id)
+    }
+    
     func removeTracker(id: UUID) {
         trackerStore.remove(id)
     }
     
-    func removeDuplicateTrackerForPin(_ id: UUID, _ categoryName: String){
-        trackerStore.removeDuplicateTrackerForPin(id, categoryName)
-    }
-    
     func updateTracker(updatingTracker: Tracker, updateCategoryName: String) {
-        guard let context = context else { return }
+        guard let categoryIsExist = trackerCategoryStore.checkCategoryExistence(categoryName: updateCategoryName) else { return }
         
-        if let categoryIsExist = trackerCategoryStore.checkCategoryExistence(categoryName: updateCategoryName) {
-            do {
-                try trackerStore.updateTracker(updatingTracker: updatingTracker, updateCategoryName: categoryIsExist)
-            } catch {
-                print("Cant update newTracker")
-            }
-        } else {
-            let trackerCategory = TrackerCategoryCoreData(context: context)
-            trackerCategory.name = updateCategoryName
-            try? context.save()
-            do {
-                try trackerStore.updateTracker(updatingTracker: updatingTracker, updateCategoryName: trackerCategory)
-            } catch {
-                print("Cant add tracker to category")
-            }
+        do {
+            try trackerStore.updateTracker(updatingTracker: updatingTracker, updateCategoryName: categoryIsExist)
+        } catch {
+            print("Cant update newTracker")
         }
     }
     
@@ -111,3 +100,4 @@ final class DataProvider: NSObject {
         }
     }
 }
+

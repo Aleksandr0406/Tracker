@@ -23,6 +23,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
     let habitNameLabel: UILabel = UILabel()
     let addDayButton: UIButton = UIButton()
     let dayLabel: UILabel = UILabel()
+    let pinImage: UIImageView = UIImageView()
     
     var trackerId: UUID?
     
@@ -46,6 +47,8 @@ final class TrackersCollectionCell: UICollectionViewCell {
         createHabitNameLabel()
         createAddDayButton()
         createDayLabel()
+        createPinView()
+        
         setConstraints()
     }
     
@@ -53,7 +56,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with tracker: Tracker, isCompletedToday: Bool, completedDays: Int, color: UIColor) {
+    func configure(with tracker: Tracker, isCompletedToday: Bool, completedDays: Int, color: UIColor, isPinned: Bool) {
         self.trackerId = tracker.id
         self.isCompletedToday = isCompletedToday
         
@@ -73,6 +76,17 @@ final class TrackersCollectionCell: UICollectionViewCell {
         let image = isCompletedToday ? doneImage : plusImage
         addDayButton.setImage(image, for: .normal)
         addDayButton.backgroundColor = isCompletedToday ? color.withAlphaComponent(0.3) : color
+        
+        pinImage.isHidden = !isPinned
+    }
+    
+    private func createPinView() {
+        pinImage.image = UIImage(resource: .pin)
+        
+        pinImage.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(pinImage)
+        
+        pinImage.isHidden = true
     }
     
     private func createHabitCardColorLabel() {
@@ -174,7 +188,12 @@ final class TrackersCollectionCell: UICollectionViewCell {
             dayLabel.topAnchor.constraint(equalTo: habitCardColorLabel.bottomAnchor, constant: 16),
             dayLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
             dayLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -24),
-            dayLabel.heightAnchor.constraint(equalToConstant: 18)
+            dayLabel.heightAnchor.constraint(equalToConstant: 18),
+            
+            pinImage.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
+            pinImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -4),
+            pinImage.heightAnchor.constraint(equalToConstant: 24),
+            pinImage.widthAnchor.constraint(equalToConstant: 24)
         ])
     }
 }
