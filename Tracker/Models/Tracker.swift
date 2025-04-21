@@ -5,7 +5,7 @@
 //  Created by 1111 on 04.02.2025.
 //
 
-import UIKit
+import Foundation
 
 struct Tracker: Codable {
     let id: UUID

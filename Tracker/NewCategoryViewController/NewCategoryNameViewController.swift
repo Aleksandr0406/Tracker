@@ -54,14 +54,14 @@ final class NewCategoryNameViewController: UIViewController, UITextFieldDelegate
             doneButton.setTitleColor(colorsForDarkLightTheme.whiteBlackDLT, for: .normal)
             doneButton.isEnabled = true
         } else {
-            doneButton.backgroundColor = UIColor(named: "Add_Button")
+            doneButton.backgroundColor = UIColor(resource: .addButton)
             doneButton.setTitleColor(UIColor.white, for: .normal)
             doneButton.isEnabled = false
         }
     }
     
     private func createDoneButton() {
-        doneButton.backgroundColor = UIColor(named: "Add_Button")
+        doneButton.backgroundColor = UIColor(resource: .addButton)
         doneButton.setTitle(localizableStrings.doneButtonTitle, for: .normal)
         doneButton.setTitleColor(UIColor.white, for: .normal)
         doneButton.layer.cornerRadius = 16

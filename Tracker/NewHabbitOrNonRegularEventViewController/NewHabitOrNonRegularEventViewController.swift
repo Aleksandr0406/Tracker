@@ -19,7 +19,7 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
     }
     
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        preconditionFailure("init(coder:) has not been implemented")
     }
     
     var onAddHabitButtonTapped: ((String, String, [String], String, UIColor, UUID?) -> ())?
@@ -49,24 +49,24 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
     
     private let colors =
     [
-        UIColor(named: "FD4C49"),
-        UIColor(named: "FF881E"),
-        UIColor(named: "007BFA"),
-        UIColor(named: "6E44FE"),
-        UIColor(named: "33CF69"),
-        UIColor(named: "E66DD4"),
-        UIColor(named: "F9D4D4"),
-        UIColor(named: "34A7FE"),
-        UIColor(named: "46E69D"),
-        UIColor(named: "35347C"),
-        UIColor(named: "FF674D"),
-        UIColor(named: "FF99CC"),
-        UIColor(named: "F6C48B"),
-        UIColor(named: "7994F5"),
-        UIColor(named: "832CF1"),
-        UIColor(named: "AD56DA"),
-        UIColor(named: "8D72E6"),
-        UIColor(named: "2FD058")
+        UIColor(resource: .FD_4_C_49),
+        UIColor(resource: .FF_881_E),
+        UIColor(resource: ._007_BFA),
+        UIColor(resource: ._6_E_44_FE),
+        UIColor(resource: ._33_CF_69),
+        UIColor(resource: .E_66_DD_4),
+        UIColor(resource: .F_9_D_4_D_4),
+        UIColor(resource: ._34_A_7_FE),
+        UIColor(resource: ._46_E_69_D),
+        UIColor(resource: ._35347_C),
+        UIColor(resource: .FF_674_D),
+        UIColor(resource: .FF_99_CC),
+        UIColor(resource: .F_6_C_48_B),
+        UIColor(resource: ._7994_F_5),
+        UIColor(resource: ._832_CF_1),
+        UIColor(resource: .AD_56_DA),
+        UIColor(resource: ._8_D_72_E_6),
+        UIColor(resource: ._2_FD_058)
     ]
     
     private let localizableStrings: LocalizableStringsNewHabitOrNonRegularEventVC = LocalizableStringsNewHabitOrNonRegularEventVC()
@@ -193,7 +193,7 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
         categoryAndScheduleTable.backgroundColor = colorsForDarkLightTheme.bgAndPhBgOtherVC
         categoryAndScheduleTable.layer.cornerRadius = 16
         categoryAndScheduleTable.isScrollEnabled = false
-        categoryAndScheduleTable.separatorColor = UIColor(named: "SeparatorColor")
+        categoryAndScheduleTable.separatorColor = UIColor(resource: .sep)
         
         categoryAndScheduleTable.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(categoryAndScheduleTable)
@@ -204,10 +204,10 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
     
     private func createCancelButton() {
         cancelButton.backgroundColor = colorsForDarkLightTheme.whiteBlackDLT
-        cancelButton.layer.borderColor = UIColor(named: "Cancel_Button")?.cgColor
+        cancelButton.layer.borderColor = UIColor(resource: .cancelButton).cgColor
         cancelButton.layer.borderWidth = 1
         cancelButton.setTitle(localizableStrings.cancelButtonText, for: .normal)
-        cancelButton.setTitleColor(UIColor(named: "Cancel_Button"), for: .normal)
+        cancelButton.setTitleColor(UIColor(resource: .cancelButton), for: .normal)
         cancelButton.layer.cornerRadius = 16
         cancelButton.titleLabel?.font = .systemFont(ofSize: 16, weight: UIFont.Weight.medium)
         
@@ -222,8 +222,8 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
     }
     
     private func createAddHabitButton() {
-        addHabitButton.backgroundColor = UIColor(named: "Add_Button")
-        addHabitButton.layer.borderColor = UIColor(named: "Add_Button")?.cgColor
+        addHabitButton.backgroundColor = UIColor(resource: .addButton)
+        addHabitButton.layer.borderColor = UIColor(resource: .addButton).cgColor
         addHabitButton.layer.borderWidth = 1
         addHabitButton.setTitle(isTrackerIsEditing ? localizableStrings.saveTracker : localizableStrings.addTrackerButtonText, for: .normal)
         addHabitButton.setTitleColor(UIColor.white, for: .normal)
@@ -268,7 +268,7 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
     private func addSubtitleToCategory(_ subtitleNameCategory: String) {
         let cell = categoryAndScheduleTable.cellForRow(at: IndexPath(row: 0, section: 0))
         cell?.detailTextLabel?.text = subtitleNameCategory
-        cell?.detailTextLabel?.textColor = UIColor(named: "Add_Button")
+        cell?.detailTextLabel?.textColor = UIColor(resource: .addButton)
         cell?.detailTextLabel?.font = .systemFont(ofSize: 17)
         categoryAndScheduleTable.reloadData()
     }
@@ -278,7 +278,7 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
         
         let savedShortNameDays = setShortNamesToDaysOfWeek(subtitleNameSchedule)
         cell.detailTextLabel?.text = savedShortNameDays
-        cell.detailTextLabel?.textColor = UIColor(named: "Add_Button")
+        cell.detailTextLabel?.textColor = UIColor(resource: .addButton)
         cell.detailTextLabel?.font = .systemFont(ofSize: 17)
         categoryAndScheduleTable.reloadData()
     }
@@ -352,8 +352,8 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
             addHabitButton.isEnabled = true
         } else {
             addHabitButton.setTitleColor(UIColor.white, for: .normal)
-            addHabitButton.backgroundColor = UIColor(named: "Add_Button")
-            addHabitButton.layer.borderColor = UIColor(named: "Add_Button")?.cgColor
+            addHabitButton.backgroundColor = UIColor(resource: .addButton)
+            addHabitButton.layer.borderColor = UIColor(resource: .addButton).cgColor
             addHabitButton.layer.borderWidth = 1
             addHabitButton.isEnabled = false
         }
@@ -370,8 +370,8 @@ final class NewHabitOrNonRegularEventViewController: UIViewController {
             addHabitButton.isEnabled = true
         } else {
             addHabitButton.setTitleColor(UIColor.white, for: .normal)
-            addHabitButton.backgroundColor = UIColor(named: "Add_Button")
-            addHabitButton.layer.borderColor = UIColor(named: "Add_Button")?.cgColor
+            addHabitButton.backgroundColor = UIColor(resource: .addButton)
+            addHabitButton.layer.borderColor = UIColor(resource: .addButton).cgColor
             addHabitButton.layer.borderWidth = 1
             addHabitButton.isEnabled = false
         }
@@ -421,7 +421,7 @@ extension NewHabitOrNonRegularEventViewController: UICollectionViewDelegateFlowL
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         if let emojiCell = collectionView.cellForItem(at: indexPath) as? NewHabitOrNonRegularEventEmojiCollectionCell {
-            emojiCell.backgroundColor = UIColor(named: "E6E8EB")
+            emojiCell.backgroundColor = UIColor(resource: .E_6_E_8_EB)
             emojiCell.layer.cornerRadius = 16
             emojiCell.layer.masksToBounds = true
             
@@ -490,7 +490,7 @@ extension NewHabitOrNonRegularEventViewController: UICollectionViewDataSource {
                 let rowIndexOfEmoji = emojis.firstIndex(where: { $0 == editTracker?.emoji } )
                 if indexPath.row == rowIndexOfEmoji {
                     emojiCell.titleLabel.text = editTracker?.emoji
-                    emojiCell.backgroundColor = UIColor(named: "E6E8EB")
+                    emojiCell.backgroundColor = UIColor(resource: .E_6_E_8_EB)
                     emojiCell.layer.cornerRadius = 16
                     emojiCell.layer.masksToBounds = true
                     collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .bottom)

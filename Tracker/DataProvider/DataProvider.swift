@@ -6,7 +6,6 @@
 //
 
 import CoreData
-import UIKit
 
 final class DataProvider: NSObject {
     let trackerCategoryStore: TrackerCategoryStore = TrackerCategoryStore()

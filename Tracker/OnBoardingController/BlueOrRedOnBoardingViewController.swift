@@ -31,8 +31,8 @@ final class BlueOrRedOnBoardingViewController: UIViewController {
     }
     
     private func setBackImage() {
-        guard let blueImage = UIImage(named: "BlueOnBoarding"),
-              let redImage = UIImage(named: "RedOnBoarding") else { return }
+        let blueImage = UIImage(resource: .blueOnBoarding)
+        let redImage = UIImage(resource: .redOnBoarding) 
         
         backImage.image = onboardingScreen == blueType ? blueImage : redImage
         backImage.contentMode = .scaleAspectFit

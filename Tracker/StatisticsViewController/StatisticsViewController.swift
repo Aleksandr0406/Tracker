@@ -131,7 +131,7 @@ final class StatisticsViewController: UIViewController {
     }
     
     private func createPlaceholderImageView() {
-        placeholderImageView.image = UIImage(named: "StatisticsPlaceholderImage")
+        placeholderImageView.image = UIImage(resource: .statisticsPlaceholder)
         
         placeholderImageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(placeholderImageView)
@@ -323,7 +323,6 @@ final class StatisticsViewController: UIViewController {
     }
     
     private func countBestPeriodAndSetToLabel() {
-        
         var bestPeriod = 0
         let calendar = Calendar.current
         
@@ -361,64 +360,24 @@ final class StatisticsViewController: UIViewController {
     }
     
     private func countIdealDaysAndSetToLabel() {
-        var idealDays: Int = 0
-        var newTrackersRecord: [Date] = []
-        var newTrackers: [Tracker] = []
-        var checkedTrackerRecordDays: [Date] = []
-        var check: Bool = false
-        
-        for trackerRecord in allTrackerRecords {
-            
-            if !checkedTrackerRecordDays.isEmpty {
-                for index in 0...(checkedTrackerRecordDays.count - 1) {
-                    check = checkedTrackerRecordDays.contains { checkTrackerRecord in
-                        let sameDay = Calendar.current.isDate(trackerRecord.date, inSameDayAs: checkedTrackerRecordDays[index])
-                        return sameDay
-                    }
-                }
+        var idealDays = 0
+        var processedDates: Set<Date> = []
+        for record in allTrackerRecords {
+            if processedDates.contains(where: { Calendar.current.isDate($0, inSameDayAs: record.date) }) {
+                continue
             }
-            
-            if check {
-                print("do nothing")
-            } else {
-                for index in 0...(allTrackerRecords.count - 1) {
-                    let sameDay = Calendar.current.isDate(trackerRecord.date, inSameDayAs: allTrackerRecords[index].date)
-                    if sameDay {
-                        newTrackersRecord.append(trackerRecord.date)
-                    }
-                }
-                
-                let newTrackersRecordCount = newTrackersRecord.count
-                
-                let calendar = Calendar.current
-                let filterWeekday = calendar.component(.weekday, from: trackerRecord.date)
-                
-                allTrackers.forEach { tracker in
-                    
-                    if tracker.schedule.isEmpty {
-                        newTrackers.append(tracker)
-                    } else {
-                        tracker.schedule.forEach { weekday in
-                            
-                            if weekday == filterWeekday {
-                                newTrackers.append(tracker)
-                            }
-                        }
-                    }
-                }
-                
-                let newTrackersCount = newTrackers.count
-                
-                if newTrackersRecordCount == newTrackersCount {
-                    idealDays += 1
-                }
+            let sameDayRecords = allTrackerRecords.filter {
+                Calendar.current.isDate($0.date, inSameDayAs: record.date)
             }
-            
-            newTrackersRecord = []
-            newTrackers = []
-            checkedTrackerRecordDays.append(trackerRecord.date)
+            let weekday = Calendar.current.component(.weekday, from: record.date)
+            let activeTrackers = allTrackers.filter { tracker in
+                tracker.schedule.isEmpty || tracker.schedule.contains(weekday)
+            }
+            if sameDayRecords.count == activeTrackers.count {
+                idealDays += 1
+            }
+            processedDates.insert(record.date)
         }
-        
         idealDaysNumberValueLabel.text = "\(idealDays)"
     }
     
@@ -436,7 +395,14 @@ final class StatisticsViewController: UIViewController {
         }
         
         let total = dateCounts.values.reduce(0, +)
-        let averageValue = Double(total) / Double(dateCounts.count)
+        let averageValue: Double
+        
+        if total == 0 {
+            averageValue = 0
+        } else {
+            averageValue = Double(total) / Double(dateCounts.count)
+        }
+        
         averageValueNumberValueLabel.text = "\(averageValue)"
     }
 }

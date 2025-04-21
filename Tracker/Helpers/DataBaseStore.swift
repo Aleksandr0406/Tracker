@@ -5,7 +5,6 @@
 //  Created by 1111 on 15.04.2025.
 //
 
-import Foundation
 import CoreData
 
 final class DataBaseStore {
@@ -15,7 +14,7 @@ final class DataBaseStore {
         let container = NSPersistentContainer(name: "Tracker")
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
-                fatalError("Unresolved error \(error), \(error.userInfo)")
+                assertionFailure("Unresolved error \(error), \(error.userInfo)")
             }
         })
         return container

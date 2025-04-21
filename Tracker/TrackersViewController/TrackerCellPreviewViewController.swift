@@ -29,7 +29,7 @@ final class TrackerCellPreviewViewController: UIViewController {
     }
     
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        preconditionFailure("init(coder:) has not been implemented")
     }
     
     override func viewDidLoad() {
@@ -46,7 +46,7 @@ final class TrackerCellPreviewViewController: UIViewController {
     }
     
     private func createEmojiBackLabel() {
-        emojiBackLabel.layer.backgroundColor = UIColor(named: "EmojiBack")?.cgColor
+        emojiBackLabel.layer.backgroundColor = UIColor(resource: .emojiBack).cgColor
         emojiBackLabel.layer.cornerRadius = 12
         
         emojiBackLabel.translatesAutoresizingMaskIntoConstraints = false

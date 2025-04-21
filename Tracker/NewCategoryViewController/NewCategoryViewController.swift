@@ -55,7 +55,7 @@ final class NewCategoryViewController: UIViewController {
     }
     
     private func createBackgroundImage() {
-        guard let backgroundImage = UIImage(named: "No_items") else { return }
+        let backgroundImage = UIImage(resource: .noItems) 
         self.backgroundImage.image = backgroundImage
         
         self.backgroundImage.translatesAutoresizingMaskIntoConstraints = false

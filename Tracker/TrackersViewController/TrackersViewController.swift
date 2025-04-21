@@ -178,7 +178,7 @@ final class TrackersViewController: UIViewController {
     //MARK: Creating elements on screen
     
     private func createFilterButton() {
-        filterButton.backgroundColor = UIColor(named: "FilterButton")
+        filterButton.backgroundColor = UIColor(resource: .filterButton)
         filterButton.setTitle(localizableStrings.filterButtonTitle, for: .normal)
         filterButton.titleLabel?.font = .systemFont(ofSize: 17, weight: UIFont.Weight.regular)
         filterButton.setTitleColor(.white, for: .normal)
@@ -239,7 +239,7 @@ final class TrackersViewController: UIViewController {
     }
     
     private func createBackgroundImage() {
-        backgroundImage.image = UIImage(named: "No_items")
+        backgroundImage.image = UIImage(resource: .noItems)
         
         backgroundImage.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(backgroundImage)
@@ -386,7 +386,7 @@ final class TrackersViewController: UIViewController {
                     tracker.name.lowercased().contains(filterText)
                 }
             }
-            backgroundImage.image = conditionForPlaceholderOption ? UIImage(named: "No_items") : UIImage(named: "NotEqualTextPlaceholder")
+            backgroundImage.image = conditionForPlaceholderOption ? UIImage(resource: .noItems) : UIImage(resource: .notEqualTextPlaceholder)
             backgroundTextLabel.text = localizableStrings.notEqualTextPlaceholder
         }
     }

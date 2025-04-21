@@ -31,7 +31,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
     
     private let localizableStrings: LocalizableStringsTrackersCollectionCell = LocalizableStringsTrackersCollectionCell()
     private var isCompletedToday: Bool = false
-    private let doneImage = UIImage(named: "Check_Tracker")
+    private let doneImage = UIImage(resource: .checkTracker)
     private let plusImage: UIImage = {
         let pointSize = UIImage.SymbolConfiguration(pointSize: 11)
         let image = UIImage(systemName: "plus", withConfiguration: pointSize) ?? UIImage()
@@ -53,7 +53,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
     }
     
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        preconditionFailure("init(coder:) has not been implemented")
     }
     
     func configure(with tracker: Tracker, isCompletedToday: Bool, completedDays: Int, color: UIColor, isPinned: Bool) {
@@ -97,7 +97,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
     }
     
     private func createEmojiBackLabel() {
-        emojiBackLabel.layer.backgroundColor = UIColor(named: "EmojiBack")?.cgColor
+        emojiBackLabel.layer.backgroundColor = UIColor(resource: .emojiBack).cgColor
         emojiBackLabel.layer.cornerRadius = 12
         
         emojiBackLabel.translatesAutoresizingMaskIntoConstraints = false
