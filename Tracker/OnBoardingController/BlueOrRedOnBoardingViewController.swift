@@ -8,6 +8,7 @@
 import UIKit
 
 final class BlueOrRedOnBoardingViewController: UIViewController {
+    private let localizableStrings: LocalizableStringsBlueOrRedOnBoardingViewController = LocalizableStringsBlueOrRedOnBoardingViewController()
     private let blueType = "Blue"
     private var onboardingScreen: String = ""
     
@@ -30,8 +31,8 @@ final class BlueOrRedOnBoardingViewController: UIViewController {
     }
     
     private func setBackImage() {
-        guard let blueImage = UIImage(named: "BlueOnBoarding"),
-              let redImage = UIImage(named: "RedOnBoarding") else { return }
+        let blueImage = UIImage(resource: .blueOnBoarding)
+        let redImage = UIImage(resource: .redOnBoarding) 
         
         backImage.image = onboardingScreen == blueType ? blueImage : redImage
         backImage.contentMode = .scaleAspectFit
@@ -41,7 +42,7 @@ final class BlueOrRedOnBoardingViewController: UIViewController {
     }
     
     private func setLabel() {
-        label.text = onboardingScreen == blueType ? "Отслеживайте только\n то, что хотите" : "Даже если это\n не литры воды и йога"
+        label.text = onboardingScreen == blueType ? localizableStrings.titleOne : localizableStrings.titleTwo
         label.font = .systemFont(ofSize: 32, weight: UIFont.Weight.bold)
         label.textAlignment = .center
         label.numberOfLines = 2
@@ -53,7 +54,7 @@ final class BlueOrRedOnBoardingViewController: UIViewController {
     private func setButton() {
         button.backgroundColor = .black
         button.layer.cornerRadius = 16
-        button.setTitle("Вот это технологии!", for: .normal)
+        button.setTitle(localizableStrings.titleThree, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: UIFont.Weight.medium)
         button.titleLabel?.textAlignment = .center
         button.titleLabel?.textColor = .white

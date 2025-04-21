@@ -15,18 +15,23 @@ protocol TrackersCollectionCellDelegate: AnyObject {
 final class TrackersCollectionCell: UICollectionViewCell {
     static let cellIdentifier = "Cell"
     
+    let colorsForDarkLightTheme: ColorsForDarkLightTheme = ColorsForDarkLightTheme()
+    
     let habitCardColorLabel: UILabel = UILabel()
     let emojiLabel: UILabel = UILabel()
     let emojiBackLabel: UILabel = UILabel()
     let habitNameLabel: UILabel = UILabel()
     let addDayButton: UIButton = UIButton()
     let dayLabel: UILabel = UILabel()
+    let pinImage: UIImageView = UIImageView()
+    
+    var trackerId: UUID?
     
     weak var delegate: TrackersCollectionCellDelegate?
     
+    private let localizableStrings: LocalizableStringsTrackersCollectionCell = LocalizableStringsTrackersCollectionCell()
     private var isCompletedToday: Bool = false
-    private var trackerId: UUID?
-    private let doneImage = UIImage(named: "Check_Tracker")
+    private let doneImage = UIImage(resource: .checkTracker)
     private let plusImage: UIImage = {
         let pointSize = UIImage.SymbolConfiguration(pointSize: 11)
         let image = UIImage(systemName: "plus", withConfiguration: pointSize) ?? UIImage()
@@ -42,28 +47,46 @@ final class TrackersCollectionCell: UICollectionViewCell {
         createHabitNameLabel()
         createAddDayButton()
         createDayLabel()
+        createPinView()
+        
         setConstraints()
     }
     
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        preconditionFailure("init(coder:) has not been implemented")
     }
     
-    func configure(with tracker: Tracker, isCompletedToday: Bool, completedDays: Int, color: UIColor) {
+    func configure(with tracker: Tracker, isCompletedToday: Bool, completedDays: Int, color: UIColor, isPinned: Bool) {
         self.trackerId = tracker.id
         self.isCompletedToday = isCompletedToday
         
         emojiLabel.text = tracker.emoji
         habitNameLabel.text = tracker.name
         
-        let completedDaysString = "\(completedDays) день"
-        dayLabel.text = completedDaysString
+        if completedDays <= 1 {
+            let completedDaysString = "\(completedDays) " + localizableStrings.dayLoc
+            dayLabel.text = completedDaysString
+        } else {
+            let completedDaysString = "\(completedDays) " + localizableStrings.daysLoc
+            dayLabel.text = completedDaysString
+        }
         
         habitCardColorLabel.layer.backgroundColor = color.cgColor
         
         let image = isCompletedToday ? doneImage : plusImage
         addDayButton.setImage(image, for: .normal)
         addDayButton.backgroundColor = isCompletedToday ? color.withAlphaComponent(0.3) : color
+        
+        pinImage.isHidden = !isPinned
+    }
+    
+    private func createPinView() {
+        pinImage.image = UIImage(resource: .pin)
+        
+        pinImage.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(pinImage)
+        
+        pinImage.isHidden = true
     }
     
     private func createHabitCardColorLabel() {
@@ -74,7 +97,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
     }
     
     private func createEmojiBackLabel() {
-        emojiBackLabel.layer.backgroundColor = UIColor(named: "EmojiBack")?.cgColor
+        emojiBackLabel.layer.backgroundColor = UIColor(resource: .emojiBack).cgColor
         emojiBackLabel.layer.cornerRadius = 12
         
         emojiBackLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -102,7 +125,7 @@ final class TrackersCollectionCell: UICollectionViewCell {
     }
     
     private func createAddDayButton() {
-        addDayButton.tintColor = .white
+        addDayButton.tintColor = colorsForDarkLightTheme.whiteBlackDLT
         addDayButton.layer.cornerRadius = 17
         addDayButton.setImage(plusImage, for: .normal)
         
@@ -126,8 +149,8 @@ final class TrackersCollectionCell: UICollectionViewCell {
         dayLabel.adjustsFontSizeToFitWidth = true
         dayLabel.textAlignment = .left
         dayLabel.font = .systemFont(ofSize: 12)
-        dayLabel.textColor = .black
-        dayLabel.backgroundColor = .white
+        dayLabel.textColor = colorsForDarkLightTheme.blackWhiteDLT
+        dayLabel.backgroundColor = colorsForDarkLightTheme.whiteBlackDLT
         
         dayLabel.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(dayLabel)
@@ -165,7 +188,12 @@ final class TrackersCollectionCell: UICollectionViewCell {
             dayLabel.topAnchor.constraint(equalTo: habitCardColorLabel.bottomAnchor, constant: 16),
             dayLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
             dayLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -24),
-            dayLabel.heightAnchor.constraint(equalToConstant: 18)
+            dayLabel.heightAnchor.constraint(equalToConstant: 18),
+            
+            pinImage.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
+            pinImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -4),
+            pinImage.heightAnchor.constraint(equalToConstant: 24),
+            pinImage.widthAnchor.constraint(equalToConstant: 24)
         ])
     }
 }

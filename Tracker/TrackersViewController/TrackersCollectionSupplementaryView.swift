@@ -9,7 +9,9 @@ import UIKit
 
 final class TrackersCollectionSupplementaryView: UICollectionReusableView {
     static let headerIdentifier = "Header"
-
+    
+    let colorsForDarkLightTheme: ColorsForDarkLightTheme = ColorsForDarkLightTheme()
+    
     let titleLabel: UILabel = UILabel()
     
     override init(frame: CGRect) {
@@ -19,6 +21,7 @@ final class TrackersCollectionSupplementaryView: UICollectionReusableView {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.textAlignment = .left
         titleLabel.font = .boldSystemFont(ofSize: 19)
+        titleLabel.textColor = colorsForDarkLightTheme.blackWhiteDLT
         
         NSLayoutConstraint.activate([
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
@@ -28,6 +31,6 @@ final class TrackersCollectionSupplementaryView: UICollectionReusableView {
     }
     
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        preconditionFailure("init(coder:) has not been implemented")
     }
 }

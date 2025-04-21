@@ -14,8 +14,7 @@ final class CategoriesViewModel {
     
     func didCreateNewCategory(with newCategoryName: String) {
         model.saveCreatedCategoryNames(with: newCategoryName)
-        guard let newCategoryNamesCreated = newCategoryNamesCreated else { return }
-        newCategoryNamesCreated()
+        newCategoryNamesCreated?()
     }
     
     func loadSavedCategoriesNames() -> [String] {

@@ -6,15 +6,22 @@
 //
 
 import CoreData
-import UIKit
 
 final class DataProvider: NSObject {
-    private let trackerStore: TrackerStore = TrackerStore()
     let trackerCategoryStore: TrackerCategoryStore = TrackerCategoryStore()
+    private let trackerStore: TrackerStore = TrackerStore()
     private let trackerRecordStore: TrackerRecordStore = TrackerRecordStore()
     
     private var context: NSManagedObjectContext? {
-        (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext
+        DataBaseStore.shared.persistentContainer.viewContext
+    }
+    
+    func getCategoryName(id: UUID) -> String {
+        trackerStore.getCategoryName(id: id)
+    }
+    
+    func getAllTrackers() -> [Tracker] {
+        trackerStore.getAllTrackers()
     }
     
     func addTrackerCategory(categoryName: String) {
@@ -52,6 +59,24 @@ final class DataProvider: NSObject {
         }
     }
     
+    func unPinTracker(id: UUID) {
+        trackerStore.unPinTracker(id: id)
+    }
+    
+    func removeTracker(id: UUID) {
+        trackerStore.remove(id)
+    }
+    
+    func updateTracker(updatingTracker: Tracker, updateCategoryName: String) {
+        guard let categoryIsExist = trackerCategoryStore.checkCategoryExistence(categoryName: updateCategoryName) else { return }
+        
+        do {
+            try trackerStore.updateTracker(updatingTracker: updatingTracker, updateCategoryName: categoryIsExist)
+        } catch {
+            print("Cant update newTracker")
+        }
+    }
+    
     func addTrackerRecord(trackerRecord: TrackerRecord) {
         let recordIsExist = trackerRecordStore.checkRecordExistence(trackerRecord: trackerRecord)
         if recordIsExist {
@@ -74,3 +99,4 @@ final class DataProvider: NSObject {
         }
     }
 }
+
